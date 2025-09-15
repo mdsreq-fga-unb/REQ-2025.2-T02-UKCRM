@@ -1,0 +1,78 @@
+site_name: UK CRM
+repo_url: https://github.com/mdsreq-fga-unb/REQ-2025.2-T02-UKCRM
+
+theme: 
+  name: material
+  language: pt-BR
+  palette: 
+    - scheme: default
+      primary: light purple
+      accent: light purple
+      toggle:
+        icon: material/brightness-7 
+        name: Modo escuro
+
+    - scheme: slate
+      primary: light purple
+      accent: light purple
+      toggle:
+        icon: material/brightness-4
+        name: Modo claro
+
+nav:
+  - Home: index.md
+  - Visão de Produto e Projeto:
+    - Cenário Atual do Cliente e do Negócio: visao/cenario_atual.md
+    - Solução Proposta: visao/solucao.md
+    - Estratégias de Engenharia de Software: visao/estrategias.md
+    - Cronograma: visao/cronograma.md
+    - Interação entre Equipe e Cliente: visao/interacao_equipe_cliente.md  
+    - Lições Aprendidas: visao/licoes.md
+  
+    - Histórico de Revisão: visao/index.md
+    - Referências: visao/referencias.md
+
+  - Requisitos:
+    - Funcionais: requisitos/funcionais.md
+    - Não Funcionais: requisitos/nao_funcionais.md
+
+  - Backlog: backlog/backlg.md
+  
+  - Protótipos: prototipos/prototipo.md
+
+  - Atas de reuniões:
+    - Kick-off do Projeto: atas/ata1_kickoff.md
+    - Aprofundamento de Requisitos: atas/ata2_aprofundamento.md
+    - Técnica Interna: atas/ata3_tecnica_interna.md
+   
+  - Entregas: 
+    - Unidade 1: entregas/uni1.md
+
+  - Feedback do Cliente: feedback/index.md
+
+
+markdown_extensions:
+  - toc:
+      title: Sumário
+
+plugins:
+  - search
+  - macros
+
+extra_css:
+  - assets/css/home.css
+  - assets/css/global.css
+extra:
+  team:
+    - name: Carlos Henrique
+      username: Carlos-UCH
+    - name: João Guilherme
+      username: jonas3688
+    - name: Lorena Ribeiro 
+      username: Nenalia02
+    - name: Marcos Vinícius
+      username: MarcosViniciusG
+    - name: Pedro Teixeira
+      username: PedroDev-sketch
+    - name: Yogi Nam 
+      username: euyogi
