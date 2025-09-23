@@ -75,6 +75,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#levantamento-dos-requisitos" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -550,6 +555,21 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Funcionais
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -562,6 +582,45 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Sumário">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Sumário
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Funcionais
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos-nao-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Não Funcionais
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -865,6 +924,34 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Sumário
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Funcionais
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos-nao-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Não Funcionais
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -883,9 +970,137 @@
   
 
 
-  <h1>Funcionais</h1>
-
-
+<h1 id="levantamento-dos-requisitos">Levantamento dos Requisitos</h1>
+<p>O levantamento de <b>requisitos funcionais</b> e <b>não funcionais</b> do sistema foram feitos por meio de entrevistas com o cliente. Por meio dessas entrevista, foi possivel identificar as necessidades do negócio, compreender os processos internos e mapear as funcionalidades desejadas para a solução. </p>
+<h2 id="requisitos-funcionais">Requisitos Funcionais</h2>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Nome</th>
+<th>História de Usuário</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF01</td>
+<td>Gerenciamento de Organizações</td>
+<td>Como <strong>Administrador</strong>, quero cadastrar, editar e remover organizações, para centralizar leads, contatos e negócios.</td>
+</tr>
+<tr>
+<td>RF02</td>
+<td>Gerenciamento de Usuários</td>
+<td>Como <strong>Proprietário</strong>, quero atribuir, editar e remover quaisquer usuários de organizações, para definir quem pode trabalhar com os leads, contatos e negócios da organização.</td>
+</tr>
+<tr>
+<td>RF03</td>
+<td>Personalização de Funis de Vendas</td>
+<td>Como <strong>Gerente de Vendas</strong>, quero personalizar funis de vendas, para adaptá-los ao processo comercial da empresa.</td>
+</tr>
+<tr>
+<td>RF04</td>
+<td>Gerenciamento de Leads</td>
+<td>Como <strong>SDR</strong>, quero cadastrar, editar e remover manualmente novos leads, para realizar a triagem.</td>
+</tr>
+<tr>
+<td>RF05</td>
+<td>Temperatura de Leads</td>
+<td>Como <strong>SDR</strong>, quero ver a temperatura de um lead (quente, morno, frio), para definir seu nível de prioridade de atendimento e quais decisões tomar.</td>
+</tr>
+<tr>
+<td>RF06</td>
+<td>Visualização de Leads</td>
+<td>Como <strong>SDR</strong>, quero ver os dados de um lead (nome, telefone, idade, emprego, interesses, etc.) nas etapas iniciais do funil (ex: Prospecção, Qualificação, Repescagem ou Follow Up), para poder negociar com ele efetivamente.</td>
+</tr>
+<tr>
+<td>RF07</td>
+<td>Visualização de Dashboards</td>
+<td>Como <strong>Usuário</strong>, quero ver dashboards com taxas de conversão e outros dados dos clientes que minha organização possui.</td>
+</tr>
+<tr>
+<td>RF08</td>
+<td>Envio de mensagens para Leads</td>
+<td>Como <strong>SDR</strong>, quero mandar mensagens no WhatsApp para meus leads.</td>
+</tr>
+<tr>
+<td>RF09</td>
+<td>Gestão de Funil</td>
+<td>Como <strong>Coordenador de Vendas</strong>, quero realizar o gerenciamento das etapas dentro do funil, podendo mover leads e monitorar o status.</td>
+</tr>
+<tr>
+<td>RF10</td>
+<td>Automatização de Informações de Leads</td>
+<td>Como <strong>SDR</strong>, quero que as informações de origem do usuário (campanha, plataforma, etc.) sejam registradas automaticamente, para economizar tempo.</td>
+</tr>
+<tr>
+<td>RF11</td>
+<td>Automatização de Confirmação e Follow-up</td>
+<td>Como <strong>SDR</strong>, quero automatizar mensagens de follow-up e confirmação, para reter o lead.</td>
+</tr>
+<tr>
+<td>RF12</td>
+<td>Gerenciamento de Times</td>
+<td>Como <strong>Gerente de Vendas</strong>, quero cadastrar, editar e remover times de venda, para gerenciar equipes de vendas em diferentes filiais.</td>
+</tr>
+<tr>
+<td>RF13</td>
+<td>Atribuição e Monitoramento em Times</td>
+<td>Como <strong>Gerente de Vendas</strong>, quero atribuir leads a coordenadores ou membros de sua equipe e monitorar o progresso em cada etapa do funil.</td>
+</tr>
+<tr>
+<td>RF14</td>
+<td>Comunicação Interna</td>
+<td>Como <strong>Coordenador de Vendas</strong>, quero ter acesso a ferramentas internas para comunicação com a equipe (comentários nos leads).</td>
+</tr>
+<tr>
+<td>RF15</td>
+<td>Mudar o Status do Lead</td>
+<td>Como <strong>SDR</strong>, quero ter a capacidade de marcar o lead como "qualificado" ou "desqualificado" e mover para a próxima etapa ou arquivar. Também é possível preencher um questionário para que o lead tenha um score dentro da ferramenta.</td>
+</tr>
+<tr>
+<td>RF16</td>
+<td>Visualização de Oportunidades</td>
+<td>Como <strong>Closer</strong>, quero ter acesso às etapas finais do funil (ex: Proposta, Negociação, Fechamento), para poder fechar negócio com o lead.</td>
+</tr>
+<tr>
+<td>RF17</td>
+<td>Marcar Negócio como “Ganho” ou “Perdido”</td>
+<td>Como <strong>Closer</strong>, quero marcar o negócio como "ganho" ou "perdido" e registrar o valor da venda, para que possa ser registrado e utilizado para decisões futuras.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="requisitos-nao-funcionais">Requisitos Não Funcionais</h2>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Nome</th>
+<th>Histórias de usuário</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RNF01</td>
+<td>Padronização</td>
+<td>Como <strong>Desenvolvedor</strong>, quero garantir a padronização do código escrito a fim de aumentar a organização e manutenibilidade para a equipe de desenvolvimento.</td>
+</tr>
+<tr>
+<td>RNF02</td>
+<td>Segurança</td>
+<td>Como <strong>Desenvolvedor</strong>, quero que as senhas dos usuários sejam armazenadas de forma criptografada, para que as informações pessoais delas permaneçam seguras e privadas.</td>
+</tr>
+<tr>
+<td>RNF03</td>
+<td>Interface gráfica</td>
+<td>O Sistema deve ser intuitivo e responsivo, permitindo o fácil e rápido.</td>
+</tr>
+<tr>
+<td>RNF04</td>
+<td>Modularidade</td>
+<td>O sistema deve possuir uma arquitetura modular, permitindo a fácil manutenção, a correção de falhas e a implementação de novas funcionalidades.</td>
+</tr>
+</tbody>
+</table>
 
 
 
