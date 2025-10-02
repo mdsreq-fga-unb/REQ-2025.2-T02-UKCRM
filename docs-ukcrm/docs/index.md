@@ -1,4 +1,7 @@
 # Apresentação 
+<a href="https://ukmarketingdigital.com.br">
+  <img src="../imgs/uk.webp" alt="image" class="centered-img"> 
+</a>
 
 **UK CRM** é uma aplicação web desenvolvida por alunos da **FCTE - UnB** cursando a disciplina **Requisitos de Software - Turma 02** no semestre **2025.2**.
 

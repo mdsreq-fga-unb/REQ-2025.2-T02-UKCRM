@@ -4,6 +4,8 @@ repo_url: https://github.com/mdsreq-fga-unb/REQ-2025.2-T02-UKCRM
 theme: 
   name: material
   language: pt-BR
+  logo: imgs/uk.webp
+  favicon: imgs/uk.webp
   palette: 
     - scheme: default
       primary: light purple
