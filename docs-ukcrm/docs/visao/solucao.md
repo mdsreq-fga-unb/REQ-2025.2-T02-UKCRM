@@ -4,30 +4,64 @@
 
 **Objetivo Geral**
 
-Aprimorar a gestão do processo de vendas dos clientes, melhorar o relacionamento, satisfação, fidelização, retenção e impulsionar o crescimento das vendas através da organização das informações dos clientes, otimização dos processos de vendas, avaliação de dados como desempenho dos clientes e a eficácia do marketing aplicado através do desenvolvimento de um sistema **CRM próprio**.
+Desenvolver uma plataforma de CRM, para que empresas clientes possam gerenciar de forma integrada e estratégica suas operações comerciais. O sistema visa impulsionar o crescimento das vendas e a retenção de clientes, oferecendo ferramentas para organizar informações, automatizar processos, analisar a performance de vendas e o ROI (*Return On Investment*) de marketing, com suporte nativo para estruturas com múltiplas equipes, filiais e hierarquias de acesso.
 
 **Objetivos Específicos e Indicadores**
 
 | Código | Objetivo Específico | Indicador de Sucesso |
-|--------|---------------------|-----------------------|
-| OE1    | Implementação própria de CRM | Registro de leads, contatos, contas e oportunidades de venda com sucesso. |
-| OE2    | Integração de API | Integração com pelo menos 3 APIs diferentes (ex: WhatsApp, Instagram Ads, Google Ads). |
-| OE3    | Segurança dos dados | Zero incidentes graves de segurança e conformidade com a LGPD. |
-| OE4    | Automação de etapas dentro do funil de vendas | Redução no tempo gasto em tarefas manuais (ex: envio de e-mails de follow-up, criação de tarefas). |
-| OE5    | Visualização gráficas de dados | Presença de histogramas, gráficos de caixa, gráficos de funil, gráficos de linha para tendências e dashboards personalizáveis. |
-| OE6    | Gestão de Relacionamento | Centralização do histórico de interações (e-mails, ligações, reuniões) por cliente, acessível a toda a equipe de vendas. |
-| OE7    | Análise de Desempenho | Geração de relatórios automáticos sobre performance da equipe, taxa de conversão por etapa do funil e ciclo de vendas. |
-| OE8    | Rastreamento de Marketing | Capacidade de rastrear a origem dos leads e gerar relatórios de ROI (Retorno sobre Investimento) por campanha. |
-| OE9    | Importação e Exportação de Dados | Capacidade de importar e exportar dados de clientes, contatos e oportunidades em formatos CSV e Excel. |
+| :---- | :---- | :---- |
+| OE01 | Otimizar a produtividade da equipe de vendas através da automação de tarefas. | Redução no tempo gasto em tarefas manuais (ex: envio de e-mails, criação de tarefas). |
+| OE02 | Melhorar a gestão do relacionamento com o cliente centralizando as informações. | 100% do histórico de interações (e-mails, ligações e mensagens por WhatsApp) por cliente está centralizado e acessível à equipe de vendas. |
+| OE03 | Aumentar a eficiência na qualificação e priorização de leads. | Aumento da taxa de conversão de leads qualificados. O time de vendas consegue identificar e focar nos leads de maior potencial rapidamente. |
+| OE04 | Medir o retorno sobre o investimento (ROI) das campanhas de marketing. | Capacidade de gerar relatórios de ROI por campanha, rastreando a origem dos leads desde a fonte até o fechamento da venda. |
+| OE05 | Garantir a governança e a segurança dos dados dos clientes. | Zero incidentes graves de segurança e conformidade total com a LGPD, validado por uma lista de conformidade. |
+| OE06 | Permitir que gestores de vendas estruturem e controlem suas equipes de forma autônoma e segura dentro da plataforma. | Um gerente de vendas consegue executar o ciclo completo de gerenciamento de sua equipe (criar, editar, associar vendedores, remover) sem suporte técnico. A plataforma garante que os dados de uma equipe não sejam visíveis para outra, a menos que seja permitido. |
+| OE07 | Assegurar a interoperabilidade e a portabilidade dos dados do sistema. | Capacidade de importar e exportar dados de clientes, contatos e oportunidades em formatos CSV e Excel. |
+| OE08 | Proporcionar uma experiência de uso fluida, intuitiva e acessível. | 90% dos usuários-alvo conseguem completar tarefas essenciais (ex: adicionar um lead, movê-lo no funil) sem treinamento prévio. |
+| OE9 | Permitir a gestão de operações de vendas complexas e descentralizadas, espelhando a estrutura organizacional de grandes empresas. | Um usuário **Proprietário** consegue configurar de forma autônoma a estrutura completa da sua empresa (**Times** e **Usuários**). O sistema reflete corretamente a hierarquia de permissões definida. |
 
 ---
 
 ## **2.2 Características da Solução**
 
-O cliente (empresa) irá fazer a gestão dos seus clientes com base em um funil de vendas em que o contato será direcionado a várias etapas em que terá tratativas diferentes e por funções diferentes dentro da empresa. O fluxo inicia no **Novo Contato**, segue para o **Primeiro contato** e, posteriormente, para a etapa de **Triagem (Diagnóstico)**. Caso haja interesse, o cliente é direcionado para o **Agendamento de Reunião**, seguido da **Apresentação de Proposta**. A partir daí, o processo evolui para a **Negociação**, que pode resultar em duas situações finais: Ganho ou Perdido. 
+O sistema foi projetado com um conjunto robusto de funcionalidades, cada uma contribuindo para alcançar objetivos estratégicos chave para a gestão de vendas e relacionamento com o cliente. A seguir, detalhamos como o produto irá operar, com as características agrupadas por seus respectivos objetivos.
 
-As funcionalidade principais da solução incluem a gestão completa dos contatos, permitindo adicionar, excluir, consultar e atualizar informações; a gestão de perfis de usuários, possibilitando a criação, alteração e exclusão de acessos; a definição de regras de negócio personalizadas para diferentes perfis; e a visualização do funil de vendas em formato Kanban ou em lista, facilitando o acompanhamento do progresso de cada cliente dentro do pipeline.
+#### **Para Otimizar a Produtividade da Equipe de Vendas:**
 
+* **Automação do Funil de Vendas:** A plataforma oferecerá ferramentas para configurar gatilhos automáticos. Isso permitirá, por exemplo, o envio programado de e-mails de follow-up ou a criação automática de tarefas para os vendedores sempre que um lead avançar para uma nova etapa do funil.  
+* **Integração com APIs Externas:** Para centralizar a captura de leads e a comunicação, o sistema se conectará com APIs de plataformas essenciais como WhatsApp, Instagram Ads e Google Ads, garantindo que nenhum contato seja perdido.
+
+#### **Para Melhorar a Gestão do Relacionamento com o Cliente:**
+
+* **Módulo de Gestão de Contatos:** Uma área completa onde será possível adicionar, consultar, atualizar e remover informações detalhadas de cada contato, mantendo um banco de dados de clientes sempre rico e atualizado.  
+* **Histórico Unificado de Interações:** Cada perfil de cliente terá um registro cronológico de todas as interações, sejam elas e-mails, ligações ou reuniões. Esses registros poderão ser feitos de forma automática ou manual, criando uma visão 360º do relacionamento.
+
+#### **Para Aumentar a Eficiência na Qualificação e Priorização de Leads:**
+
+* **Visualização do Funil de Vendas:** O pipeline de vendas será exibido de forma intuitiva, em formatos de Kanban (permitindo arrastar e soltar os leads entre as etapas) ou em lista, ambos com ferramentas avançadas de filtro e busca.  
+* **Sistema de Classificação de Leads:** Cada lead poderá ser classificado com um indicador visual claro (ex: quente, morno, frio), permitindo que os vendedores identifiquem e priorizem rapidamente suas abordagens.
+
+#### **Para Facilitar a Análise de Dados e a Tomada de Decisão:**
+
+* **Dashboards Personalizáveis:** Painéis visuais e interativos permitirão o monitoramento de KPIs (Key Performance Indicators) em tempo real, utilizando gráficos de funil, histogramas e linhas de tendência para uma análise rápida e eficaz.  
+* **Módulo de Geração de Relatórios:** A plataforma será capaz de emitir relatórios automáticos e detalhados sobre a performance da equipe, taxas de conversão em cada etapa do funil e a duração do ciclo de vendas.
+
+#### **Para Medir o Retorno sobre o Investimento (ROI) em Marketing:**
+
+* **Rastreamento de Origem de Leads:** Uma funcionalidade para registrar e analisar a origem de cada lead, identificando quais campanhas, canais ou anúncios estão gerando os melhores resultados.    
+* **Cálculo de ROI de Marketing:** A ferramenta permitirá associar os custos de cada campanha de marketing às receitas geradas a partir dela, calculando o retorno sobre o investimento e otimizando o orçamento futuro.
+
+#### **Para Gerenciar Operações de Vendas Complexas e Descentralizadas (Multi-Empresa):**
+
+* **Gestão de Perfis e Permissões:** O administrador de cada empresa cliente poderá criar diferentes perfis de usuário (como Vendedor, Gerente, Diretor) e definir regras de visibilidade de dados baseadas na hierarquia da empresa, equipe ou filial.    
+* **Módulo de Gerenciamento de Equipes:** A ferramenta permitirá que gestores criem, editem e removam equipes de vendas, associem vendedores a elas e as vinculem a diferentes filiais ou unidades de negócio.    
+* **Funis de Vendas Múltiplos e Personalizáveis:** Gestores poderão criar e customizar múltiplos funis de vendas, associando pipelines específicos a equipes ou filiais distintas, de acordo com seus processos comerciais.    
+* **Lead Scoring Customizável:** O administrador poderá criar campos de qualificação personalizados e atribuir pontuações a eles, gerando um score automático que classifica e prioriza os leads de forma inteligente para toda a organização.  
+
+#### **Para Assegurar a Interoperabilidade e Usabilidade do Sistema:**
+
+* **Ferramenta de Importação e Exportação de Dados:** Funcionalidade que permite a migração de dados para dentro e para fora do sistema, com suporte para importar e exportar listas de clientes, contatos e oportunidades em formatos populares como CSV e Excel.  
+* **Interface de Usuário Responsiva:** O design da plataforma se adaptará perfeitamente a diferentes tamanhos de tela, garantindo uma experiência de uso consistente e funcional em desktops.
 
 ---
 

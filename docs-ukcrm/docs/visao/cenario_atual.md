@@ -14,79 +14,54 @@ Resumidamente, trata-se de um sistema que organiza as informações do cliente, 
 
 ## **1.2 Identificação da Oportunidade ou Problema**
 
-Nos últimos anos, todas as empresas atendidas pelo nosso cliente, no segmento de tráfego pago, têm demonstrado uma necessidade comum: a utilização de **sistemas de CRM** para apoiar a gestão de contatos, vendas e equipes.  
+Nos últimos anos, grande parte das empresas atendidas no segmento de tráfego pago pelo nosso cliente têm mostrado uma necessidade comum: contar com um **sistema de CRM** para apoiar a gestão de contatos, vendas e equipes. No entanto, a ausência de uma solução própria limita a eficiência desses processos e reduz o potencial de gerar valor a partir da otimização desses processos.
 
-No entanto, a ausência de uma solução própria **limita a eficiência desses processos** e reduz a capacidade de gerar valor estratégico a partir dos dados de clientes.  
+Entre os principais desafios estão a falta de organização centralizada das informações, a dificuldade em acompanhar indicadores de desempenho e a dependência de sistemas de terceiros que nem sempre se adequam à realidade do negócio. Essa situação compromete tanto a gestão de vendas quanto a retenção de clientes, fundamentais para o crescimento sustentável.
 
-Entre os principais desafios, destacam-se:  
-- Falta de organização centralizada das informações;  
-- Dificuldade de acompanhar indicadores de desempenho e resultados;  
-- Dependência de sistemas de terceiros que nem sempre se adequam à realidade do negócio.  
+Embora existam diversas soluções de CRM no mercado, a **UK Marketing Digital** enxerga uma oportunidade em desenvolver sua própria ferramenta. Além de reduzir a dependência de softwares de terceiros, um CRM proprietário fortaleceria a autoridade da marca, aumentaria o valor percebido pelos clientes e criaria diferenciais competitivos frente aos concorrentes.
 
-Essa situação compromete tanto a gestão de vendas quanto a **retenção de clientes**, pontos fundamentais para o crescimento sustentável.  
-
-Embora existam inúmeras soluções de CRM disponíveis no mercado, a empresa enxerga uma oportunidade em desenvolver sua **própria ferramenta**.  
-Além de reduzir a dependência de softwares externos, um **CRM proprietário** reforçaria a autoridade da marca, ampliaria o valor percebido pelos clientes e criaria diferenciais competitivos frente aos concorrentes.  
-
-Atualmente, mesmo não sendo uma empresa de tecnologia, torna-se imprescindível caminhar em conjunto com a **inovação** para se destacar no mercado.  
-
-Nesse sentido, a implementação de um CRM próprio surge não apenas como uma **necessidade operacional**, mas como uma **estratégia essencial** para fortalecer a posição da empresa, melhorar a experiência dos clientes e impulsionar resultados.
+Atualmente, mesmo não sendo uma empresa de tecnologia, torna-se imprescindível caminhar em conjunto com a inovação para se destacar no mercado. Nesse sentido, a criação de um CRM próprio surge não apenas como uma necessidade operacional, mas como uma estratégia essencial para fortalecer a posição da empresa, melhorar a experiência dos clientes e impulsionar resultados.
 
 <div class="centered-text"><b>Figura 1 - </b>Diagrama de Ishikawa</div>
 
-<img src="../../imgs/imag1.png" alt="image" class="centered-img"> 
+<img src="../../imgs/imag1.jpeg" alt="image" class="centered-img"> 
 
 <div class="centered-text"><b>Fonte: </b> Elaborado por Marcos Vinícius e Carlos Henrique(2025)</div>
 
+---
+
 ## **1.3 Desafios do Projeto**
 
-Um dos principais desafios presentes é garantir a **escalabilidade do projeto**.  
-Mesmo em pequenas empresas, o número de **leads** pode ultrapassar os milhares e, devido ao grande volume de dados, o produto demanda uma atenção reforçada em manter-se usável mesmo diante de grandes cargas.  
+**Complexidade de desenvolvimento:** CRMs podem envolver muitas funcionalidades (cadastro de clientes, funil de vendas, relatórios, automações, integrações etc.), o que demanda um bom planejamento e eventualmente limitações de escopo já que temos uma equipe pequena com tempo limitado.
 
-No software, essa atenção se traduz em:  
-- Um banco de dados eficiente;  
-- Filas de prioridade de ações no **backend**;  
-- Uma interface de usuário adaptável e com facilidade de localizar informações específicas (**sistemas de busca rápidos e precisos**).  
+**Escalabilidade do projeto:** Mesmo em pequenas empresas, o número de *leads* podem ultrapassar os milhares, além disso potencialmente o software pode ser usado por várias empresas, devemos utilizar soluções estáveis e que sejam conhecidas por serem capazes de lidar com grandes demandas.
 
-Outro possível desafio é a **integração de APIs** no processo de automação.  
-O produto deve:  
-- Suportar o maior número possível de **APIs comuns** usadas no mercado de marketing digital (WhatsApp, Telegram, Google Ads, etc.);  
-- Ser fácil de estender, permitindo adicionar novas integrações no futuro.  
+**Integração com outras plataformas:** Empresas normalmente precisam que o CRM se conecte a e-mails, WhatsApp, sistemas de ERP (*Enterprise Resource Planning*), redes sociais e plataformas de anúncios. Isso pode mostrar ser um desafio dependendo do quão acessível esses sistemas sejam para conectar com o nosso software.
 
-A **segurança dos dados do cliente** é outro desafio de grande importância.  
-Uma falha pode resultar em:  
-- Perda de confiabilidade;  
-- Danos financeiros significativos.  
+**Segurança:** A segurança dos dados dos clientes e das empresas é outro desafio de grande importância. Caso haja uma falha de segurança, isso pode significar uma perda de confiabilidade para o nosso cliente e acarretar em perdas financeiras. Identificado esse desafio, a validação no backend e acesso restrito ao ambiente de produção são essenciais.
 
-Para mitigar esses riscos, são essenciais:  
-- Validações robustas no **backend**;  
-- Acesso restrito ao ambiente de produção.  
+**Concorrência:** já existem CRMs consolidados no mercado, então o produto precisaria ser similar para ter uma transição fácil, capacidade de importação de dados já existentes nessas outras plataformas e tentar melhorar ou não cometer falhas existentes nos concorrentes.  
 
 ---
 
 ## **1.4 Segmentação de Clientes**
 
-### 1. Pequenas e Médias Empresas com Vendas Estruturadas
-Empresas com equipes e processos de vendas definidos, que buscam ativamente seus clientes e gerenciam um funil de vendas.  
+**Pequenas e médias empresas com vendas estruturadas:** Empresas com equipes e processos de vendas definidos, que buscam ativamente seus clientes e gerenciam um funil de vendas.
 
-  - Mercado Imobiliário  
-  - Corretoras de Plano de Saúde  
-  - Autorizadas Técnicas (médio porte)  
-  - Cursos e Escolas  
----
+* Mercado Imobiliário  
+* Corretoras de Plano de Saúde  
+* Autorizadas Técnicas (médio porte)  
+* Cursos e Escolas
 
-### 2. Empresas de Serviços B2B (Business-to-Business)
-Empresas que vendem produtos ou serviços diretamente para outras empresas.  
+**Empresas de Serviços B2B (*Business-to-Business*):** Empresas que vendem produtos ou serviços diretamente para outras empresas.
 
-  - Empresas de Software  
-  - Autorizadas Técnicas  
-  - Corretoras de Plano de Saúde  
-  - Cursos e Treinamentos  
+* Empresas de Software  
+* Autorizadas Técnicas  
+* Corretoras de Plano de Saúde  
+* Cursos e Treinamentos
 
----
+**Startups e Empresas de Tecnologia:** Empresas de base tecnológica, geralmente com um modelo de negócio de assinatura mensal ou anual (*Software as a Service*).
 
-### 3. Startups e Empresas de Tecnologia (SaaS)
-Empresas de base tecnológica, geralmente com modelo de negócio de assinatura mensal ou anual (**Software as a Service**).  
-  - Empresas de Software (**SaaS**)  
-  - Plataformas de Cursos Online (**EdTechs**)  
-  - Clientes de Tecnologia (**HealthTechs** e **PropTechs**)  
+* Empresas de Software (*SaaS*)  
+* Plataformas de Cursos Online (*EdTechs*)  
+* Clientes de Tecnologia (*HealthTechs* e *PropTechs*)

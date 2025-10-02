@@ -1,18 +1,19 @@
-# 5. Interação entre Equipe e Cliente 
+# 6. Interação entre Equipe e Cliente 
 
-## **5.1 Composição da Equipe**
+## **6.1 Composição da Equipe**
 
-| Papel                | Descrição                                                                                                                                                                                                 | Responsável     | Participantes                                                                 |
-|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------|-------------------------------------------------------------------------------|
-| **Gerente de Projeto** | Responsável por liderar o andamento do projeto, assegurando a troca de informações entre cliente e equipe, além de acompanhar prazos e entregas.                                                           | Marcos Gündel   |                                                                               |
-| **Desenvolvedor Fullstack** | Atua no desenvolvimento completo da aplicação, desde a criação da interface do usuário até a implementação da lógica de negócios, banco de dados e integração com serviços externos (APIs).            | Carlos Brasil   | João, Lorena, Pedro Sanchez, Marcos Gündel, Yogi Nam                          |
-| **Infra e DevOps**      | Responsável por gerenciar o servidor, automatizar deploys e garantir a estabilidade e escalabilidade com a manutenção do sistema.                                                                         | Pedro Sanchez   |                                                                               |
-| **Analista de QA**       | Assegura que o produto atenda aos padrões esperados, por meio de testes, avaliando o funcionamento.                                                                                                      | Yogi Nam        | Carlos Brasil                                                                 |
-| **Analista de Requisitos** | Identifica as necessidades do sistema, especificando suas funcionalidades, por meio dos requisitos funcionais e não funcionais.                                                                          | João            | Carlos Brasil, Lorena, Marcos Gündel, Pedro Sanchez, Yogi Nam                 |
+| Papel  | Descrição  | Responsável | Participantes |
+| :---- | :---- | :---- | :---- |
+| Product Owner | Cliente, responsável pela idealização do projeto e priorização de requisitos. | Udson Witer |  |
+| Gerente de Projeto  | Responsável por liderar o andamento do projeto, assegurando a troca de informações entre cliente e equipe, além de acompanhar prazos e entregas.  | Marcos Gündel |  |
+| Desenvolvedor fullstack | Atua no desenvolvimento completo da aplicação, desde a criação da interface do usuário até a implementação da lógica de negócios, banco de dados e integração com serviços externos(APIs). | Carlos Brasil | João  Lorena  Pedro Sanchez Marcos Gündel Yogi Nam |
+| Infra e DevOps | Responsável por gerenciar o servidor, automatizar deploys e garantir a estabilidade e escalabilidade com a manutenção do sistema.   | Pedro Sanchez |  |
+| Analista de QA | Assegura que o produto atenda aos padrões esperados, por meio de testes, avaliando o funcionamento.  | Yogi Nam | Carlos Brasil  |
+| Analista de Requisitos  | Identifica as necessidades do sistema, especificando suas funcionalidades, por meio dos requisitos funcionais e não funcionais.   | João  | Carlos Brasil Lorena  Marcos Gündel Pedro Sanchez Yogi Nam |
 
 ---
 
-## **5.2 Comunicação**
+## **6.2 Comunicação**
 
 A comunicação do projeto, foi idealizada a partir de duas vertentes, a comunicação com o cliente e a comunicação interna da equipe, na qual foram definidas certas ferramentas para assegurar a fluidez contínua do projeto.
 
@@ -29,7 +30,7 @@ A comunicação do projeto, foi idealizada a partir de duas vertentes, a comunic
 
 ---
 
-## **5.3 Processo de Validação**
+## **6.3 Processo de Validação**
 
 O processo de validação foi estruturado para garantir que o produto final atenda rigorosamente às expectativas do cliente, incorporando ciclos de feedback contínuo desde a concepção até a entrega final. A validação ocorrerá em três etapas principais:
 

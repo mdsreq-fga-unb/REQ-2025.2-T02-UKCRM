@@ -27,18 +27,15 @@ nav:
     - Cenário Atual do Cliente e do Negócio: visao/cenario_atual.md
     - Solução Proposta: visao/solucao.md
     - Estratégias de Engenharia de Software: visao/estrategias.md
+    - Engenharia de Requisitos: visao/engenharia.md
     - Cronograma: visao/cronograma.md
     - Interação entre Equipe e Cliente: visao/interacao_equipe_cliente.md  
+    - Requisitos de Software: visao/requisitos.md
+    - DoR e DoD: visao/dor_dod.md
+    - Backlog de Produto: visao/backlog.md
     - Lições Aprendidas: visao/licoes.md
-  
     - Histórico de Revisão: visao/index.md
     - Referências: visao/referencias.md
-
-  - Requisitos:
-    - Funcionais: requisitos/funcionais.md
-    - Não Funcionais: requisitos/nao_funcionais.md
-
-  - Backlog: backlog/backlg.md
   
   - Protótipos: prototipos/prototipo.md
 
