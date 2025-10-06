@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env.file:
+      - .env.prod
+    restart: always
+
+  backend:
+    image: marcosviniciusg/backend_django:latest
+    container_name: backend_django
+    env_file:
+      - .env.prod
+    depends_on:
+      - db
+    restart: always
+
+  frontend:
+    image: marcosviniciusg/frontend_react:latest
+    container_name: frontend_react
+    ports:
+      - "3000:80"
+    env_file:
+      - .env.prod
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  postgres_data:
