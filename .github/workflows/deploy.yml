@@ -44,8 +44,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script:
-          - cd REQ-2025.2-T02-UKCRM
-          - docker compose -f docker-compose.prod.yml pull
-          - docker compose -f docker-compose.prod.yml up -d --no-build
-          - docker image prune -f
+          script: |
+            cd REQ-2025.2-T02-UKCRM
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --no-build
+            docker image prune -f
