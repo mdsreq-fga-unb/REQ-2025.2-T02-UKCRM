@@ -3,7 +3,8 @@ name: CI/CD Pipeline for Production
 on:
   push:
     branches:
-      - feature/branch-deploy
+      - build-deploy
+      - main
 
 jobs:
   build-and-push:
