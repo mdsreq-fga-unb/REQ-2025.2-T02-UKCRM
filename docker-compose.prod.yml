@@ -21,7 +21,7 @@ services:
     image: marcosviniciusg/frontend_react:latest
     container_name: frontend_react
     ports:
-      - "3000:80"
+      - "80:80"
     env_file:
       - .env.prod
     depends_on:
