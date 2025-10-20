@@ -2,23 +2,27 @@
 
 ## **2.1 Objetivos do Produto**
 
-**Objetivo Geral**
+## Objetivo Geral
 
-Desenvolver uma plataforma de CRM, para que empresas clientes possam gerenciar de forma integrada e estratégica suas operações comerciais. O sistema visa impulsionar o crescimento das vendas e a retenção de clientes, oferecendo ferramentas para organizar informações, automatizar processos, analisar a performance de vendas e o ROI (*Return On Investment*) de marketing, com suporte nativo para estruturas com múltiplas equipes, filiais e hierarquias de acesso.
+Desenvolver uma plataforma de CRM, para que empresas clientes possam gerenciar de forma integrada e estratégica suas operações comerciais. O sistema visa impulsionar o crescimento das vendas e a retenção de clientes, oferecendo ferramentas para organizar informações, automatizar processos, analisar a performance de vendas e o ROI (Return On Investment) de marketing, com suporte nativo para estruturas com múltiplas equipes, filiais e hierarquias de acesso.
 
-**Objetivos Específicos e Indicadores**
+## Objetivos Específicos e Indicadores
+
+<div class="centered-text"><b>Tabela 1 - </b> Objetivos Específicos.</div>
 
 | Código | Objetivo Específico | Indicador de Sucesso |
-| :---- | :---- | :---- |
-| OE01 | Otimizar a produtividade da equipe de vendas através da automação de tarefas. | Redução no tempo gasto em tarefas manuais (ex: envio de e-mails, criação de tarefas). |
-| OE02 | Melhorar a gestão do relacionamento com o cliente centralizando as informações. | 100% do histórico de interações (e-mails, ligações e mensagens por WhatsApp) por cliente está centralizado e acessível à equipe de vendas. |
-| OE03 | Aumentar a eficiência na qualificação e priorização de leads. | Aumento da taxa de conversão de leads qualificados. O time de vendas consegue identificar e focar nos leads de maior potencial rapidamente. |
-| OE04 | Medir o retorno sobre o investimento (ROI) das campanhas de marketing. | Capacidade de gerar relatórios de ROI por campanha, rastreando a origem dos leads desde a fonte até o fechamento da venda. |
-| OE05 | Garantir a governança e a segurança dos dados dos clientes. | Zero incidentes graves de segurança e conformidade total com a LGPD, validado por uma lista de conformidade. |
-| OE06 | Permitir que gestores de vendas estruturem e controlem suas equipes de forma autônoma e segura dentro da plataforma. | Um gerente de vendas consegue executar o ciclo completo de gerenciamento de sua equipe (criar, editar, associar vendedores, remover) sem suporte técnico. A plataforma garante que os dados de uma equipe não sejam visíveis para outra, a menos que seja permitido. |
-| OE07 | Assegurar a interoperabilidade e a portabilidade dos dados do sistema. | Capacidade de importar e exportar dados de clientes, contatos e oportunidades em formatos CSV e Excel. |
-| OE08 | Proporcionar uma experiência de uso fluida, intuitiva e acessível. | 90% dos usuários-alvo conseguem completar tarefas essenciais (ex: adicionar um lead, movê-lo no funil) sem treinamento prévio. |
-| OE9 | Permitir a gestão de operações de vendas complexas e descentralizadas, espelhando a estrutura organizacional de grandes empresas. | Um usuário **Proprietário** consegue configurar de forma autônoma a estrutura completa da sua empresa (**Times** e **Usuários**). O sistema reflete corretamente a hierarquia de permissões definida. |
+| :--- | :--- | :--- |
+| OE-01 | Aumentar a captação e retenção de leads. | Aumento da taxa de conversão de leads qualificados. O time de vendas consegue identificar e focar nos leads de maior potencial rapidamente e não deixar leads inertes. |
+| OE-02 | Melhorar a gestão do relacionamento com o cliente centralizando as informações. | 100% do histórico de interações (e-mails, ligações e mensagens por WhatsApp) por cliente está centralizado e acessível à equipe de vendas. |
+| OE-03 | Otimizar a produtividade da equipe de vendas através da automação de tarefas. | Redução no tempo gasto em tarefas manuais (ex: envio de e-mails, criação de tarefas). |
+| OE-04 | Medir o retorno sobre o investimento (ROI) das campanhas de marketing. | Capacidade de gerar relatórios de ROI por campanha, rastreando a origem dos leads desde a fonte até o fechamento da venda. |
+| OE-05 | Garantir a governança e a segurança dos dados dos clientes. | Zero incidentes graves de segurança e conformidade total com a LGPD, validado por uma lista de conformidade. |
+| OE-06 | Permitir que gestores de vendas estruturem e controlem suas equipes de forma autônoma e segura dentro da plataforma. | Um Gerente de Vendas consegue executar o ciclo completo de gerenciamento de sua equipe (criar, editar, associar vendedores, remover) sem suporte técnico. A plataforma garante que os dados de uma equipe não sejam visíveis para outra, a menos que seja permitido.\* |
+| OE-07 | Assegurar a interoperabilidade e a portabilidade dos dados do sistema. | Capacidade de importar e exportar dados de clientes, contatos e oportunidades em formatos CSV e Excel. |
+| OE-08 | Proporcionar uma experiência de uso fluida, intuitiva e acessível. | 90% dos usuários-alvo conseguem completar tarefas essenciais (ex: adicionar um lead, movê-lo no funil) sem treinamento prévio. |
+| OE-09 | Permitir a gestão de operações de vendas complexas e descentralizadas, espelhando a estrutura organizacional de grandes empresas. | Um usuário Proprietário consegue configurar de forma autônoma a estrutura completa da sua empresa (Times e Usuários). O sistema reflete corretamente a hierarquia de permissões definida. |
+
+<div class="centered-text"><b>Fonte: </b> Elaboração própria pela equipe (2025).</div>
 
 ---
 

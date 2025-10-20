@@ -12,12 +12,16 @@
 
 ## **3.2 Quadro Comparativo**
 
+<div class="centered-text"><b>Tabela 2 - </b> Comparação entre as metodologias ágeis de software consideradas pela equipe.</div>
+
 | CRITÉRIO | XP/SCRUM | XP/KANBAN |
 |----------|----------|------------|
 | **Estrutura de Gestão** | Prescritiva e estruturada. Organizada em ciclos fixos (Sprints) com rituais definidos (Planning, Daily, Review, Retro). | Flexível e adaptativa. Focada em fluxo de trabalho contínuo, otimizado pela visualização e limitação do WIP (Work in Progress). |
 | **Papéis e Responsabilidades** | Papéis claramente definidos: **Scrum Master** (facilitador/mentor), **Product Owner** (dono do produto) e **Time de Desenvolvimento**. | Não prescreve papéis. A equipe deve se auto-organizar, exigindo maior maturidade e proatividade. |
 | **Suporte à Equipe** | O Scrum Master fornece suporte e orientação, ideal para equipes que precisam de um processo claro e estruturado. | Exige alta disciplina e maturidade para autogerir prioridades e melhorar o processo sem papéis formais. |
 | **Frequência de Planejamento e Feedback** | O planejamento ocorre no início de cada Sprint. O feedback formal sobre o produto ocorre na **Sprint Review** e sobre o processo na **Retrospectiva**. | O planejamento (**replenishment**) é contínuo. O feedback pode ocorrer a qualquer momento, mas sem frequência obrigatória. |
+
+<div class="centered-text"><b>Fonte: </b> Elaborado por Pedro Sanchez (2025).</div>
 
 ---
 

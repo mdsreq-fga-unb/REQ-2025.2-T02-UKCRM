@@ -4,6 +4,12 @@
 
 2. **RECLAMEAQUI**. *Kommo – Banimento 3× em menos de 24h e problemas graves na entrega de mensagens.* ReclameAqui, s.d. Disponível em: [https://www.reclameaqui.com.br/kommo_1411514/banimento-3x-em-menos-de-24h-e-problemas-graves-na-entrega-de-mensagens_M5VAINkXXJVMaPN8/](https://www.reclameaqui.com.br/kommo_1411514/banimento-3x-em-menos-de-24h-e-problemas-graves-na-entrega-de-mensagens_M5VAINkXXJVMaPN8/). Acesso em: 12 set. 2025.  
 
-2. **B2BSTACK**. *Pipefy – avaliações.* Disponível em: [https://www.b2bstack.com.br/product/pipefy/avaliacoes](https://www.b2bstack.com.br/product/pipefy/avaliacoes). Acesso em: 12 set. 2025.  
+3. **B2BSTACK**. *Pipefy – avaliações.* Disponível em: [https://www.b2bstack.com.br/product/pipefy/avaliacoes](https://www.b2bstack.com.br/product/pipefy/avaliacoes). Acesso em: 12 set. 2025.  
 
 4. **TECHRADAR**. *Salesforce CRM review*. TechRadar Pro, 2 set. 2025\. Disponível em: [https://www-techradar-com.translate.goog/pro/salesforce-crm-review?\_x\_tr\_sl=en&\_x\_tr\_tl=pt&\_x\_tr\_hl=pt&\_x\_tr\_pto=wa](https://www-techradar-com.translate.goog/pro/salesforce-crm-review?_x_tr_sl=en&_x_tr_tl=pt&_x_tr_hl=pt&_x_tr_pto=wa). Acesso em: 12 set. 2025\.
+
+
+5. CLEGG, Dai; BARKER, Richard. **Case Method Fast-Track:** A RAD Approach. Wokingham: Addison-Wesley Publishing Company, 1994.
+
+6. EXTREME PROGRAMMING. User Stories. **Extreme Programming: A gentle introduction**, [s.d.]. Disponível em: http://www.extremeprogramming.org/rules/userstories.html. Acesso em: 4 out. 2025.
+COHN, Mike. **Agile Estimating and Planning**. Upper Saddle River, NJ: Prentice Hall, 2006.

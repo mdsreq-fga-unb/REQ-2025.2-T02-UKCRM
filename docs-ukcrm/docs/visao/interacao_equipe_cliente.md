@@ -2,6 +2,8 @@
 
 ## **6.1 Composição da Equipe**
 
+<div class="centered-text"><b>Tabela 4 - </b>Composição da Equipe com papéis, descrição de cada papel, responsável por cada papel e participantes daquele papel.</div>
+
 | Papel  | Descrição  | Responsável | Participantes |
 | :---- | :---- | :---- | :---- |
 | Product Owner | Cliente, responsável pela idealização do projeto e priorização de requisitos. | Udson Witer |  |
@@ -10,6 +12,8 @@
 | Infra e DevOps | Responsável por gerenciar o servidor, automatizar deploys e garantir a estabilidade e escalabilidade com a manutenção do sistema.   | Pedro Sanchez |  |
 | Analista de QA | Assegura que o produto atenda aos padrões esperados, por meio de testes, avaliando o funcionamento.  | Yogi Nam | Carlos Brasil  |
 | Analista de Requisitos  | Identifica as necessidades do sistema, especificando suas funcionalidades, por meio dos requisitos funcionais e não funcionais.   | João  | Carlos Brasil Lorena  Marcos Gündel Pedro Sanchez Yogi Nam |
+
+<div class="centered-text"><b>Fonte: </b> Elaboração própria pela equipe (2025).</div>
 
 ---
 
