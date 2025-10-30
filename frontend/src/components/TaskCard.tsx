@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
 import { GripVertical } from "lucide-react";
-import { Badge } from "./ui/badge";
 import { type ColumnId } from "./KanbanBoard";
 
 export interface Task {
@@ -77,9 +76,6 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
           <span className="sr-only">Move task</span>
           <GripVertical />
         </Button>
-        <Badge variant={"outline"} className="ml-auto font-semibold">
-          Task
-        </Badge>
       </CardHeader>
       <CardContent className="px-3 pt-3 pb-6 text-left whitespace-pre-wrap">
         {task.content}

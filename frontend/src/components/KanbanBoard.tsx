@@ -329,43 +329,56 @@ export function KanbanBoard() {
     const overData = over.data.current;
 
     const isActiveATask = activeData?.type === "Task";
-    const isOverATask = overData?.type === "Task";
-
     if (!isActiveATask) return;
 
-    // Im dropping a Task over another Task
-    if (isActiveATask && isOverATask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+    setTasks((tasks) => {
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      const activeTask = tasks[activeIndex];
+
+      if (!activeTask) return tasks;
+
+      const isOverATask = overData?.type === "Task";
+
+      if (isOverATask) {
         const overIndex = tasks.findIndex((t) => t.id === overId);
-        const activeTask = tasks[activeIndex];
         const overTask = tasks[overIndex];
-        if (
-          activeTask &&
-          overTask &&
-          activeTask.columnId !== overTask.columnId
-        ) {
-          activeTask.columnId = overTask.columnId;
-          return arrayMove(tasks, activeIndex, overIndex - 1);
+
+        if (!overTask) return tasks;
+
+        if (activeTask.columnId === overTask.columnId) {
+          if (activeIndex === overIndex) return tasks;
+          return arrayMove(tasks, activeIndex, overIndex);
         }
 
-        return arrayMove(tasks, activeIndex, overIndex);
-      });
-    }
+        const newTasks = tasks.map((task) => {
+          if (task.id === activeId) {
+            return { ...task, columnId: overTask.columnId };
+          }
+          return task;
+        });
 
-    const isOverAColumn = overData?.type === "Column";
+        const newActiveIndex = newTasks.findIndex((t) => t.id === activeId);
+        const newOverIndex = newTasks.findIndex((t) => t.id === overId);
 
-    // Im dropping a Task over a column
-    if (isActiveATask && isOverAColumn) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        const activeTask = tasks[activeIndex];
-        if (activeTask) {
-          activeTask.columnId = overId as ColumnId;
-          return arrayMove(tasks, activeIndex, activeIndex);
+        return arrayMove(newTasks, newActiveIndex, newOverIndex);
+      }
+
+      const isOverAColumn = overData?.type === "Column";
+
+      if (isOverAColumn) {
+        if (activeTask.columnId === overId) {
+          return tasks; 
         }
-        return tasks;
-      });
-    }
+
+        return tasks.map((task) => {
+          if (task.id === activeId) {
+            return { ...task, columnId: overId as ColumnId };
+          }
+          return task;
+        });
+      }
+
+      return tasks;
+    });
   }
 }
