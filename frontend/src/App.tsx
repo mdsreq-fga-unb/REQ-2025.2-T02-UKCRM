@@ -8,7 +8,7 @@ function App() {
       <header className="flex justify-between w-full flex-row p-4">
         <ThemeToggle />
       </header>
-      <main className="grow">
+      <main>
         <Outlet />
       </main>
     </ThemeProvider>
