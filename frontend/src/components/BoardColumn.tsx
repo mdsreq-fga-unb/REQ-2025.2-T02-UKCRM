@@ -6,12 +6,14 @@ import { type Task, TaskCard } from "./TaskCard";
 import { cva } from "class-variance-authority";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
-import { GripVertical } from "lucide-react";
+import { GripHorizontal } from "lucide-react";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 export interface Column {
   id: UniqueIdentifier;
   title: string;
+  subtitle_left: string;
+  subtitle_right: string;
 }
 
 export type ColumnType = "Column";
@@ -56,7 +58,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   };
 
   const variants = cva(
-    "h-[650px] w-[350px] max-w-full bg-sidebar flex flex-col flex-shrink-0 snap-center",
+    "h-[600px] w-[350px] max-w-full bg-sidebar flex flex-col flex-shrink-0 snap-center",
     {
       variants: {
         dragging: {
@@ -65,7 +67,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
           overlay: "ring-2 ring-primary",
         },
       },
-    }
+    },
   );
 
   return (
@@ -76,17 +78,21 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
       })}
     >
-      <CardHeader className="p-4 font-semibold border-b-2 text-left flex flex-row space-between items-center">
+      <CardHeader className="pt-1 pb-1 pl-2 pr-2 padding border-b-2 flex flex-col">
         <Button
           variant={"ghost"}
           {...attributes}
           {...listeners}
-          className=" p-1 text-primary/50 -ml-2 h-auto cursor-grab relative"
+          className="h-fit p-0 text-secondary-foreground/50 cursor-grab relative"
         >
           <span className="sr-only">{`Move column: ${column.title}`}</span>
-          <GripVertical />
+          <GripHorizontal />
         </Button>
-        <span className="ml-auto"> {column.title}</span>
+        <span className="text-center font-semibold mb-0"> {column.title}</span>
+        <div className="flex justify-between items-center w-full text-foreground/50">
+          <span>{column.subtitle_left}</span>
+          <span>{column.subtitle_right}</span>
+        </div>
       </CardHeader>
       <ScrollArea>
         <CardContent className="flex grow flex-col gap-2 p-2">
@@ -119,7 +125,7 @@ export function BoardContainer({ children }: { children: React.ReactNode }) {
         dragging: dndContext.active ? "active" : "default",
       })}
     >
-      <div className="flex gap-4 items-center flex-row justify-center">
+      <div className="p-1 flex gap-4 items-center flex-row justify-center">
         {children}
       </div>
       <ScrollBar orientation="horizontal" />

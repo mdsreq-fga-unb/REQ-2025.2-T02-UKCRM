@@ -20,18 +20,18 @@ const listaCategorias = [
 
 export default function ActionBar() {
   return (
-    <header className="flex justify-between w-full flex-row p-4">
+    <header className="flex justify-between w-full flex-row">
       <SelectButton
         placeholder="Funis de Venda"
         label="Funis de Venda"
         icon={<TagIcon />}
         items={listaFunis}
       />
-      <DoRedo />
       <PairButtonGroup>
         <DeleteButton label="Excluir Funil" />
         <CreateButton label="Criar Funil" />
       </PairButtonGroup>
+      <DoRedo />
       <SelectButton
         placeholder="Ordenar por"
         label="Categorias"

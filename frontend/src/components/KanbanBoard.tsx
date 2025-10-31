@@ -26,14 +26,20 @@ const defaultCols = [
   {
     id: "todo" as const,
     title: "Todo",
+    subtitle_left: "3 negócios",
+    subtitle_right: "R$ 21.000,00",
   },
   {
     id: "in-progress" as const,
     title: "In progress",
+    subtitle_left: "3 negócios",
+    subtitle_right: "R$ 21.000,00",
   },
   {
     id: "done" as const,
     title: "Done",
+    subtitle_left: "3 negócios",
+    subtitle_right: "R$ 21.000,00",
   },
 ] satisfies Column[];
 
@@ -106,6 +112,7 @@ const initialTasks: Task[] = [
     content: "Launch website and deploy to server",
   },
 ];
+
 export function KanbanBoard() {
   const [columns, setColumns] = useState<Column[]>(defaultCols);
   const pickedUpTaskColumn = useRef<ColumnId | null>(null);
