@@ -6,7 +6,7 @@ Os requisitos de software definem as funcionalidades que o sistema deve executar
 
 A tabela a seguir apresenta um sumário de alto nível dos requisitos funcionais do sistema. Cada requisito está associado a um objetivo específico e a uma característica do produto, fornecendo um mapa claro entre a necessidade do negócio e a funcionalidade implementada. O detalhamento completo, incluindo as Histórias de Usuário e Critérios de Aceitação, encontra-se no backlog consolidado no Tópico 9.
 
-<div class="centered-text"><b>Tabela 5 - </b>Requisitos Não Funcionais de Usabilidade.</div>
+<div class="centered-text"><b>Tabela 6 - </b>Requisitos Não Funcionais de Usabilidade.</div>
 
 | Código | Nome | Descrição |
 | :--- | :--- | :--- |
@@ -63,7 +63,7 @@ A seguir, são detalhados os Requisitos Não Funcionais (RNFs) que definem os at
 #### RNF-1: Usabilidade (Usability)
 Refere-se à facilidade com que os usuários podem aprender e utilizar o sistema de forma eficiente e satisfatória.
 
-<div class="centered-text"><b>Tabela 5 - </b>Requisitos Não Funcionais de Usabilidade.</div>
+<div class="centered-text"><b>Tabela 7 - </b>Requisitos Não Funcionais de Usabilidade.</div>
 
 
 | Código | Nome | Descrição |
@@ -78,7 +78,7 @@ Refere-se à facilidade com que os usuários podem aprender e utilizar o sistema
 Define os critérios de tempo de resposta, capacidade de carga e eficiência do sistema sob diferentes condições de uso.
 
 
-<div class="centered-text"><b>Tabela 6 - </b>Requisitos Não Funcionais de Desempenho.</div>
+<div class="centered-text"><b>Tabela 8 - </b>Requisitos Não Funcionais de Desempenho.</div>
 
 | Código | Nome | Descrição |
 | :--- | :--- | :--- |
@@ -90,7 +90,7 @@ Define os critérios de tempo de resposta, capacidade de carga e eficiência do 
 #### RNF-3: Confiabilidade (Reliability)
 Refere-se à capacidade do sistema de operar sem falhas por um período de tempo especificado e de se recuperar de falhas.
 
-<div class="centered-text"><b>Tabela 7 - </b>Requisitos Não Funcionais de Confiabilidade.</div>
+<div class="centered-text"><b>Tabela 9 - </b>Requisitos Não Funcionais de Confiabilidade.</div>
 
 | Código | Nome | Descrição |
 | :--- | :--- | :--- |
@@ -104,7 +104,7 @@ Refere-se à capacidade do sistema de operar sem falhas por um período de tempo
 Define os requisitos para garantir que o sistema seja fácil de manter, operar e compatível com outros sistemas e ambientes.
 
 
-<div class="centered-text"><b>Tabela 9 - </b>Requisitos Não Funcionais de Suportabilidade e Compatibilidade.</div>
+<div class="centered-text"><b>Tabela 10 - </b>Requisitos Não Funcionais de Suportabilidade e Compatibilidade.</div>
 
 | Código | Nome | Descrição |
 | :--- | :--- | :--- |
@@ -116,7 +116,7 @@ Define os requisitos para garantir que o sistema seja fácil de manter, operar e
 Define os requisitos para proteger o sistema e seus dados contra ameaças e vulnerabilidades.
 
 
-<div class="centered-text"><b>Tabela 9 - </b>Requisitos Não Funcionais de Segurança.</div>
+<div class="centered-text"><b>Tabela 11 - </b>Requisitos Não Funcionais de Segurança.</div>
 
 | Código | Nome | Descrição |
 | :--- | :--- | :--- |
@@ -132,7 +132,7 @@ Define os requisitos para proteger o sistema e seus dados contra ameaças e vuln
 Define as restrições tecnológicas, legais e de recursos que devem ser seguidas durante o desenvolvimento e implantação do projeto.
 
 
-<div class="centered-text"><b>Tabela 10 - </b> Requisitos Não Funcionais de Implementação</div>
+<div class="centered-text"><b>Tabela 12 - </b> Requisitos Não Funcionais de Implementação</div>
 
 | Código | Nome | Descrição |
 | :--- | :--- | :--- |

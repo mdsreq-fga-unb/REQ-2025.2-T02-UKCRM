@@ -12,7 +12,7 @@ Na etapa de priorização do Backlog do Produto, a equipe utilizou o Método MoS
 <div class="centered-text"><b>Fonte: </b>Elaboração própria pela equipe (2025)</div>
 
 <br>
-<div class="centered-text"><b>Tabela 11 - </b>Backlog dos Requisitos com Priorização e MVP</div>
+<div class="centered-text"><b>Tabela 13 - </b>Backlog dos Requisitos com Priorização e MVP</div>
 
 <style>
 
@@ -245,7 +245,7 @@ Na etapa de priorização do Backlog do Produto, a equipe utilizou o Método MoS
         <td class="col-nome">Herança de Permissões (Proprietário)</td>
         <td class="col-desc">Garantir que o Proprietário herde todas as permissões de níveis hierárquicos inferiores.</td>
         <td class="col-historia">Como Proprietário quero ter as permissões dos usuários de hierarquia inferior para poder supervisionar e executar qualquer tarefa no processo de vendas.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">2</td>
         <td class="col-oe">OE-09 Permitir a gestão de operações de vendas complexas e descentralizadas.</td>
         <td class="col-criterios"><li>Dado que estou autenticado como Proprietário, quando acesso qualquer funcionalidade do sistema, então possuo todas as permissões de Gerentes, Coordenadores, SDRs e Closers.</li>
@@ -338,7 +338,7 @@ Na etapa de priorização do Backlog do Produto, a equipe utilizou o Método MoS
         <td class="col-nome">Herança de Permissões (Gerente)</td>
         <td class="col-desc">Garantir que o Gerente de Vendas herde as permissões de níveis hierárquicos inferiores.</td>
         <td class="col-historia">Como Gerente de Vendas quero ter as permissões dos usuários de hierarquia inferior para que eu possa ter as mesmas funcionalidades que eles têm.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">2</td>
         <td class="col-oe">OE-06 Permitir que gestores estruturem e controlem suas equipes.</td>
         <td class="col-criterios"><li>Dado que estou autenticado como Gerente de Vendas tenho acesso a todos os relatórios, funcionalidades e permissões que os perfis hierarquicamente inferiores possuem.</li>
@@ -363,7 +363,7 @@ Na etapa de priorização do Backlog do Produto, a equipe utilizou o Método MoS
         <td class="col-nome">Personalização de Etapas do Funil</td>
         <td class="col-desc">Permitir que o Coordenador personalize as etapas de funis específicos.</td>
         <td class="col-historia">Como Coordenador de Vendas quero personalizar as etapas dos Funis de Vendas que eu tenho acesso para que ele se adeque às necessidades do Time de Vendas.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">4</td>
         <td class="col-oe">OE-03 Otimizar a produtividade da equipe de vendas.</td>
         <td class="col-criterios"><li>Dado que estou autenticado como Coordenador na visualização de um funil, quando acesso a opção "Personalizar Etapas", então posso adicionar, renomear ou remover etapas daquele funil.</li>
@@ -376,7 +376,7 @@ Na etapa de priorização do Backlog do Produto, a equipe utilizou o Método MoS
         <td class="col-nome">Herança de Permissões (Coordenador)</td>
         <td class="col-desc">Garantir que o Coordenador herde as permissões de níveis hierárquicos inferiores.</td>
         <td class="col-historia">Como Coordenador de Vendas, além das suas permissões únicas, quero as permissões dos usuários de hierarquia inferior para que eu possa ter as mesmas funcionalidades que eles têm.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">2</td>
         <td class="col-oe">OE-06 Permitir que gestores estruturem e controlem suas equipes.</td>
         <td class="col-criterios"><li>Dado que estou autenticado como Gerente de Vendas tenho acesso a todos os relatórios, funcionalidades e permissões que os perfis hierarquicamente inferiores possuem.</li>
@@ -497,7 +497,7 @@ E então sou solicitado a escolher um motivo da perda em uma lista pré-definida
         <td class="col-nome">Visualização de Status do Lead</td>
         <td class="col-desc">Exibir o status (etapa do funil) atual de cada lead.</td>
         <td class="col-historia">Como Usuário do sistema quero ver o status atual de cada lead dentro do funil de vendas.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">2</td>
         <td class="col-oe">OE-02 Melhorar a gestão do relacionamento com o cliente.</td>
         <td class="col-criterios"><li>Dado que estou autenticado no sistema, quando visualizo um lead (em lista ou Kanban), então a etapa atual do funil é exibida de forma clara.
@@ -523,7 +523,7 @@ E quando eu abro os detalhes de um lead, o nome da etapa atual do funil deve ser
         <td class="col-nome">Gerenciamento de Temperatura do Lead</td>
         <td class="col-desc">Exibir e permitir a edição da temperatura do lead (quente, morno, frio).</td>
         <td class="col-historia">Como Usuário do sistema quero visualizar a temperatura de um lead (quente, morno ou frio).</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">1</td>
         <td class="col-oe">OE-01 Aumentar a captação e retenção de leads.</td>
         <td class="col-criterios"><li>Dado que estou autenticado no sistema, quando visualizo um lead, então um indicador visual de sua temperatura (Quente, Morno, Frio) é exibido.</li>
@@ -537,7 +537,7 @@ E deve ser possível filtrar as listas de leads por essa temperatura.</li>
         <td class="col-nome">Métricas de Etapas do Funil</td>
         <td class="col-desc">Apresentar a contagem de leads por etapa e o tempo de permanência em cada uma.</td>
         <td class="col-historia">Como Usuário do sistema quero monitorar o progresso dos leads atribuídos em cada etapa do funil.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">2</td>
         <td class="col-oe">OE-01 Aumentar a captação e retenção de leads.</td>
         <td class="col-criterios"><li>Dado que estou na visualização Kanban do funil, quando olho para o cabeçalho de uma coluna de etapa, então a contagem total de leads naquela etapa é exibida.
@@ -587,7 +587,7 @@ E os cards dos leads podem conter informações de inércia, como "há 3 dias ne
         <td class="col-nome">Registro Manual de Ligações</td>
         <td class="col-desc">Permitir o registro manual de atividades de ligação telefônica.</td>
         <td class="col-historia">Como Usuário do sistema quero permitir que o usuário registre manualmente informações de uma ligação telefônica a um lead.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">2</td>
         <td class="col-oe">OE-02 Melhorar a gestão do relacionamento com o cliente.</td>
         <td class="col-criterios"><li>Dado que estou visualizando um lead, quando clico em "Registrar Atividade" e seleciono "Ligação", então um formulário para data, hora e resumo é exibido.</li>
@@ -600,7 +600,7 @@ E os cards dos leads podem conter informações de inércia, como "há 3 dias ne
         <td class="col-nome">Exportação de Relatórios</td>
         <td class="col-desc">Permitir a exportação de relatórios para PDF e Excel.</td>
         <td class="col-historia">Como Proprietário ou Gerente de Vendas quero exportar dashboards e relatórios para os formatos PDF e Excel.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">5</td>
         <td class="col-oe">OE-07 Assegurar a interoperabilidade e a portabilidade dos dados.</td>
         <td class="col-criterios"><li>Dado que estou autenticado como Proprietário ou Gerente em um relatório, quando clico em "Exportar" e seleciono um formato (PDF ou CSV), então o download do arquivo com os dados atuais é iniciado.</li></td>
@@ -611,7 +611,7 @@ E os cards dos leads podem conter informações de inércia, como "há 3 dias ne
         <td class="col-nome">Cadastro de Campanhas de Marketing</td>
         <td class="col-desc">Permitir o cadastro de campanhas de marketing (custo, datas).</td>
         <td class="col-historia">Como Gerente de Vendas ou Proprietário quero cadastrar campanhas de marketing.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">3</td>
         <td class="col-oe">OE-04 Medir o retorno sobre o investimento (ROI) das campanhas.</td>
         <td class="col-criterios"><li>Dado que estou autenticado como Gestor na área de "Campanhas", quando preencho o formulário com os campos: "Nome da Campanha", "Data de Início", "Data de Fim" e "Custo Total”, e salvo, então a campanha é criada.
@@ -624,7 +624,7 @@ E a campanha fica disponível para ser associada a novos leads.</li>
         <td class="col-nome">Relatório de ROI de Campanhas</td>
         <td class="col-desc">Apresentar um relatório de ROI (Retorno sobre Investimento) das campanhas.</td>
         <td class="col-historia">Como Proprietário quero apresentar um relatório de ROI de Marketing.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">2</td>
         <td class="col-oe">OE-04 Medir o retorno sobre o investimento (ROI) das campanhas.</td>
         <td class="col-criterios"><li>Dado que estou autenticado como Proprietário, quando acesso o relatório "ROI de Campanhas", então é exibida uma tabela com as métricas de Custo, Receita e ROI para cada campanha.</li></td>
@@ -635,7 +635,7 @@ E a campanha fica disponível para ser associada a novos leads.</li>
         <td class="col-nome">Cálculo de LTV do Cliente</td>
         <td class="col-desc">Calcular e exibir o LTV (Lifetime Value) de um cliente.</td>
         <td classa="col-historia">Como Proprietário quero que o sistema seja capaz de calcular automaticamente o Lifetime Value de um lead.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">2</td>
         <td class="col-oe">OE-04 Medir o retorno sobre o investimento (ROI) das campanhas.</td>
         <td class="col-criterios"><li>Dado que um cliente possui múltiplos negócios ganhos, quando visualizo a ficha desse cliente, então o valor do LTV (soma de todos os negócios ganhos) é exibido.</li></td>
@@ -648,7 +648,7 @@ E a campanha fica disponível para ser associada a novos leads.</li>
         <td class="col-nome">Importação de Dados</td>
         <td class="col-desc">Fornecer funcionalidade para importação de dados via arquivo (CSV/Excel).</td>
         <td class="col-historia">Como usuário do sistema quero fornecer uma funcionalidade para importação de leads, contatos e oportunidades a partir de um arquivo CSV ou Excel.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">4</td>
         <td class="col-oe">OE-07 Assegurar a interoperabilidade e a portabilidade dos dados.</td>
         <td class="col-criterios"><li>Dado que estou na ferramenta de importação, quando faço o upload de um arquivo e mapeio suas colunas para os campos do CRM, então o sistema processa o arquivo.</li>
@@ -661,7 +661,7 @@ E a campanha fica disponível para ser associada a novos leads.</li>
         <td class="col-nome">Exportação de Dados</td>
         <td class="col-desc">Fornecer funcionalidade para exportação de dados para arquivo (CSV/Excel).</td>
         <td classa="col-historia">Como um usuário do sistema quero fornecer uma funcionalidade para exportação de leads, contatos e oportunidades para um arquivo CSV ou Excel.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">3</td>
         <td class="col-oe">OE-07 Assegurar a interoperabilidade e a portabilidade dos dados.</td>
         <td class="col-criterios"><li>Dado que estou em uma lista de dados (leads, contatos) com filtros aplicados, quando clico em "Exportar", então um arquivo (CSV/Excel) contendo apenas os dados filtrados é gerado para download.</li></td>
@@ -673,7 +673,7 @@ E a campanha fica disponível para ser associada a novos leads.</li>
         <td class="col-nome">Cadastro Rápido de Leads (Extensão)</td>
         <td class="col-desc">Permitir o cadastro rápido de leads através da extensão do navegador.</td>
         <td class="col-historia">Como Representante de Vendas quero poder utilizar a extensão do Google Chrome para acelerar o cadastro de novos leads.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">4</td>
         <td class="col-oe">OE-01 Aumentar a captação e retenção de leads.</td>
         <td class="col-criterios"><li>Dado que a extensão do Chrome está instalada e autenticada, quando clico no ícone da extensão, então um formulário rápido de cadastro de lead é aberto.</li>
@@ -686,7 +686,7 @@ E a campanha fica disponível para ser associada a novos leads.</li>
         <td class="col-nome">Captura de Contatos (Extensão)</td>
         <td class="col-desc">Permitir a captura de dados de contatos do WhatsApp Web pela extensão.</td>
         <td classa="col-historia">Como Representante de Vendas quero que a extensão do Google Chrome cadastre automaticamente número de telefone, e nome de leads (se disponível) do WhatsApp Web se disponível.</td>
-        <td class="col-valor">Must</td>
+        <td class="col-valor">Should</td>
         <td class="col-complex">3</td>
         <td class="col-oe">OE-01 Aumentar a captação e retenção de leads.</td>
         <td class="col-criterios"><li>Dado que estou com a aba do WhatsApp Web aberta e visualizando uma conversa com um número que ainda não é um lead no CRM, então a extensão do Chrome exibe um botão ou um ícone de "Adicionar ao CRM" próximo ao nome ou número do contato no WhatsApp Web.</li>
@@ -713,6 +713,45 @@ E a campanha fica disponível para ser associada a novos leads.</li>
 
 
 <div class="centered-text"><b>Fonte: </b> Elaboração própria pela equipe juntamente com Product Owner (2025).</div>
+
+
+<h2>9.2 Checklist de Requisitos do MVP</h2>
+
+<div class="centered-text"><b>Tabela 14 -</b> Checklist de Requisitos do MVP</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Requisito</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>RF-1.1</td><td>Cadastro de Organização</td></tr>
+    <tr><td>RF-1.2</td><td>Edição de Organização</td></tr>
+    <tr><td>RF-1.3</td><td>Exclusão de Organização</td></tr>
+    <tr><td>RF-2.1</td><td>Cadastro de Usuários</td></tr>
+    <tr><td>RF-2.2</td><td>Edição de Usuários</td></tr>
+    <tr><td>RF-2.3</td><td>Exclusão de Usuários</td></tr>
+    <tr><td>RF-3.1</td><td>Criação de Funil de Vendas</td></tr>
+    <tr><td>RF-3.2</td><td>Cadastro de Times de Vendas</td></tr>
+    <tr><td>RF-3.3</td><td>Edição de Times de Vendas</td></tr>
+    <tr><td>RF-3.4</td><td>Exclusão de Times de Vendas</td></tr>
+    <tr><td>RF-3.5</td><td>Atribuição de Leads</td></tr>
+    <tr><td>RF-4.1</td><td>Movimentação de Leads no Funil</td></tr>
+    <tr><td>RF-5.1</td><td>Cadastro Manual de Leads</td></tr>
+    <tr><td>RF-5.2</td><td>Edição de Leads</td></tr>
+    <tr><td>RF-5.3</td><td>Exclusão de Leads</td></tr>
+    <tr><td>RF-5.5</td><td>Qualificação de Leads</td></tr>
+    <tr><td>RF-6.2</td><td>Registro de Ganho/Perda de Negócio</td></tr>
+    <tr><td>RF-7.2</td><td>Visualização Detalhada do Lead</td></tr>
+  </tbody>
+</table>
+
+<div class="centered-text"><b>Fonte: </b> Elaborado por Pedro Sanchez (2025).</div>
+
+
+
 
 <script>
  

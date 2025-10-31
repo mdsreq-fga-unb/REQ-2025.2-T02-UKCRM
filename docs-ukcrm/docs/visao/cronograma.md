@@ -1,6 +1,6 @@
 # 5. Cronograma de Entregas
 
-<div class="centered-text"><b>Tabela 3 - </b> Cronograma de Sprints com período, meta, itens do backlog e validação.</div>
+<div class="centered-text"><b>Tabela 4 - </b> Cronograma de Sprints com período, meta, itens do backlog e validação.</div>
 
 | Sprint | Período | Meta da Sprint (Sprint Goal) | Exemplos de Atividades e Itens do Backlog | Validação |
 | :--- | :--- | :--- | :--- | :--- |

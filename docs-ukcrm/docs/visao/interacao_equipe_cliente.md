@@ -2,7 +2,7 @@
 
 ## **6.1 Composição da Equipe**
 
-<div class="centered-text"><b>Tabela 4 - </b>Composição da Equipe com papéis, descrição de cada papel, responsável por cada papel e participantes daquele papel.</div>
+<div class="centered-text"><b>Tabela 5 - </b>Composição da Equipe com papéis, descrição de cada papel, responsável por cada papel e participantes daquele papel.</div>
 
 | Papel  | Descrição  | Responsável | Participantes |
 | :---- | :---- | :---- | :---- |
