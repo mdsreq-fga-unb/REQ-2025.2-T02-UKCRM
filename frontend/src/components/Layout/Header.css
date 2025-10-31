@@ -1,0 +1,86 @@
+.header {
+  align-items: center;
+  border: 1px solid;
+  border-color: #f1f1f1;
+  display: flex;
+  height: 64px;
+  justify-content: space-between;
+  left: 2626px;
+  padding: 10px 10px 10px 20px;
+  position: relative;
+  top: -1115px;
+  width: 1185px;
+}
+
+.header .path {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 20px;
+  position: relative;
+}
+
+.header .design-component-instance-node-2 {
+  flex: 0 0 auto !important;
+  left: unset !important;
+  top: unset !important;
+}
+
+.header .design-component-instance-node-3 {
+  color: #1c1c1c66 !important;
+}
+
+.header .frame {
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  flex: 1;
+  flex-grow: 1;
+  gap: 20px;
+  justify-content: flex-end;
+  padding: 0px 10px;
+  position: relative;
+}
+
+.header .search-2 {
+  flex: 0 0 auto !important;
+}
+
+.header .search-3 {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  left: unset !important;
+  top: unset !important;
+  width: unset !important;
+}
+
+.header .sun-moon-instance {
+  background-image: url(./image.svg) !important;
+  left: unset !important;
+  top: unset !important;
+}
+
+.header .clock-instance {
+  height: 28px !important;
+  position: relative !important;
+  width: 28px !important;
+}
+
+.header .badge-instance {
+  display: flex !important;
+  height: 28px !important;
+  position: relative !important;
+  right: unset !important;
+  top: unset !important;
+  width: 28px !important;
+}
+
+.header .badge-2 {
+  margin-top: unset !important;
+}
+
+.header .icon-instance-node {
+  height: 16px !important;
+  position: relative !important;
+  width: 16px !important;
+}
