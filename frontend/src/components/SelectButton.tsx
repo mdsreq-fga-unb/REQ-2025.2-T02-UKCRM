@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Item = {
+export type Item = {
   value: string;
   label: string;
 };
