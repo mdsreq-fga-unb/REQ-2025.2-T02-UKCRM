@@ -297,7 +297,9 @@ export function KanbanBoard({
 
     if (!newColumnId) return;
 
-    const activeTask = activeData.task;
+    const activeTask = tasks.find((t) => t.id === activeId);
+    if (!activeTask) return;
+    
     if (activeTask.columnId === newColumnId) {
       return;
     }
