@@ -2,7 +2,7 @@ import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-type TemperatureVariant = "hot" | "warm" | "cold";
+export type TemperatureVariant = "Quente" | "Morno" | "Frio" | "Neutro";
 
 export interface TemperatureBadgeProps {
   variant: TemperatureVariant;
@@ -11,9 +11,14 @@ export interface TemperatureBadgeProps {
 }
 
 const variantClasses: Record<TemperatureVariant, string> = {
-  hot: "bg-red-100 text-red-400 border-transparent",
-  warm: "bg-yellow-100 text-yellow-600 border-transparent",
-  cold: "bg-blue-100 text-blue-400 border-transparent",
+  Quente:
+    "bg-destructive/10 text-destructive border-transparent",
+  Morno:
+    "bg-yellow-500/10 text-yellow-600 border-transparent",
+  Frio:
+    "bg-blue-500/10 text-blue-500 border-transparent",
+  Neutro:
+    "bg-muted text-muted-foreground border-transparent",
 };
 
 export function TemperatureBadge({

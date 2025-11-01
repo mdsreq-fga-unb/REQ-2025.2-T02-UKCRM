@@ -29,7 +29,7 @@ export default function SelectButton({
 }: SelectButtonProps) {
   return (
     <Select>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[200px]">
         {icon}
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

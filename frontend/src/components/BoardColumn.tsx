@@ -6,7 +6,7 @@ import { type Task, TaskCard } from "./TaskCard";
 import { cva } from "class-variance-authority";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
-import { GripHorizontal } from "lucide-react";
+import { GripHorizontal, PencilIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 export interface Column {
@@ -88,7 +88,14 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
           <span className="sr-only">{`Move column: ${column.title}`}</span>
           <GripHorizontal />
         </Button>
-        <span className="text-center font-semibold mb-0"> {column.title}</span>
+        <div className="flex justify-center items-center w-full">
+          <span className="font-semibold mb-0">
+            {column.title}
+          </span>
+          <Button className="text-secondary-foreground/50 " size="icon-sm" variant="ghost">
+            <PencilIcon />
+          </Button>
+        </div>
         <div className="flex justify-between items-center w-full text-foreground/50">
           <span>{column.subtitle_left}</span>
           <span>{column.subtitle_right}</span>

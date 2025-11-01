@@ -6,13 +6,16 @@ import { Button } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
 import { GripVertical, IdCardIcon, UserIcon } from "lucide-react";
 import { type ColumnId } from "./KanbanBoard";
-import { TemperatureBadge } from "./TemperatureBadge";
+import { type TemperatureVariant, TemperatureBadge } from "./TemperatureBadge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export interface Task {
   id: UniqueIdentifier;
   columnId: ColumnId;
   title: string;
+  earning: string;
   content: string;
+  temperature: TemperatureVariant;
 }
 
 interface TaskCardProps {
@@ -80,15 +83,22 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
           <GripVertical />
         </Button>
         <span className="mb-0">{task.title}</span>
-        <TemperatureBadge variant="warm" className="ml-auto">Morno</TemperatureBadge>
+        <TemperatureBadge variant={task.temperature} className="ml-auto">
+          {task.temperature}
+        </TemperatureBadge>
       </CardHeader>
       <CardContent className="p-3 text-left whitespace-pre-wrap text-foreground/50">
         {task.content}
         <div className="flex justify-between items-center w-full">
           <Button size="icon-sm" variant="ghost">
-            <UserIcon />
+            <Avatar className="size-6">
+              <AvatarImage src="https://github.com/Carlos-UCH.png" />
+              <AvatarFallback>
+                <UserIcon />
+              </AvatarFallback>
+            </Avatar>
           </Button>
-          <span>R$ 7.000,00</span>
+          <span>{task.earning}</span>
           <Button size="icon-sm" variant="ghost">
             <IdCardIcon />
           </Button>

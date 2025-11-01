@@ -22,120 +22,41 @@ import type { Column } from "./BoardColumn";
 import { hasDraggableData } from "./utils";
 import { coordinateGetter } from "./multipleContainersKeyboardPreset";
 
-const defaultCols = [
-  {
-    id: "todo" as const,
-    title: "Todo",
-    subtitle_left: "3 negócios",
-    subtitle_right: "R$ 21.000,00",
-  },
-  {
-    id: "in-progress" as const,
-    title: "In progress",
-    subtitle_left: "3 negócios",
-    subtitle_right: "R$ 21.000,00",
-  },
-  {
-    id: "done" as const,
-    title: "Done",
-    subtitle_left: "3 negócios",
-    subtitle_right: "R$ 21.000,00",
-  },
-] satisfies Column[];
+export type ColumnId = Column["id"];
 
-export type ColumnId = (typeof defaultCols)[number]["id"];
+export type KanbanBoardProps = {
+  columns: Column[];
+  tasks: Task[];
+  onColumnsChange: (newColumns: Column[]) => void;
+  onTasksChange: (newTasks: Task[]) => void;
+};
 
-const initialTasks: Task[] = [
-  {
-    id: "task1",
-    columnId: "done",
-    title: "Nome do Lead",
-    content: "Project initiation and planning",
-  },
-  {
-    id: "task2",
-    columnId: "done",
-    title: "Nome do Lead",
-    content: "Gather requirements from stakeholders",
-  },
-  {
-    id: "task3",
-    columnId: "done",
-    title: "Nome do Lead",
-    content: "Create wireframes and mockups",
-  },
-  {
-    id: "task4",
-    columnId: "in-progress",
-    title: "Nome do Lead",
-    content: "Develop homepage layout",
-  },
-  {
-    id: "task5",
-    columnId: "in-progress",
-    title: "Nome do Lead",
-    content: "Design color scheme and typography",
-  },
-  {
-    id: "task6",
-    columnId: "todo",
-    title: "Nome do Lead",
-    content: "Implement user authentication",
-  },
-  {
-    id: "task7",
-    columnId: "todo",
-    title: "Nome do Lead",
-    content: "Build contact us page",
-  },
-  {
-    id: "task8",
-    columnId: "todo",
-    title: "Nome do Lead",
-    content: "Create product catalog",
-  },
-  {
-    id: "task9",
-    columnId: "todo",
-    title: "Nome do Lead",
-    content: "Develop about us page",
-  },
-  {
-    id: "task10",
-    columnId: "todo",
-    title: "Nome do Lead",
-    content: "Optimize website for mobile devices",
-  },
-  {
-    id: "task11",
-    columnId: "todo",
-    content: "Integrate payment gateway",
-    title: "Nome do Lead",
-  },
-  {
-    id: "task12",
-    columnId: "todo",
-    title: "Nome do Lead",
-    content: "Perform testing and bug fixing",
-  },
-  {
-    id: "task13",
-    columnId: "todo",
-    title: "Nome do Lead",
-    content: "Launch website and deploy to server",
-  },
-];
-
-export function KanbanBoard() {
-  const [columns, setColumns] = useState<Column[]>(defaultCols);
+export function KanbanBoard({
+  columns,
+  tasks,
+  onColumnsChange,
+  onTasksChange,
+}: KanbanBoardProps) {
   const pickedUpTaskColumn = useRef<ColumnId | null>(null);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
-
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+  const tasksByColumn = useMemo(() => {
+    const groupedTasks: Record<ColumnId, Task[]> = {};
+    columns.forEach((col) => {
+      groupedTasks[col.id] = [];
+    });
+
+    tasks.forEach((task) => {
+      if (groupedTasks[task.columnId]) {
+        groupedTasks[task.columnId].push(task);
+      }
+    });
+
+    return groupedTasks;
+  }, [tasks, columns]);
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -146,7 +67,7 @@ export function KanbanBoard() {
   );
 
   function getDraggingTaskData(taskId: UniqueIdentifier, columnId: ColumnId) {
-    const tasksInColumn = tasks.filter((task) => task.columnId === columnId);
+    const tasksInColumn = tasksByColumn[columnId] || [];
     const taskPosition = tasksInColumn.findIndex((task) => task.id === taskId);
     const column = columns.find((col) => col.id === columnId);
     return {
@@ -267,7 +188,7 @@ export function KanbanBoard() {
             <BoardColumn
               key={col.id}
               column={col}
-              tasks={tasks.filter((task) => task.columnId === col.id)}
+              tasks={tasksByColumn[col.id]}
             />
           ))}
         </SortableContext>
@@ -280,9 +201,7 @@ export function KanbanBoard() {
               <BoardColumn
                 isOverlay
                 column={activeColumn}
-                tasks={tasks.filter(
-                  (task) => task.columnId === activeColumn.id,
-                )}
+                tasks={tasksByColumn[activeColumn.id] || []}
               />
             )}
             {activeTask && <TaskCard task={activeTask} isOverlay />}
@@ -317,88 +236,76 @@ export function KanbanBoard() {
     const overId = over.id;
 
     if (!hasDraggableData(active)) return;
-
     const activeData = active.data.current;
+    if (!activeData) return;
 
-    if (activeId === overId) return;
-
-    const isActiveAColumn = activeData?.type === "Column";
-    if (!isActiveAColumn) return;
-
-    setColumns((columns) => {
+    if (activeData?.type === "Column") {
+      if (activeId === overId) return;
       const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
-
       const overColumnIndex = columns.findIndex((col) => col.id === overId);
+      onColumnsChange(arrayMove(columns, activeColumnIndex, overColumnIndex));
+      return;
+    }
 
-      return arrayMove(columns, activeColumnIndex, overColumnIndex);
-    });
+    if (activeData?.type === "Task") {
+      if (activeId === overId) return;
+
+      if (!hasDraggableData(over)) return;
+      const overData = over.data.current;
+      if (!overData) return;
+
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      let overIndex = tasks.findIndex((t) => t.id === overId);
+
+      if (overData?.type === "Column") {
+        const tasksInColumn = tasksByColumn[overId];
+        if (tasksInColumn.length > 0) {
+          const lastTask = tasksInColumn[tasksInColumn.length - 1];
+          overIndex = tasks.findIndex((t) => t.id === lastTask.id);
+        } else {
+          overIndex = activeIndex;
+        }
+      }
+
+      if (activeIndex === overIndex) return;
+
+      onTasksChange(arrayMove(tasks, activeIndex, overIndex));
+    }
   }
 
   function onDragOver(event: DragOverEvent) {
     const { active, over } = event;
-    if (!over) return;
+    if (!over || !active) return;
 
     const activeId = active.id;
     const overId = over.id;
-
     if (activeId === overId) return;
-
-    if (!hasDraggableData(active) || !hasDraggableData(over)) return;
 
     const activeData = active.data.current;
     const overData = over.data.current;
+    if (!activeData || !overData) return;
 
-    const isActiveATask = activeData?.type === "Task";
+    const isActiveATask = activeData.type === "Task";
     if (!isActiveATask) return;
 
-    setTasks((tasks) => {
-      const activeIndex = tasks.findIndex((t) => t.id === activeId);
-      const activeTask = tasks[activeIndex];
+    let newColumnId: ColumnId | undefined;
+    if (overData?.type === "Task") {
+      newColumnId = overData.task.columnId;
+    } else if (overData?.type === "Column") {
+      newColumnId = overData.column.id;
+    }
 
-      if (!activeTask) return tasks;
+    if (!newColumnId) return;
 
-      const isOverATask = overData?.type === "Task";
+    const activeTask = activeData.task;
+    if (activeTask.columnId === newColumnId) {
+      return;
+    }
 
-      if (isOverATask) {
-        const overIndex = tasks.findIndex((t) => t.id === overId);
-        const overTask = tasks[overIndex];
-
-        if (!overTask) return tasks;
-
-        if (activeTask.columnId === overTask.columnId) {
-          if (activeIndex === overIndex) return tasks;
-          return arrayMove(tasks, activeIndex, overIndex);
-        }
-
-        const newTasks = tasks.map((task) => {
-          if (task.id === activeId) {
-            return { ...task, columnId: overTask.columnId };
-          }
-          return task;
-        });
-
-        const newActiveIndex = newTasks.findIndex((t) => t.id === activeId);
-        const newOverIndex = newTasks.findIndex((t) => t.id === overId);
-
-        return arrayMove(newTasks, newActiveIndex, newOverIndex);
-      }
-
-      const isOverAColumn = overData?.type === "Column";
-
-      if (isOverAColumn) {
-        if (activeTask.columnId === overId) {
-          return tasks; 
-        }
-
-        return tasks.map((task) => {
-          if (task.id === activeId) {
-            return { ...task, columnId: overId as ColumnId };
-          }
-          return task;
-        });
-      }
-
-      return tasks;
-    });
+    onTasksChange(
+      tasks.map((task) =>
+        task.id === activeId ? { ...task, columnId: newColumnId } : task,
+      ),
+    );
   }
 }
