@@ -21,6 +21,8 @@ import { type Task, TaskCard } from "./TaskCard";
 import type { Column } from "./BoardColumn";
 import { hasDraggableData } from "./utils";
 import { coordinateGetter } from "./multipleContainersKeyboardPreset";
+import { PlusIcon } from "lucide-react";
+import { Button } from "./ui/button";
 
 export type ColumnId = Column["id"];
 
@@ -31,6 +33,8 @@ export type KanbanBoardProps = {
   onTasksChange: (newTasks: Task[]) => void;
   filterTerm: string;
   sortCriteria: string | null;
+  onAddTask: (columnId: ColumnId) => void;
+  onAddColumn: () => void;
 };
 
 export function KanbanBoard({
@@ -40,6 +44,8 @@ export function KanbanBoard({
   onTasksChange,
   filterTerm,
   sortCriteria,
+  onAddTask,
+  onAddColumn,
 }: KanbanBoardProps) {
   const pickedUpTaskColumn = useRef<ColumnId | null>(null);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
@@ -195,9 +201,17 @@ export function KanbanBoard({
               tasks={tasksByColumn[col.id]}
               filterTerm={filterTerm}
               sortCriteria={sortCriteria}
+              onAddTask={onAddTask}
             />
           ))}
         </SortableContext>
+        <Button
+          variant="outline"
+          className="h-[600px] w-[350px] max-w-full shrink-0 snap-center flex items-center justify-center"
+          onClick={onAddColumn}
+        >
+          <PlusIcon /> Adicionar Etapa
+        </Button>
       </BoardContainer>
 
       {"document" in window &&
@@ -210,6 +224,7 @@ export function KanbanBoard({
                 tasks={tasksByColumn[activeColumn.id] || []}
                 filterTerm={filterTerm}
                 sortCriteria={sortCriteria}
+                onAddTask={onAddTask}
               />
             )}
             {activeTask && <TaskCard task={activeTask} isOverlay />}

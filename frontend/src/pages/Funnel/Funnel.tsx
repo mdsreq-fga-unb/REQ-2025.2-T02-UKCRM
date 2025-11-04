@@ -8,6 +8,7 @@ import { CreateFunnelDialog } from "./CreateFunnelDialog";
 import { DeleteFunnelDialog } from "./DeleteFunnelDialog";
 import { formSchema } from "./funnel.schema";
 import * as z from "zod";
+import { type ColumnId } from "@/components/KanbanBoard";
 
 type FunnelFormValues = z.infer<typeof formSchema>;
 
@@ -46,6 +47,35 @@ function Funnel() {
     setFunnelToDelete(null);
   };
 
+  const handleAddTask = (columnId: ColumnId) => {
+    const newId = `task-${crypto.randomUUID()}`;
+
+    // dps mudar isso pra abrir um modal e tals
+    const newTask: Task = {
+      id: newId,
+      columnId: columnId,
+      title: "Titulo",
+      content: "Descricao...",
+      earning: 0,
+      temperature: "Neutro",
+    };
+
+    setTasks((prevTasks) => [newTask, ...prevTasks]);
+  };
+
+  const handleAddColumn = () => {
+    const newId = `col-${crypto.randomUUID()}`;
+
+    const newColumn: Column = {
+      id: newId,
+      title: "Nova Etapa",
+      subtitle_left: "0 negócios",
+      subtitle_right: "R$ 0,00",
+    };
+
+    setColumns((prevCols) => [...prevCols, newColumn]);
+  };
+
   return (
     <main className="flex flex-col gap-4">
       <ActionBar
@@ -62,6 +92,8 @@ function Funnel() {
         onTasksChange={setTasks}
         filterTerm={filterTerm}
         sortCriteria={sortCriteria}
+        onAddTask={handleAddTask}
+        onAddColumn={handleAddColumn}
       />
 
       <CreateFunnelDialog

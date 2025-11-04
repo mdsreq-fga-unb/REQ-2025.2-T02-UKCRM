@@ -6,7 +6,7 @@ import { type Task, TaskCard } from "./TaskCard";
 import { cva } from "class-variance-authority";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
-import { GripHorizontal, PencilIcon } from "lucide-react";
+import { GripHorizontal, PencilIcon, PlusIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { temperatureSortOrder } from "./TemperatureBadge";
 
@@ -30,6 +30,7 @@ interface BoardColumnProps {
   isOverlay?: boolean;
   filterTerm: string;
   sortCriteria: string | null;
+  onAddTask: (columnId: UniqueIdentifier) => void;
 }
 
 export function BoardColumn({
@@ -38,6 +39,7 @@ export function BoardColumn({
   isOverlay,
   filterTerm,
   sortCriteria,
+  onAddTask,
 }: BoardColumnProps) {
   const displayedTasks = useMemo(() => {
     const filteredTasks = tasks.filter(
@@ -134,6 +136,13 @@ export function BoardColumn({
           <span>{column.subtitle_right}</span>
         </div>
       </CardHeader>
+      <Button
+        variant="ghost"
+        className="w-full h-fit pb-0 text-secondary-foreground/50"
+        onClick={() => onAddTask(column.id)}
+      >
+        <PlusIcon />
+      </Button>
       <ScrollArea>
         <CardContent className="flex grow flex-col gap-2 p-2">
           <SortableContext items={tasksIds}>
