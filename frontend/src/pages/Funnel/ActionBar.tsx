@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import CreateButton from "@/components/CreateButton";
 import DeleteButton from "@/components/DeleteButton";
 import { DoRedo } from "@/components/DoRedo";
@@ -20,9 +23,26 @@ const categoriesList = [
 
 type ActionBarProps = {
   onCreateFunnelClick: () => void;
+  onDeleteFunnelClick: (funnelName: string) => void;
 };
 
-export default function ActionBar({ onCreateFunnelClick }: ActionBarProps) {
+export default function ActionBar({
+  onCreateFunnelClick,
+  onDeleteFunnelClick,
+}: ActionBarProps) {
+  const [selectedFunnel, setSelectedFunnel] = useState<string | null>(null);
+
+  const handleFunnelSelect = (funnelValue: string) => {
+    const funnel = funnelsList.find((f) => f.value === funnelValue);
+    setSelectedFunnel(funnel ? funnel.label : null);
+  };
+
+  const handleDeleteClick = () => {
+    if (selectedFunnel) {
+      onDeleteFunnelClick(selectedFunnel);
+    }
+  };
+
   return (
     <header className="flex justify-between w-full flex-row">
       <SelectButton
@@ -30,9 +50,14 @@ export default function ActionBar({ onCreateFunnelClick }: ActionBarProps) {
         label="Funils de Venda"
         icon={<TagIcon />}
         items={funnelsList}
-      />
+        onValueChange={handleFunnelSelect}
+        />
       <PairButtonGroup>
-        <DeleteButton label="Excluir Funil" />
+        <DeleteButton
+          label="Excluir Funil"
+          onClick={handleDeleteClick}
+          disabled={!selectedFunnel}
+        />
         <CreateButton onClick={onCreateFunnelClick} label="Criar Funil" />
       </PairButtonGroup>
       <DoRedo />

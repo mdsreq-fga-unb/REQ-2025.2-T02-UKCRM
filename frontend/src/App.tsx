@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import { ThemeProvider } from "@/components/theme-provider";
+import ThemeProvider from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 function App() {
