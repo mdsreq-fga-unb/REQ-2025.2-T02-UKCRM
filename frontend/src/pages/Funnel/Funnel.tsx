@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ActionBar from "./ActionBar";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import type { Column } from "@/components/BoardColumn";
@@ -76,6 +76,27 @@ function Funnel() {
     setColumns((prevCols) => [...prevCols, newColumn]);
   };
 
+  const columnsWithSubtitles = useMemo(() => {
+    return columns.map((col) => {
+      const tasksInColumn = tasks.filter((task) => task.columnId === col.id);
+
+      const count = tasksInColumn.length;
+      const totalEarnings = tasksInColumn.reduce(
+        (sum, task) => sum + task.earning,
+        0,
+      );
+
+      return {
+        ...col,
+        subtitle_left: `${count} negócio${count !== 1 ? "s" : ""}`,
+        subtitle_right: new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(totalEarnings),
+      };
+    });
+  }, [columns, tasks]);
+
   return (
     <main className="flex flex-col gap-4">
       <ActionBar
@@ -86,7 +107,7 @@ function Funnel() {
         onSortChange={setSortCriteria}
       />
       <KanbanBoard
-        columns={columns}
+      columns={columnsWithSubtitles}
         tasks={tasks}
         onColumnsChange={setColumns}
         onTasksChange={setTasks}

@@ -13,8 +13,8 @@ import { temperatureSortOrder } from "./TemperatureBadge";
 export interface Column {
   id: UniqueIdentifier;
   title: string;
-  subtitle_left: string;
-  subtitle_right: string;
+  subtitle_left?: string;
+  subtitle_right?: string;
 }
 
 export type ColumnType = "Column";

@@ -1,11 +1,16 @@
-import { useMemo, useRef, useState } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { createPortal } from "react-dom";
 
 import { BoardColumn, BoardContainer } from "./BoardColumn";
 import {
   DndContext,
   type DragEndEvent,
-  type DragOverEvent,
   DragOverlay,
   type DragStartEvent,
   useSensor,
@@ -29,8 +34,8 @@ export type ColumnId = Column["id"];
 export type KanbanBoardProps = {
   columns: Column[];
   tasks: Task[];
-  onColumnsChange: (newColumns: Column[]) => void;
-  onTasksChange: (newTasks: Task[]) => void;
+  onColumnsChange: Dispatch<SetStateAction<Column[]>>;
+  onTasksChange: Dispatch<SetStateAction<Task[]>>;
   filterTerm: string;
   sortCriteria: string | null;
   onAddTask: (columnId: ColumnId) => void;
@@ -190,7 +195,6 @@ export function KanbanBoard({
       sensors={sensors}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      onDragOver={onDragOver}
     >
       <BoardContainer>
         <SortableContext items={columnsId}>
@@ -254,15 +258,14 @@ export function KanbanBoard({
 
     const { active, over } = event;
     if (!over) return;
+    if (!hasDraggableData(active)) return;
 
     const activeId = active.id;
     const overId = over.id;
-
-    if (!hasDraggableData(active)) return;
     const activeData = active.data.current;
     if (!activeData) return;
 
-    if (activeData?.type === "Column") {
+    if (activeData.type === "Column") {
       if (activeId === overId) return;
       const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
       const overColumnIndex = columns.findIndex((col) => col.id === overId);
@@ -270,67 +273,58 @@ export function KanbanBoard({
       return;
     }
 
-    if (activeData?.type === "Task") {
+    if (activeData.type === "Task") {
       if (activeId === overId) return;
-
       if (!hasDraggableData(over)) return;
+
       const overData = over.data.current;
       if (!overData) return;
 
-      const activeIndex = tasks.findIndex((t) => t.id === activeId);
-      let overIndex = tasks.findIndex((t) => t.id === overId);
+      const taskToMove = activeData.task;
 
-      if (overData?.type === "Column") {
-        const tasksInColumn = tasksByColumn[overId];
-        if (tasksInColumn.length > 0) {
-          const lastTask = tasksInColumn[tasksInColumn.length - 1];
-          overIndex = tasks.findIndex((t) => t.id === lastTask.id);
-        } else {
-          overIndex = activeIndex;
+      const newColumnId =
+        overData.type === "Task"
+          ? overData.task.columnId
+          : overData.type === "Column"
+            ? overData.column.id
+            : null;
+
+      if (!newColumnId) return;
+
+      onTasksChange((prevTasks) => {
+        const activeIndex = prevTasks.findIndex((t) => t.id === activeId);
+        let overIndex = prevTasks.findIndex((t) => t.id === overId);
+
+        if (taskToMove.columnId === newColumnId) {
+          if (overData.type === "Column") {
+            return prevTasks;
+          }
+          return arrayMove(prevTasks, activeIndex, overIndex);
         }
-      }
 
-      if (activeIndex === overIndex) return;
+        const newTasks = prevTasks.filter((t) => t.id !== activeId);
 
-      onTasksChange(arrayMove(tasks, activeIndex, overIndex));
+        overIndex = newTasks.findIndex((t) => t.id === overId);
+
+        if (overData.type === "Column") {
+          const tasksInNewColumn = newTasks.filter(
+            (t) => t.columnId === newColumnId,
+          );
+          if (tasksInNewColumn.length > 0) {
+            const lastTask = tasksInNewColumn[tasksInNewColumn.length - 1];
+            overIndex = newTasks.findIndex((t) => t.id === lastTask.id);
+          } else {
+            overIndex = -1;
+          }
+        }
+
+        newTasks.splice(overIndex + 1, 0, {
+          ...taskToMove,
+          columnId: newColumnId,
+        });
+
+        return newTasks;
+      });
     }
-  }
-
-  function onDragOver(event: DragOverEvent) {
-    const { active, over } = event;
-    if (!over || !active) return;
-
-    const activeId = active.id;
-    const overId = over.id;
-    if (activeId === overId) return;
-
-    const activeData = active.data.current;
-    const overData = over.data.current;
-    if (!activeData || !overData) return;
-
-    const isActiveATask = activeData.type === "Task";
-    if (!isActiveATask) return;
-
-    let newColumnId: ColumnId | undefined;
-    if (overData?.type === "Task") {
-      newColumnId = overData.task.columnId;
-    } else if (overData?.type === "Column") {
-      newColumnId = overData.column.id;
-    }
-
-    if (!newColumnId) return;
-
-    const activeTask = tasks.find((t) => t.id === activeId);
-    if (!activeTask) return;
-
-    if (activeTask.columnId === newColumnId) {
-      return;
-    }
-
-    onTasksChange(
-      tasks.map((task) =>
-        task.id === activeId ? { ...task, columnId: newColumnId } : task,
-      ),
-    );
   }
 }
