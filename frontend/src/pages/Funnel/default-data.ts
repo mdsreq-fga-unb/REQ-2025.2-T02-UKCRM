@@ -28,7 +28,7 @@ export const initialTasks: Task[] = [
     columnId: "done",
     title: "Nome do Lead",
     content: "Project initiation and planning",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Neutro",
   },
   {
@@ -36,7 +36,7 @@ export const initialTasks: Task[] = [
     columnId: "done",
     title: "Nome do Lead",
     content: "Gather requirements from stakeholders",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Quente",
   },
   {
@@ -44,7 +44,7 @@ export const initialTasks: Task[] = [
     columnId: "done",
     title: "Nome do Lead",
     content: "Create wireframes and mockups",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Frio",
   },
   {
@@ -52,7 +52,7 @@ export const initialTasks: Task[] = [
     columnId: "in-progress",
     title: "Nome do Lead",
     content: "Develop homepage layout",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -60,7 +60,7 @@ export const initialTasks: Task[] = [
     columnId: "in-progress",
     title: "Nome do Lead",
     content: "Design color scheme and typography",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -68,7 +68,7 @@ export const initialTasks: Task[] = [
     columnId: "todo",
     title: "Nome do Lead",
     content: "Implement user authentication",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -76,7 +76,7 @@ export const initialTasks: Task[] = [
     columnId: "todo",
     title: "Nome do Lead",
     content: "Build contact us page",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -84,7 +84,7 @@ export const initialTasks: Task[] = [
     columnId: "todo",
     title: "Nome do Lead",
     content: "Create product catalog",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -92,7 +92,7 @@ export const initialTasks: Task[] = [
     columnId: "todo",
     title: "Nome do Lead",
     content: "Develop about us page",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -100,7 +100,7 @@ export const initialTasks: Task[] = [
     columnId: "todo",
     title: "Nome do Lead",
     content: "Optimize website for mobile devices",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -108,7 +108,7 @@ export const initialTasks: Task[] = [
     columnId: "todo",
     content: "Integrate payment gateway",
     title: "Nome do Lead",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -116,7 +116,7 @@ export const initialTasks: Task[] = [
     columnId: "todo",
     title: "Nome do Lead",
     content: "Perform testing and bug fixing",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
   {
@@ -124,7 +124,7 @@ export const initialTasks: Task[] = [
     columnId: "todo",
     title: "Nome do Lead",
     content: "Launch website and deploy to server",
-    earning: "R$ 7.000,00",
+    earning: 7000.00,
     temperature: "Morno",
   },
 ];

@@ -17,6 +17,8 @@ function Funnel() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
+  const [filterTerm, setFilterTerm] = useState("");
+  const [sortCriteria, setSortCriteria] = useState<string | null>(null);
 
   const onCreateFunnelClick = () => {
     setIsCreateOpen(true);
@@ -49,12 +51,17 @@ function Funnel() {
       <ActionBar
         onCreateFunnelClick={onCreateFunnelClick}
         onDeleteFunnelClick={onDeleteFunnelClick}
+        filterTerm={filterTerm}
+        onFilterChange={setFilterTerm}
+        onSortChange={setSortCriteria}
       />
       <KanbanBoard
         columns={columns}
         tasks={tasks}
         onColumnsChange={setColumns}
         onTasksChange={setTasks}
+        filterTerm={filterTerm}
+        sortCriteria={sortCriteria}
       />
 
       <CreateFunnelDialog

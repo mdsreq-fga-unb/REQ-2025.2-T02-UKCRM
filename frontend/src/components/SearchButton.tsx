@@ -8,7 +8,7 @@ export default function SearchButton() {
   return (
     <ButtonGroup>
       <Input placeholder="Pesquisar..." />
-      <Button variant="outline" aria-label="Search">
+      <Button variant="outline">
         <SearchIcon />
       </Button>
     </ButtonGroup>

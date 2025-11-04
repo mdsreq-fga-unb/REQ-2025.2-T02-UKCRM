@@ -7,13 +7,19 @@ import { cn } from "@/lib/utils";
 
 type FilterButtonProps = {
   className?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function FilterButton({ className }: FilterButtonProps) {
+export default function FilterButton({
+  className,
+  value,
+  onChange,
+}: FilterButtonProps) {
   return (
     <ButtonGroup className={cn(className)}>
-      <Input placeholder="Filtrar..." />
-      <Button variant="outline" aria-label="Filter">
+      <Input placeholder="Filtrar..." value={value} onChange={onChange} />
+      <Button variant="outline">
         <FilterIcon />
       </Button>
     </ButtonGroup>

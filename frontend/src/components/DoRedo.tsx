@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
-import PairButtonGroup from "./PairButton";
 import { RedoIcon, UndoIcon } from "lucide-react";
-import { ButtonGroupSeparator } from "./ui/button-group";
+import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group";
 
 export function DoRedo() {
   return (
-    <PairButtonGroup>
+    <ButtonGroup>
       <Button size="icon" variant="secondary" disabled={true}>
         <UndoIcon />
       </Button>
@@ -13,6 +12,6 @@ export function DoRedo() {
       <Button size="icon" variant="secondary">
         <RedoIcon />
       </Button>
-    </PairButtonGroup>
+    </ButtonGroup>
   );
 }

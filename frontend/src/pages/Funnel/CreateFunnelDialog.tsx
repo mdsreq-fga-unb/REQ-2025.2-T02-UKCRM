@@ -139,7 +139,6 @@ export function CreateFunnelDialog({
                                       );
                                     }
                                   }}
-                                  aria-label={`Selecionar ${team.name}`}
                                 />
                               </TableCell>
                               <TableCell>{team.name}</TableCell>

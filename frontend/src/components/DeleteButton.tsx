@@ -1,19 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 
-type DeleteButtonProps = {
+type DeleteButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
-  onClick?: () => void;
-  disabled?: boolean;
 };
 
-export default function DeleteButton({
-  label,
-  onClick,
-  disabled,
-}: DeleteButtonProps) {
+export default function DeleteButton({ label, ...props }: DeleteButtonProps) {
   return (
-    <Button variant="destructive" onClick={onClick} disabled={disabled}>
+    <Button variant="destructive" onClick={props.onClick} disabled={props.disabled}>
       <XIcon /> {label}
     </Button>
   );

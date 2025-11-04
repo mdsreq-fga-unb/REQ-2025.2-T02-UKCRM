@@ -13,7 +13,7 @@ export interface Task {
   id: UniqueIdentifier;
   columnId: ColumnId;
   title: string;
-  earning: string;
+  earning: number;
   content: string;
   temperature: TemperatureVariant;
 }
@@ -98,7 +98,12 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
               </AvatarFallback>
             </Avatar>
           </Button>
-          <span>{task.earning}</span>
+          <span>
+            {new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(task.earning)}
+          </span>
           <Button size="icon-sm" variant="ghost">
             <IdCardIcon />
           </Button>

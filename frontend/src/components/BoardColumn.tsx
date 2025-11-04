@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
 import { GripHorizontal, PencilIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { temperatureSortOrder } from "./TemperatureBadge";
 
 export interface Column {
   id: UniqueIdentifier;
@@ -27,12 +28,42 @@ interface BoardColumnProps {
   column: Column;
   tasks: Task[];
   isOverlay?: boolean;
+  filterTerm: string;
+  sortCriteria: string | null;
 }
 
-export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
+export function BoardColumn({
+  column,
+  tasks,
+  isOverlay,
+  filterTerm,
+  sortCriteria,
+}: BoardColumnProps) {
+  const displayedTasks = useMemo(() => {
+    const filteredTasks = tasks.filter(
+      (task) =>
+        task.title.toLowerCase().includes(filterTerm.toLowerCase()) ||
+        task.content.toLowerCase().includes(filterTerm.toLowerCase()),
+    );
+
+    if (sortCriteria === "valor-desc") {
+      filteredTasks.sort((a, b) => b.earning - a.earning);
+    } else if (sortCriteria === "valor-asc") {
+      filteredTasks.sort((a, b) => a.earning - b.earning);
+    } else if (sortCriteria === "temperatura") {
+      filteredTasks.sort(
+        (a, b) =>
+          temperatureSortOrder[a.temperature] -
+          temperatureSortOrder[b.temperature],
+      );
+    }
+
+    return filteredTasks;
+  }, [tasks, filterTerm, sortCriteria]);
+
   const tasksIds = useMemo(() => {
-    return tasks.map((task) => task.id);
-  }, [tasks]);
+    return displayedTasks.map((task) => task.id);
+  }, [displayedTasks]);
 
   const {
     setNodeRef,
@@ -89,10 +120,12 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
           <GripHorizontal />
         </Button>
         <div className="flex justify-center items-center w-full">
-          <span className="font-semibold mb-0">
-            {column.title}
-          </span>
-          <Button className="text-secondary-foreground/50 " size="icon-sm" variant="ghost">
+          <span className="font-semibold mb-0">{column.title}</span>
+          <Button
+            className="text-secondary-foreground/50 "
+            size="icon-sm"
+            variant="ghost"
+          >
             <PencilIcon />
           </Button>
         </div>
@@ -104,7 +137,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
       <ScrollArea>
         <CardContent className="flex grow flex-col gap-2 p-2">
           <SortableContext items={tasksIds}>
-            {tasks.map((task) => (
+            {displayedTasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
           </SortableContext>

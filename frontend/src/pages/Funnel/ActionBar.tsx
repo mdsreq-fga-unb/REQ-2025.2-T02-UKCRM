@@ -5,9 +5,9 @@ import CreateButton from "@/components/CreateButton";
 import DeleteButton from "@/components/DeleteButton";
 import { DoRedo } from "@/components/DoRedo";
 import FilterButton from "@/components/FilterButton";
-import PairButtonGroup from "@/components/PairButton";
 import SelectButton from "@/components/SelectButton";
 import { ChartNoAxesCombinedIcon, TagIcon } from "lucide-react";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 const funnelsList = [
   { value: "funil-a", label: "Funil Principal" },
@@ -15,20 +15,27 @@ const funnelsList = [
   { value: "funil-c", label: "Funil de Onboarding" },
 ];
 
-const categoriesList = [
-  { value: "categoria-1", label: "Ugi" },
-  { value: "categoria-2", label: "Arlos" },
-  { value: "categoria-3", label: "Pero" },
+const sortOptionsList = [
+  { value: "padrao", label: "Padrão" },
+  { value: "valor-desc", label: "Valor (Maior)" },
+  { value: "valor-asc", label: "Valor (Menor)" },
+  { value: "temperatura", label: "Temperatura (Quente > Frio)" },
 ];
 
 type ActionBarProps = {
   onCreateFunnelClick: () => void;
   onDeleteFunnelClick: (funnelName: string) => void;
+  filterTerm: string;
+  onFilterChange: (value: string) => void;
+  onSortChange: (value: string) => void;
 };
 
 export default function ActionBar({
   onCreateFunnelClick,
   onDeleteFunnelClick,
+  filterTerm,
+  onFilterChange,
+  onSortChange,
 }: ActionBarProps) {
   const [selectedFunnel, setSelectedFunnel] = useState<string | null>(null);
 
@@ -51,23 +58,27 @@ export default function ActionBar({
         icon={<TagIcon />}
         items={funnelsList}
         onValueChange={handleFunnelSelect}
-        />
-      <PairButtonGroup>
+      />
+      <ButtonGroup>
         <DeleteButton
           label="Excluir Funil"
           onClick={handleDeleteClick}
           disabled={!selectedFunnel}
         />
         <CreateButton onClick={onCreateFunnelClick} label="Criar Funil" />
-      </PairButtonGroup>
+      </ButtonGroup>
       <DoRedo />
       <SelectButton
         placeholder="Ordenar por"
         label="Categorias"
         icon={<ChartNoAxesCombinedIcon />}
-        items={categoriesList}
+        items={sortOptionsList}
+        onValueChange={onSortChange}
       />
-      <FilterButton />
+      <FilterButton
+        value={filterTerm}
+        onChange={(e) => onFilterChange(e.target.value)}
+      />
     </header>
   );
 }

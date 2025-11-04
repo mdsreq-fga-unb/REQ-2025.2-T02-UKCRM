@@ -29,6 +29,8 @@ export type KanbanBoardProps = {
   tasks: Task[];
   onColumnsChange: (newColumns: Column[]) => void;
   onTasksChange: (newTasks: Task[]) => void;
+  filterTerm: string;
+  sortCriteria: string | null;
 };
 
 export function KanbanBoard({
@@ -36,6 +38,8 @@ export function KanbanBoard({
   tasks,
   onColumnsChange,
   onTasksChange,
+  filterTerm,
+  sortCriteria,
 }: KanbanBoardProps) {
   const pickedUpTaskColumn = useRef<ColumnId | null>(null);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
@@ -189,6 +193,8 @@ export function KanbanBoard({
               key={col.id}
               column={col}
               tasks={tasksByColumn[col.id]}
+              filterTerm={filterTerm}
+              sortCriteria={sortCriteria}
             />
           ))}
         </SortableContext>
@@ -202,6 +208,8 @@ export function KanbanBoard({
                 isOverlay
                 column={activeColumn}
                 tasks={tasksByColumn[activeColumn.id] || []}
+                filterTerm={filterTerm}
+                sortCriteria={sortCriteria}
               />
             )}
             {activeTask && <TaskCard task={activeTask} isOverlay />}
@@ -299,7 +307,7 @@ export function KanbanBoard({
 
     const activeTask = tasks.find((t) => t.id === activeId);
     if (!activeTask) return;
-    
+
     if (activeTask.columnId === newColumnId) {
       return;
     }
