@@ -1,15 +1,18 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import FilterButton from "@/components/FilterButton";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -19,9 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import FilterButton from "@/components/FilterButton";
 import {
   Table,
   TableBody,
@@ -30,9 +31,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
 
-import { teamsList, formSchema } from "../funnel.schema";
+import { useMemo, useState } from "react";
+import { formSchema, teamsList } from "../funnel.schema";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type CreateFunnelDialogProps = {
   open: boolean;
@@ -53,17 +55,30 @@ export function CreateFunnelDialog({
     },
   });
 
+  const [filterTerm, setFilterTerm] = useState("");
+
   function handleFormSubmit(values: z.infer<typeof formSchema>) {
     onSubmit(values);
     form.reset();
+    setFilterTerm("");
   }
 
   const handleOpenChange = (isOpen: boolean) => {
     if (!isOpen) {
       form.reset();
+      setFilterTerm("");
     }
     onOpenChange(isOpen);
   };
+
+  const filteredTeams = useMemo(() => {
+    if (!filterTerm) {
+      return teamsList;
+    }
+    return teamsList.filter((team) =>
+      team.name.toLowerCase().includes(filterTerm.toLowerCase()),
+    );
+  }, [filterTerm]);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -99,28 +114,34 @@ export function CreateFunnelDialog({
               <span className="text-left w-full text-secondary-foreground/50">
                 Time de Vendas
               </span>
-              <FilterButton className="mr-auto" />
+              <FilterButton
+                className="mr-auto"
+                value={filterTerm}
+                onChange={(e) => setFilterTerm(e.target.value)}
+              />
 
               <FormField
                 control={form.control}
                 name="teamNames"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <div className="rounded-md border">
+                  <FormItem className="w-full rounded-md border gap-0">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[50px]"></TableHead>
+                          <TableHead className="w-auto">Nome do Time</TableHead>
+                          <TableHead className="w-[100px] text-right pr-3">
+                            Membros
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                    </Table>
+                    <ScrollArea className="h-[150px]">
                       <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-[50px]"></TableHead>
-                            <TableHead>Nome do Time</TableHead>
-                            <TableHead className="text-right">
-                              Membros
-                            </TableHead>
-                          </TableRow>
-                        </TableHeader>
                         <TableBody>
-                          {teamsList.map((team) => (
+                          {filteredTeams.map((team) => (
                             <TableRow key={team.name}>
-                              <TableCell>
+                              <TableCell className="w-[50px]">
                                 <Checkbox
                                   checked={field.value?.includes(team.name)}
                                   onCheckedChange={(isChecked) => {
@@ -140,15 +161,17 @@ export function CreateFunnelDialog({
                                   }}
                                 />
                               </TableCell>
-                              <TableCell>{team.name}</TableCell>
-                              <TableCell className="text-right">
+                              <TableCell className="w-auto">
+                                {team.name}
+                              </TableCell>
+                              <TableCell className="w-[100px] text-right pr-3">
                                 {team.members}
                               </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
                       </Table>
-                    </div>
+                    </ScrollArea>
                     <FormMessage />
                   </FormItem>
                 )}

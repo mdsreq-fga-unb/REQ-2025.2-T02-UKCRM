@@ -1,13 +1,14 @@
-import React from "react";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import React from "react";
 
 export type Item = {
   value: string;
@@ -20,6 +21,7 @@ type SelectButtonProps = {
   icon: React.ReactNode;
   items: Item[];
   onValueChange?: (value: string) => void;
+  className?: string;
 };
 
 export default function SelectButton({
@@ -28,10 +30,11 @@ export default function SelectButton({
   icon,
   items,
   onValueChange,
+  className,
 }: SelectButtonProps) {
   return (
     <Select onValueChange={onValueChange}>
-      <SelectTrigger className="w-[200px]">
+      <SelectTrigger className={cn("w-[200px]", className)}>
         {icon}
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

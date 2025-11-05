@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { RedoIcon, UndoIcon } from "lucide-react";
 import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group";
+import { RedoIcon, UndoIcon } from "lucide-react";
 
 export function DoRedo() {
   return (

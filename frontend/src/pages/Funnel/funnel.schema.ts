@@ -5,6 +5,12 @@ export const teamsList = [
   { name: "Based", members: 50 },
   { name: "RoyalFlush", members: 1 },
   { name: "Manchester City", members: 3 },
+  { name: "CarlosTeam", members: 1 },
+  { name: "Flamengo", members: 300 },
+  { name: "abs cinema", members: 3 },
+  { name: "cotação robux", members: 3 },
+  { name: "Wilson", members: 1 },
+  { name: "Paçoca", members: 3 },
 ];
 
 export const formSchema = z.object({

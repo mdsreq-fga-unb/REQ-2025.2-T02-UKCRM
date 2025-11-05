@@ -1,6 +1,6 @@
-import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import * as React from "react";
 
 export type TemperatureVariant = "Quente" | "Morno" | "Frio" | "Neutro";
 

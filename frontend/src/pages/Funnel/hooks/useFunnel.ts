@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
 import type { Column } from "@/components/BoardColumn";
-import type { Task } from "@/components/TaskCard";
 import type { ColumnId } from "@/components/KanbanBoard";
+import type { Task } from "@/components/TaskCard";
+import { useMemo, useState } from "react";
 import { type FunnelFormValues } from "../funnel.schema";
 
 export function useFunnel(initialCols: Column[], initialTasks: Task[]) {

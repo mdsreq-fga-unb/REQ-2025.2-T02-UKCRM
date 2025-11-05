@@ -1,13 +1,13 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
 import { GripVertical, IdCardIcon, UserIcon } from "lucide-react";
 import { type ColumnId } from "./KanbanBoard";
 import { type TemperatureVariant, TemperatureBadge } from "./TemperatureBadge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export interface Task {
   id: UniqueIdentifier;

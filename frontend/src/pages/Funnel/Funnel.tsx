@@ -1,8 +1,8 @@
-import ActionBar from "./components/ActionBar";
 import { KanbanBoard } from "@/components/KanbanBoard";
-import { defaultCols, initialTasks } from "./data/default-funnel-data";
+import ActionBar from "./components/ActionBar";
 import { CreateFunnelDialog } from "./components/CreateFunnelDialog";
 import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
+import { defaultCols, initialTasks } from "./data/default-funnel-data";
 import { useFunnel } from "./hooks/useFunnel";
 
 function Funnel() {

@@ -1,14 +1,14 @@
-import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { useDndContext, type UniqueIdentifier } from "@dnd-kit/core";
+import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useMemo } from "react";
-import { type Task, TaskCard } from "./TaskCard";
 import { cva } from "class-variance-authority";
-import { Card, CardContent, CardHeader } from "./ui/card";
-import { Button } from "./ui/button";
 import { GripHorizontal, PencilIcon, PlusIcon } from "lucide-react";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { useMemo } from "react";
+import { TaskCard, type Task } from "./TaskCard";
 import { temperatureSortOrder } from "./TemperatureBadge";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 export interface Column {
   id: UniqueIdentifier;
@@ -138,13 +138,13 @@ export function BoardColumn({
       </CardHeader>
       <Button
         variant="ghost"
-        className="w-full h-fit pb-0 text-secondary-foreground/50"
+        className="w-full h-fit rounded-none text-secondary-foreground/50"
         onClick={() => onAddTask(column.id)}
       >
         <PlusIcon />
       </Button>
       <ScrollArea>
-        <CardContent className="flex grow flex-col gap-2 p-2">
+        <CardContent className="flex grow flex-col gap-2 p-2 pt-0 ">
           <SortableContext items={tasksIds}>
             {displayedTasks.map((task) => (
               <TaskCard key={task.id} task={task} />
