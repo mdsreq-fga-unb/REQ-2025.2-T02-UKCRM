@@ -92,7 +92,7 @@ export function CreateFunnelDialog({
               <DialogTitle>Criar Novo Funil</DialogTitle>
             </DialogHeader>
 
-            <span className="text-left w-full text-secondary-foreground/50">
+            <span className="text-left w-full text-muted-foreground">
               Dados do Funil de Vendas
             </span>
 
@@ -111,7 +111,7 @@ export function CreateFunnelDialog({
             />
 
             <div className="flex flex-col items-center gap-4">
-              <span className="text-left w-full text-secondary-foreground/50">
+              <span className="text-left w-full text-muted-foreground">
                 Time de Vendas
               </span>
               <FilterButton

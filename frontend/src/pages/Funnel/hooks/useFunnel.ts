@@ -3,6 +3,8 @@ import type { ColumnId } from "@/components/KanbanBoard";
 import type { Task } from "@/components/TaskCard";
 import { useMemo, useState } from "react";
 import { type FunnelFormValues } from "../funnel.schema";
+import { daysSince } from "@/lib/date-utils";
+import { temperatureSortOrder } from "@/lib/temperature";
 
 export function useFunnel(initialCols: Column[], initialTasks: Task[]) {
   const [columns, setColumns] = useState<Column[]>(initialCols);
@@ -12,6 +14,40 @@ export function useFunnel(initialCols: Column[], initialTasks: Task[]) {
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortCriteria, setSortCriteria] = useState<string | null>(null);
+
+  const getFilteredAndSortedTasks = useMemo(() => {
+    return (columnId: ColumnId) => {
+      const columnTasks = tasks.filter((task) => task.columnId === columnId);
+
+      const filteredTasks = columnTasks.filter(
+        (task) =>
+          task.title.toLowerCase().includes(filterTerm.toLowerCase()) ||
+          task.content.toLowerCase().includes(filterTerm.toLowerCase()),
+      );
+
+      if (sortCriteria === "valor-desc") {
+        return [...filteredTasks].sort((a, b) => b.earning - a.earning);
+      } else if (sortCriteria === "valor-asc") {
+        return [...filteredTasks].sort((a, b) => a.earning - b.earning);
+      } else if (sortCriteria === "inatividade-desc") {
+        return [...filteredTasks].sort(
+          (a, b) => daysSince(b.date) - daysSince(a.date),
+        );
+      } else if (sortCriteria === "inatividade-asc") {
+        return [...filteredTasks].sort(
+          (a, b) => daysSince(a.date) - daysSince(b.date),
+        );
+      } else if (sortCriteria === "temperatura") {
+        return [...filteredTasks].sort(
+          (a, b) =>
+            temperatureSortOrder[a.temperature] -
+            temperatureSortOrder[b.temperature],
+        );
+      }
+
+      return filteredTasks;
+    };
+  }, [tasks, filterTerm, sortCriteria]);
 
   // --- Diálogos ---
 
@@ -44,9 +80,10 @@ export function useFunnel(initialCols: Column[], initialTasks: Task[]) {
       id: newId,
       columnId: columnId,
       title: "Titulo",
-      content: "Descricao...",
+      content: "Descrição...",
       earning: 0,
       temperature: "Neutro",
+      date: new Date(),
     };
     setTasks((prevTasks) => [newTask, ...prevTasks]);
   };
@@ -93,10 +130,6 @@ export function useFunnel(initialCols: Column[], initialTasks: Task[]) {
   // --- Retorno ---
 
   return {
-    columns: columnsWithSubtitles,
-    tasks,
-    filterTerm,
-    sortCriteria,
     createDialog: {
       open: isCreateOpen,
       onOpenChange: setIsCreateOpen,
@@ -114,8 +147,11 @@ export function useFunnel(initialCols: Column[], initialTasks: Task[]) {
       onFilterChange: setFilterTerm,
       onSortChange: setSortCriteria,
       funnels: funnelsList,
+      filterTerm: filterTerm,
     },
     kanban: {
+      columns: columnsWithSubtitles,
+      getFilteredAndSortedTasks,
       onColumnsChange: setColumns,
       onTasksChange: setTasks,
       onAddTask: handleAddTask,

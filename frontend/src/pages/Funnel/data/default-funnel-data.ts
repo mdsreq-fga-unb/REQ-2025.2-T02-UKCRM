@@ -29,7 +29,7 @@ export const defaultCols = [
 ] satisfies Column[];
 
 export const initialTasks: Task[] = [
-  // 🟢 NOVO LEAD
+  // NOVO LEAD (0-2 dias atrás - tasks recentes)
   {
     id: "lead1",
     columnId: "novo",
@@ -37,6 +37,7 @@ export const initialTasks: Task[] = [
     content: "Preencheu formulário no site — interesse em plano Premium",
     earning: 8500.0,
     temperature: "Morno",
+    date: new Date(2025, 10, 5),
   },
   {
     id: "lead2",
@@ -45,6 +46,7 @@ export const initialTasks: Task[] = [
     content: "Contato via Instagram — consultoria de marketing",
     earning: 4000.0,
     temperature: "Quente",
+    date: new Date(2025, 10, 4),
   },
   {
     id: "lead3",
@@ -53,9 +55,10 @@ export const initialTasks: Task[] = [
     content: "Indicação de cliente atual — empresa de tecnologia",
     earning: 12000.0,
     temperature: "Morno",
+    date: new Date(2025, 10, 3),
   },
 
-  // 🟡 CONTATO INICIADO
+  // CONTATO INICIADO (2-5 dias atrás)
   {
     id: "lead4",
     columnId: "contato",
@@ -63,6 +66,7 @@ export const initialTasks: Task[] = [
     content: "Ligação feita — pediu retorno amanhã com proposta",
     earning: 5600.0,
     temperature: "Quente",
+    date: new Date(2025, 10, 3),
   },
   {
     id: "lead5",
@@ -71,6 +75,7 @@ export const initialTasks: Task[] = [
     content: "E-mail enviado com apresentação da empresa",
     earning: 6200.0,
     temperature: "Neutro",
+    date: new Date(2025, 10, 1),
   },
   {
     id: "lead6",
@@ -79,9 +84,10 @@ export const initialTasks: Task[] = [
     content: "Conversa pelo WhatsApp — quer agendar reunião",
     earning: 7200.0,
     temperature: "Quente",
+    date: new Date(2025, 10, 2),
   },
 
-  // 🔵 QUALIFICAÇÃO
+  // QUALIFICAÇÃO (4-7 dias atrás)
   {
     id: "lead7",
     columnId: "qualificacao",
@@ -89,6 +95,7 @@ export const initialTasks: Task[] = [
     content: "Reunião feita — orçamento alto, precisa de aprovação do gestor",
     earning: 10000.0,
     temperature: "Morno",
+    date: new Date(2025, 10, 1),
   },
   {
     id: "lead8",
@@ -97,6 +104,7 @@ export const initialTasks: Task[] = [
     content: "Empresa pequena, orçamento limitado — avaliar plano básico",
     earning: 3000.0,
     temperature: "Frio",
+    date: new Date(2025, 9, 29),
   },
   {
     id: "lead9",
@@ -105,9 +113,10 @@ export const initialTasks: Task[] = [
     content: "Fit perfeito e urgência para início do projeto",
     earning: 9500.0,
     temperature: "Quente",
+    date: new Date(2025, 9, 30),
   },
 
-  // 🧾 PROPOSTA ENVIADA
+  // PROPOSTA ENVIADA (5-10 dias atrás)
   {
     id: "lead10",
     columnId: "proposta",
@@ -115,6 +124,7 @@ export const initialTasks: Task[] = [
     content: "Proposta enviada ontem — aguardando retorno",
     earning: 8700.0,
     temperature: "Morno",
+    date: new Date(2025, 9, 31),
   },
   {
     id: "lead11",
@@ -123,6 +133,7 @@ export const initialTasks: Task[] = [
     content: "Proposta de R$ 12.000 enviada — pediu prazo até sexta",
     earning: 12000.0,
     temperature: "Quente",
+    date: new Date(2025, 9, 28),
   },
   {
     id: "lead12",
@@ -131,9 +142,10 @@ export const initialTasks: Task[] = [
     content: "Aguardando revisão da proposta pelo jurídico do cliente",
     earning: 6400.0,
     temperature: "Neutro",
+    date: new Date(2025, 9, 26),
   },
 
-  // 🤝 NEGOCIAÇÃO
+  // NEGOCIAÇÃO (7-14 dias atrás)
   {
     id: "lead13",
     columnId: "negociacao",
@@ -141,6 +153,7 @@ export const initialTasks: Task[] = [
     content: "Negociando desconto de 10% e prazo de pagamento",
     earning: 11000.0,
     temperature: "Quente",
+    date: new Date(2025, 9, 29),
   },
   {
     id: "lead14",
@@ -149,6 +162,7 @@ export const initialTasks: Task[] = [
     content: "Cliente pediu customização — analisando viabilidade",
     earning: 13500.0,
     temperature: "Morno",
+    date: new Date(2025, 9, 24),
   },
   {
     id: "lead15",
@@ -157,9 +171,10 @@ export const initialTasks: Task[] = [
     content: "Aguardando retorno final após call de alinhamento",
     earning: 9500.0,
     temperature: "Morno",
+    date: new Date(2025, 9, 22),
   },
 
-  // 🏁 FECHADO (GANHO / PERDIDO)
+  // FECHADO (GANHO / PERDIDO) (10-30 dias atrás)
   {
     id: "lead16",
     columnId: "fechado",
@@ -167,6 +182,7 @@ export const initialTasks: Task[] = [
     content: "Fechado — contrato assinado (Ganho)",
     earning: 9800.0,
     temperature: "Quente",
+    date: new Date(2025, 9, 26),
   },
   {
     id: "lead17",
@@ -175,6 +191,7 @@ export const initialTasks: Task[] = [
     content: "Perdido — cliente escolheu concorrente mais barato",
     earning: 7500.0,
     temperature: "Frio",
+    date: new Date(2025, 9, 18),
   },
   {
     id: "lead18",
@@ -183,5 +200,6 @@ export const initialTasks: Task[] = [
     content: "Fechado — cliente em onboarding",
     earning: 15000.0,
     temperature: "Quente",
+    date: new Date(2025, 9, 8)
   },
 ];

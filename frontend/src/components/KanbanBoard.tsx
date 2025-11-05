@@ -1,24 +1,24 @@
 import {
-    type Dispatch,
-    type SetStateAction,
-    useMemo,
-    useRef,
-    useState,
+  type Dispatch,
+  type SetStateAction,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import { createPortal } from "react-dom";
 
 import {
-    type Announcements,
-    DndContext,
-    type DragEndEvent,
-    DragOverlay,
-    type DragStartEvent,
-    KeyboardSensor,
-    MouseSensor,
-    TouchSensor,
-    type UniqueIdentifier,
-    useSensor,
-    useSensors,
+  type Announcements,
+  DndContext,
+  type DragEndEvent,
+  DragOverlay,
+  type DragStartEvent,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  type UniqueIdentifier,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { PlusIcon } from "lucide-react";
@@ -33,22 +33,18 @@ export type ColumnId = Column["id"];
 
 export type KanbanBoardProps = {
   columns: Column[];
-  tasks: Task[];
+  getFilteredAndSortedTasks: (columnId: ColumnId) => Task[];
   onColumnsChange: Dispatch<SetStateAction<Column[]>>;
   onTasksChange: Dispatch<SetStateAction<Task[]>>;
-  filterTerm: string;
-  sortCriteria: string | null;
   onAddTask: (columnId: ColumnId) => void;
   onAddColumn: () => void;
 };
 
 export function KanbanBoard({
   columns,
-  tasks,
+  getFilteredAndSortedTasks,
   onColumnsChange,
   onTasksChange,
-  filterTerm,
-  sortCriteria,
   onAddTask,
   onAddColumn,
 }: KanbanBoardProps) {
@@ -58,31 +54,8 @@ export function KanbanBoard({
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
-  const tasksByColumn = useMemo(() => {
-    const groupedTasks: Record<ColumnId, Task[]> = {};
-    columns.forEach((col) => {
-      groupedTasks[col.id] = [];
-    });
-
-    tasks.forEach((task) => {
-      if (groupedTasks[task.columnId]) {
-        groupedTasks[task.columnId].push(task);
-      }
-    });
-
-    return groupedTasks;
-  }, [tasks, columns]);
-
-  const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: coordinateGetter,
-    }),
-  );
-
   function getDraggingTaskData(taskId: UniqueIdentifier, columnId: ColumnId) {
-    const tasksInColumn = tasksByColumn[columnId] || [];
+    const tasksInColumn = getFilteredAndSortedTasks(columnId);
     const taskPosition = tasksInColumn.findIndex((task) => task.id === taskId);
     const column = columns.find((col) => col.id === columnId);
     return {
@@ -91,6 +64,14 @@ export function KanbanBoard({
       column,
     };
   }
+
+  const sensors = useSensors(
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: coordinateGetter,
+    }),
+  );
 
   const announcements: Announcements = {
     onDragStart({ active }) {
@@ -202,9 +183,7 @@ export function KanbanBoard({
             <BoardColumn
               key={col.id}
               column={col}
-              tasks={tasksByColumn[col.id]}
-              filterTerm={filterTerm}
-              sortCriteria={sortCriteria}
+              tasks={getFilteredAndSortedTasks(col.id)}
               onAddTask={onAddTask}
             />
           ))}
@@ -225,9 +204,7 @@ export function KanbanBoard({
               <BoardColumn
                 isOverlay
                 column={activeColumn}
-                tasks={tasksByColumn[activeColumn.id] || []}
-                filterTerm={filterTerm}
-                sortCriteria={sortCriteria}
+                tasks={getFilteredAndSortedTasks(activeColumn.id)}
                 onAddTask={onAddTask}
               />
             )}

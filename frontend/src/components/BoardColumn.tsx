@@ -5,7 +5,6 @@ import { cva } from "class-variance-authority";
 import { GripHorizontal, PencilIcon, PlusIcon } from "lucide-react";
 import { useMemo } from "react";
 import { TaskCard, type Task } from "./TaskCard";
-import { temperatureSortOrder } from "./TemperatureBadge";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
@@ -28,8 +27,6 @@ interface BoardColumnProps {
   column: Column;
   tasks: Task[];
   isOverlay?: boolean;
-  filterTerm: string;
-  sortCriteria: string | null;
   onAddTask: (columnId: UniqueIdentifier) => void;
 }
 
@@ -37,35 +34,11 @@ export function BoardColumn({
   column,
   tasks,
   isOverlay,
-  filterTerm,
-  sortCriteria,
   onAddTask,
 }: BoardColumnProps) {
-  const displayedTasks = useMemo(() => {
-    const filteredTasks = tasks.filter(
-      (task) =>
-        task.title.toLowerCase().includes(filterTerm.toLowerCase()) ||
-        task.content.toLowerCase().includes(filterTerm.toLowerCase()),
-    );
-
-    if (sortCriteria === "valor-desc") {
-      filteredTasks.sort((a, b) => b.earning - a.earning);
-    } else if (sortCriteria === "valor-asc") {
-      filteredTasks.sort((a, b) => a.earning - b.earning);
-    } else if (sortCriteria === "temperatura") {
-      filteredTasks.sort(
-        (a, b) =>
-          temperatureSortOrder[a.temperature] -
-          temperatureSortOrder[b.temperature],
-      );
-    }
-
-    return filteredTasks;
-  }, [tasks, filterTerm, sortCriteria]);
-
   const tasksIds = useMemo(() => {
-    return displayedTasks.map((task) => task.id);
-  }, [displayedTasks]);
+    return tasks.map((task) => task.id);
+  }, [tasks]);
 
   const {
     setNodeRef,
@@ -116,7 +89,7 @@ export function BoardColumn({
           variant={"ghost"}
           {...attributes}
           {...listeners}
-          className="h-fit p-0 text-secondary-foreground/50 cursor-grab relative"
+          className="h-fit p-0 text-muted-foreground cursor-grab relative"
         >
           <span className="sr-only">{`Move column: ${column.title}`}</span>
           <GripHorizontal />
@@ -124,21 +97,21 @@ export function BoardColumn({
         <div className="flex justify-center items-center w-full">
           <span className="font-semibold mb-0">{column.title}</span>
           <Button
-            className="text-secondary-foreground/50 "
+            className="text-muted-foreground "
             size="icon-sm"
             variant="ghost"
           >
             <PencilIcon />
           </Button>
         </div>
-        <div className="flex justify-between items-center w-full text-foreground/50">
+        <div className="flex justify-between items-center w-full text-muted-foreground">
           <span>{column.subtitle_left}</span>
           <span>{column.subtitle_right}</span>
         </div>
       </CardHeader>
       <Button
         variant="ghost"
-        className="w-full h-fit rounded-none text-secondary-foreground/50"
+        className="w-full h-fit rounded-none text-muted-foreground"
         onClick={() => onAddTask(column.id)}
       >
         <PlusIcon />
@@ -146,7 +119,7 @@ export function BoardColumn({
       <ScrollArea>
         <CardContent className="flex grow flex-col gap-2 p-2 pt-0 ">
           <SortableContext items={tasksIds}>
-            {displayedTasks.map((task) => (
+            {tasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
           </SortableContext>

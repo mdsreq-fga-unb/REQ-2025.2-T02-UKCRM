@@ -1,11 +1,11 @@
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -34,7 +34,7 @@ export default function SelectButton({
 }: SelectButtonProps) {
   return (
     <Select onValueChange={onValueChange}>
-      <SelectTrigger className={cn("w-[200px]", className)}>
+      <SelectTrigger className={cn("w-[220px]", className)}>
         {icon}
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

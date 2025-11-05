@@ -1,13 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { daysSince } from "@/lib/date-utils";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripVertical, IdCardIcon, UserIcon } from "lucide-react";
+import InactivityBadge from "./InactivityBadge";
 import { type ColumnId } from "./KanbanBoard";
-import { type TemperatureVariant, TemperatureBadge } from "./TemperatureBadge";
+import { TemperatureBadge } from "./TemperatureBadge";
+import type { TemperatureVariant } from "@/lib/temperature";
 
 export interface Task {
   id: UniqueIdentifier;
@@ -16,6 +19,7 @@ export interface Task {
   earning: number;
   content: string;
   temperature: TemperatureVariant;
+  date: Date;
 }
 
 interface TaskCardProps {
@@ -71,27 +75,30 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
       })}
     >
-      <CardHeader className="px-3 py-3 space-between flex flex-row border-b-2 border-secondary relative">
-        <Button
-          size="icon"
-          variant={"ghost"}
-          {...attributes}
-          {...listeners}
-          className="p-1 text-secondary-foreground/50 -ml-2 mb-0 mr-1 h-auto cursor-grab"
-        >
-          <span className="sr-only">Move task</span>
-          <GripVertical />
-        </Button>
-        <span className="mb-0">{task.title}</span>
-        <TemperatureBadge variant={task.temperature} className="ml-auto">
-          {task.temperature}
-        </TemperatureBadge>
+      <CardHeader className="px-3 py-2 border-b-2 border-secondary relative">
+        <div className="flex flex-row items-center">
+          <Button
+            size="icon"
+            variant={"ghost"}
+            {...attributes}
+            {...listeners}
+            className="p-1 text-muted-foreground -ml-2 mb-0 h-auto cursor-grab"
+          >
+            <span className="sr-only">Move task</span>
+            <GripVertical />
+          </Button>
+          <span className="mb-0">{task.title}</span>
+          <InactivityBadge days={daysSince(task.date)} />
+          <TemperatureBadge variant={task.temperature} className="ml-auto">
+            {task.temperature}
+          </TemperatureBadge>
+        </div>
       </CardHeader>
-      <CardContent className="p-3 text-left whitespace-pre-wrap text-foreground/50">
+      <CardContent className="px-3 py-2 text-left whitespace-pre-wrap text-muted-foreground">
         {task.content}
         <div className="flex justify-between items-center w-full">
           <Button size="icon-sm" variant="ghost">
-            <Avatar className="size-6">
+            <Avatar className="size-5">
               <AvatarImage src="https://github.com/Carlos-UCH.png" />
               <AvatarFallback>
                 <UserIcon />
@@ -105,7 +112,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
             }).format(task.earning)}
           </span>
           <Button size="icon-sm" variant="ghost">
-            <IdCardIcon />
+            <IdCardIcon className="size-5" />
           </Button>
         </div>
       </CardContent>

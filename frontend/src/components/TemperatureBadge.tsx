@@ -1,15 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import * as React from "react";
-
-export type TemperatureVariant = "Quente" | "Morno" | "Frio" | "Neutro";
-
-export const temperatureSortOrder: Record<TemperatureVariant, number> = {
-  Quente: 1,
-  Morno: 2,
-  Neutro: 3,
-  Frio: 4,
-};
+import type { TemperatureVariant } from "@/lib/temperature";
 
 export interface TemperatureBadgeProps {
   variant: TemperatureVariant;

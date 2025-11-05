@@ -6,28 +6,15 @@ import { defaultCols, initialTasks } from "./data/default-funnel-data";
 import { useFunnel } from "./hooks/useFunnel";
 
 function Funnel() {
-  const {
-    columns,
-    tasks,
-    filterTerm,
-    sortCriteria,
-    createDialog,
-    deleteDialog,
-    actionBar,
-    kanban,
-  } = useFunnel(defaultCols, initialTasks);
+  const { actionBar, kanban, createDialog, deleteDialog } = useFunnel(
+    defaultCols,
+    initialTasks,
+  );
 
   return (
     <main className="flex flex-col gap-4">
-      <ActionBar {...actionBar} filterTerm={filterTerm} />
-      <KanbanBoard
-        columns={columns}
-        tasks={tasks}
-        {...kanban}
-        filterTerm={filterTerm}
-        sortCriteria={sortCriteria}
-      />
-
+      <ActionBar {...actionBar} />
+      <KanbanBoard {...kanban} />
       <CreateFunnelDialog {...createDialog} />
       <DeleteFunnelDialog {...deleteDialog} />
     </main>

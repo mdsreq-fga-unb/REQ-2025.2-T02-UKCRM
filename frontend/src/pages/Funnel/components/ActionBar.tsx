@@ -1,14 +1,15 @@
 "use client";
 
 import CreateButton from "@/components/CreateButton";
-import DeleteButton from "@/components/DeleteButton";
 import { DoRedo } from "@/components/DoRedo";
 import FilterButton from "@/components/FilterButton";
 import SelectButton from "@/components/SelectButton";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { ChartNoAxesCombinedIcon, TagIcon } from "lucide-react";
+import { ChartNoAxesCombinedIcon, PencilIcon, TagIcon } from "lucide-react";
 import { useState } from "react";
 import { sortOptionsList } from "../constants/action-bar.constants";
+import { Button } from "@/components/ui/button";
+import DeleteButton from "@/components/DeleteButton";
 
 type FunnelItem = {
   value: string;
@@ -47,24 +48,34 @@ export default function ActionBar({
 
   return (
     <header className="flex justify-between w-full flex-row">
-      <SelectButton
-        placeholder="Funils de Venda"
-        label="Funils de Venda"
-        icon={<TagIcon />}
-        items={funnels}
-        onValueChange={handleFunnelSelect}
-      />
       <ButtonGroup>
-        <DeleteButton
-          label="Excluir Funil"
+        <SelectButton
+          placeholder="Funils de Venda"
+          label="Funils de Venda"
+          icon={<TagIcon />}
+          items={funnels}
+          onValueChange={handleFunnelSelect}
+        />
+        <Button
           onClick={handleDeleteClick}
           disabled={!selectedFunnel}
+          size={"icon"}
+          variant={"outline"}
+        >
+          <PencilIcon />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        <DeleteButton
+          onClick={handleDeleteClick}
+          disabled={!selectedFunnel}
+          label="Excluir Funil"
         />
         <CreateButton onClick={onCreateFunnelClick} label="Criar Funil" />
       </ButtonGroup>
       <DoRedo />
       <SelectButton
-        className="w-40"
+        className="w-50"
         placeholder="Ordenar por"
         label="Ordenar por"
         icon={<ChartNoAxesCombinedIcon />}
