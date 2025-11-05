@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -33,7 +32,7 @@ import {
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { teamsList, formSchema } from "./funnel.schema";
+import { teamsList, formSchema } from "../funnel.schema";
 
 type CreateFunnelDialogProps = {
   open: boolean;

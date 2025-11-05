@@ -41,13 +41,10 @@ export function DeleteFunnelDialog({
   onSubmit,
   funnelName,
 }: DeleteFunnelDialogProps) {
-    
   const formSchema = z.object({
-    confirmationName: z
-      .string()
-      .refine((data) => data === funnelName, {
-        message: "O nome digitado não corresponde ao nome do funil.",
-      }),
+    confirmationName: z.string().refine((data) => data === funnelName, {
+      message: "O nome digitado não corresponde ao nome do funil.",
+    }),
   });
 
   const form = useForm<FormValues>({
@@ -63,7 +60,6 @@ export function DeleteFunnelDialog({
       form.reset({ confirmationName: "" });
     }
   }, [open, form]);
-
 
   function handleFormSubmit() {
     onSubmit();
@@ -88,11 +84,10 @@ export function DeleteFunnelDialog({
             <DialogHeader>
               <DialogTitle>Excluir Funil?</DialogTitle>
               <DialogDescription>
-                Esta ação não pode ser desfeita. <br/>
-                Ao excluir o funil de vendas, todos os membros
-                do time de vendas terão o seu acesso ao funil revogado. <br/>
-                Para confirmar a exclusão, digite o nome exato
-                do funil:{" "}
+                Esta ação não pode ser desfeita. <br />
+                Ao excluir o funil de vendas, todos os membros do time de vendas
+                terão o seu acesso ao funil revogado. <br />
+                Para confirmar a exclusão, digite o nome exato do funil:{" "}
                 <strong className="text-foreground">{funnelName}</strong>
               </DialogDescription>
             </DialogHeader>

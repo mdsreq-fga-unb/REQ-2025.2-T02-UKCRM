@@ -15,3 +15,5 @@ export const formSchema = z.object({
     message: "Você deve selecionar pelo menos um time.",
   }),
 });
+
+export type FunnelFormValues = z.infer<typeof formSchema>;

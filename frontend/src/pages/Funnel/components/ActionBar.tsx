@@ -8,21 +8,15 @@ import FilterButton from "@/components/FilterButton";
 import SelectButton from "@/components/SelectButton";
 import { ChartNoAxesCombinedIcon, TagIcon } from "lucide-react";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { sortOptionsList } from "../constants/action-bar.constants";
 
-const funnelsList = [
-  { value: "funil-a", label: "Funil Principal" },
-  { value: "funil-b", label: "Funil de Prospecção" },
-  { value: "funil-c", label: "Funil de Onboarding" },
-];
-
-const sortOptionsList = [
-  { value: "padrao", label: "Padrão" },
-  { value: "valor-desc", label: "Valor (Maior)" },
-  { value: "valor-asc", label: "Valor (Menor)" },
-  { value: "temperatura", label: "Temperatura" },
-];
+type FunnelItem = {
+  value: string;
+  label: string;
+};
 
 type ActionBarProps = {
+  funnels: FunnelItem[];
   onCreateFunnelClick: () => void;
   onDeleteFunnelClick: (funnelName: string) => void;
   filterTerm: string;
@@ -31,6 +25,7 @@ type ActionBarProps = {
 };
 
 export default function ActionBar({
+  funnels,
   onCreateFunnelClick,
   onDeleteFunnelClick,
   filterTerm,
@@ -40,7 +35,7 @@ export default function ActionBar({
   const [selectedFunnel, setSelectedFunnel] = useState<string | null>(null);
 
   const handleFunnelSelect = (funnelValue: string) => {
-    const funnel = funnelsList.find((f) => f.value === funnelValue);
+    const funnel = funnels.find((f) => f.value === funnelValue);
     setSelectedFunnel(funnel ? funnel.label : null);
   };
 
@@ -56,7 +51,7 @@ export default function ActionBar({
         placeholder="Funils de Venda"
         label="Funils de Venda"
         icon={<TagIcon />}
-        items={funnelsList}
+        items={funnels}
         onValueChange={handleFunnelSelect}
       />
       <ButtonGroup>
