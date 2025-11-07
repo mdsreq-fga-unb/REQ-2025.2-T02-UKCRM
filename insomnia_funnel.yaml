@@ -1,0 +1,342 @@
+type: collection.insomnia.rest/5.0
+name: funnel
+meta:
+  id: wrk_47faf8aa2c8146159bf3702a0e5a2232
+  created: 1762495053020
+  modified: 1762527963451
+  description: ""
+collection:
+  - url: "{{ _.url }}/leads/"
+    name: Criar Lead Aleatório
+    meta:
+      id: req_ddc404ddf7e4428eab0434acb761355d
+      created: 1762495053026
+      modified: 1762495806330
+      isPrivate: false
+      description: ""
+      sortKey: -1762495053026
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - id: pair_185fa131cbe04fe09a35c7570d392e13
+          name: name
+          value: "{% faker 'randomFullName' %}"
+          description: ""
+          disabled: false
+        - id: pair_047758ac5a3d402db87b16dac2f9b864
+          name: email
+          value: "{% faker 'randomEmail' %}"
+          description: ""
+          disabled: false
+        - id: pair_fca25b8184f747ec80da2a8b76bb4367
+          name: phone
+          value: "{% faker 'randomPhoneNumber' %}"
+          description: ""
+          disabled: false
+        - id: pair_157b06413b3340948f166493edafc3a6
+          name: stage
+          value: "1"
+          description: ""
+          disabled: false
+        - id: pair_fa34899eae1a492f8a8a73e485c265f8
+          name: order
+          value: "0"
+          description: ""
+          disabled: false
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/leads/"
+    name: Visualizar Leads
+    meta:
+      id: req_972cb569b21c4e1193bcc8e5bdb18589
+      created: 1762495257100
+      modified: 1762529386674
+      isPrivate: false
+      description: ""
+      sortKey: -1762495052926
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/stages/"
+    name: Criar Etapa (Novo Lead)
+    meta:
+      id: req_a3f42af77832468d8fbad7c82c8b1282
+      created: 1762495433481
+      modified: 1762530183457
+      isPrivate: false
+      description: ""
+      sortKey: -1762495433481
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - id: pair_e3292c956c8941f7b4870949f7ffcd63
+          name: name
+          value: Novo Lead
+          description: ""
+          disabled: false
+        - id: pair_ce850d9225ac4025982b29c24686ab3e
+          name: order
+          value: "0"
+          description: ""
+          disabled: false
+        - id: pair_573ae1eca7f14d0cb7d90a97e021d969
+          name: funnel
+          value: "1"
+          description: ""
+          disabled: false
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/stages/"
+    name: Visualizar Etapas
+    meta:
+      id: req_5b1288f62bae43dcafb72b14bee18860
+      created: 1762495756249
+      modified: 1762529382681
+      isPrivate: false
+      description: ""
+      sortKey: -1762495345290.5
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/teams/"
+    name: Visualizar Times de Vendas
+    meta:
+      id: req_cf8aaf3e63304925a20fe71a0ed944b7
+      created: 1762528954829
+      modified: 1762529802892
+      isPrivate: false
+      description: ""
+      sortKey: -1762529587927
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/teams/"
+    name: Criar Time de Vendas Aleatório
+    meta:
+      id: req_c9bf4dad8a0e46eda67ea231018396c0
+      created: 1762528956938
+      modified: 1762529799241
+      isPrivate: false
+      description: ""
+      sortKey: -1762529587977
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - id: pair_b08cbd9822c241ed9e6676c0eb2b8c57
+          name: name
+          value: "{% faker 'randomCity' %}"
+          description: ""
+          disabled: false
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/funnels/"
+    name: Criar Funil de Vendas Aleatório
+    meta:
+      id: req_aa2e3540d18d4af9b6cbbb10e12ab38d
+      created: 1762529570774
+      modified: 1762530099302
+      isPrivate: false
+      description: ""
+      sortKey: -1762529570774
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "Funil {% faker 'randomColor' %}",
+        	"team_ids": [1, 2]
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/funnels/"
+    name: Visualizar Funils de Vendas
+    meta:
+      id: req_bb73df7dcb3f47b09bd7ab61eaba2679
+      created: 1762529587877
+      modified: 1762529840333
+      isPrivate: false
+      description: ""
+      sortKey: -1762512502127.5
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/stages/"
+    name: Criar Etapa (Contato Iniciado)
+    meta:
+      id: req_8ca11e2bd4104d7288637a068fac5648
+      created: 1762530191445
+      modified: 1762530223069
+      isPrivate: false
+      description: ""
+      sortKey: -1762495389385.75
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - id: pair_e3292c956c8941f7b4870949f7ffcd63
+          name: name
+          value: Contato Iniciado
+          description: ""
+          disabled: false
+        - id: pair_ce850d9225ac4025982b29c24686ab3e
+          name: order
+          value: "1"
+          description: ""
+          disabled: false
+        - id: pair_573ae1eca7f14d0cb7d90a97e021d969
+          name: funnel
+          value: "1"
+          description: ""
+          disabled: false
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.url }}/stages/"
+    name: Criar Etapa (Qualificação)
+    meta:
+      id: req_f333f5729633472db3cdc388b9dc3bdf
+      created: 1762530195792
+      modified: 1762530229086
+      isPrivate: false
+      description: ""
+      sortKey: -1762495367338.125
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - id: pair_e3292c956c8941f7b4870949f7ffcd63
+          name: name
+          value: Qualificação
+          description: ""
+          disabled: false
+        - id: pair_ce850d9225ac4025982b29c24686ab3e
+          name: order
+          value: "2"
+          description: ""
+          disabled: false
+        - id: pair_573ae1eca7f14d0cb7d90a97e021d969
+          name: funnel
+          value: "1"
+          description: ""
+          disabled: false
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_768cfb85111c58dd78082a93dd85a16502c781ca
+    created: 1762495053024
+    modified: 1762495053024
+environments:
+  name: Base Environment
+  meta:
+    id: env_768cfb85111c58dd78082a93dd85a16502c781ca
+    created: 1762495053023
+    modified: 1762495697041
+    isPrivate: false
+  data:
+    url: http://localhost:8000/api
