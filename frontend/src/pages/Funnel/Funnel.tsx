@@ -12,7 +12,7 @@ function Funnel() {
   );
 
   return (
-    <main className="flex flex-col gap-4">
+    <main className="h-full flex flex-col divide-y">
       <ActionBar {...actionBar} />
       <KanbanBoard {...kanban} />
       <CreateFunnelDialog {...createDialog} />

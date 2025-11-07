@@ -47,7 +47,7 @@ export default function ActionBar({
   };
 
   return (
-    <header className="flex justify-between w-full flex-row">
+    <header className="flex justify-between w-full flex-row p-2">
       <ButtonGroup>
         <SelectButton
           placeholder="Funils de Venda"

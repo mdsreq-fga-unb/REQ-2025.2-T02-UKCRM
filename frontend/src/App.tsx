@@ -5,13 +5,13 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <div className="flex flex-col gap-4 p-4">
-        <header className="flex justify-between w-full flex-row">
+      <div className="flex flex-col h-screen divide-y">
+        <header className="flex justify-between w-full flex-row p-2">
           <ThemeToggle />
         </header>
-        <main>
+        <div className="flex-1 min-h-0">
           <Outlet />
-        </main>
+        </div>
       </div>
     </ThemeProvider>
   );

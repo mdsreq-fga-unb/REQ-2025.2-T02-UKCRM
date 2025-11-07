@@ -190,7 +190,7 @@ export function KanbanBoard({
         </SortableContext>
         <Button
           variant="outline"
-          className="h-[600px] w-[350px] max-w-full shrink-0 snap-center flex items-center justify-center"
+          className="h-full w-[350px] max-w-full shrink-0 snap-center flex items-center justify-center"
           onClick={onAddColumn}
         >
           <PlusIcon /> Adicionar Etapa
