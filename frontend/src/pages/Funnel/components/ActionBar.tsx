@@ -45,6 +45,12 @@ export default function ActionBar({
       onDeleteFunnelClick(selectedFunnel);
     }
   };
+  
+  const handleEditClick = () => {
+    if (selectedFunnel) {
+      onCreateFunnelClick();
+    }
+  };
 
   return (
     <header className="flex justify-between w-full flex-row p-2">
@@ -57,7 +63,7 @@ export default function ActionBar({
           onValueChange={handleFunnelSelect}
         />
         <Button
-          onClick={handleDeleteClick}
+          onClick={handleEditClick}
           disabled={!selectedFunnel}
           size={"icon"}
           variant={"outline"}

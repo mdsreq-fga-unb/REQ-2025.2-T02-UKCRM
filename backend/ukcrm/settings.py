@@ -41,7 +41,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'funnel',
+    'drf_spectacular',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'UKCRM API',
+    'DESCRIPTION': 'Documentação da API do CRM',
+    'VERSION': '1.0.0',
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
