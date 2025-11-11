@@ -50,6 +50,11 @@ nav:
 
   - Feedback do Cliente: feedback/index.md
 
+  - Estudos de Caso:
+    - USM: estudos/estudo1.md
+    - PBB: estudos/estudo2.md
+  
+
 
 markdown_extensions:
   - toc:
