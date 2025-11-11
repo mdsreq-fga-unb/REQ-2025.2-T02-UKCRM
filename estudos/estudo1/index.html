@@ -1071,39 +1071,262 @@ ao valor entregue a pacientes, profissionais e gestores.</p>
 <iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJu-SXzQ=/?embedMode=view_only_without_ui&moveToViewport=-1199,-1167,3440,2110&embedId=505444342395" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
 
 <h2 id="criterios-de-validacao">Critérios de validação</h2>
+<h1 id="usm-requisitos-funcionais">USM - Requisitos Funcionais</h1>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Release</th>
-<th style="text-align: left;">Item USM</th>
-<th style="text-align: left;">História de Usuário</th>
-<th style="text-align: left;">Critérios de Validação</th>
+<th>Release</th>
+<th>Item</th>
+<th>História de Usuário</th>
+<th>Critérios de Validação</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">Release 1 (MVP)</td>
-<td style="text-align: left;">RF01 - Buscar paciente em base única (CPF/Nome).</td>
-<td style="text-align: left;">Como Recepcionista, eu quero buscar um paciente na base única usando CPF ou nome, para que possa identificá-lo rapidamente e iniciar o atendimento ou agendamento.</td>
-<td style="text-align: left;">* O sistema deve permitir a busca por CPF (números exatos). * O sistema deve permitir a busca por nome (parcial ou completo). * Se nenhum paciente for encontrado, o sistema deve exibir a mensagem "Paciente não encontrado" e oferecer a opção "Cadastrar novo paciente". * Se múltiplos pacientes forem encontrados (busca por nome), deve exibir uma lista com nome, CPF e data de nascimento para desambiguação.</td>
+<td><strong>Release 1 (MVP)</strong></td>
+<td><strong>RF01 - Buscar paciente em base única (CPF/Nome)</strong></td>
+<td>Como Recepcionista, eu quero buscar um paciente na base única usando CPF ou nome, para que possa identificá-lo rapidamente e iniciar o atendimento ou agendamento.</td>
+<td>- O sistema deve permitir a busca por CPF (números exatos).<br>- O sistema deve permitir a busca por nome (parcial ou completo).<br>- Se nenhum paciente for encontrado, o sistema deve exibir "Paciente não encontrado" e oferecer "Cadastrar novo paciente".<br>- Se múltiplos pacientes forem encontrados, deve exibir lista com nome, CPF e data de nascimento.</td>
 </tr>
 <tr>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">RF02 - Cadastrar novo paciente (dados essenciais).</td>
-<td style="text-align: left;">Como Recepcionista, eu quero cadastrar um novo paciente informando seus dados essenciais (nome, CPF, data de nascimento, telefone), para que ele possa ser atendido e ter seu prontuário iniciado.</td>
-<td style="text-align: left;">* O formulário deve conter os campos obrigatórios: Nome Completo, CPF, Data de Nascimento, Telefone de Contato. * O sistema deve validar o formato do CPF e verificar se ele já existe na base. * Se o CPF já existir, o sistema deve impedir o cadastro duplicado e direcionar para o perfil existente.</td>
+<td></td>
+<td><strong>RF02 - Cadastrar novo paciente (dados essenciais)</strong></td>
+<td>Como Recepcionista, eu quero cadastrar um novo paciente informando nome, CPF, data de nascimento e telefone, para que ele possa ser atendido e ter seu prontuário iniciado.</td>
+<td>- Campos obrigatórios: Nome Completo, CPF, Data de Nascimento, Telefone.<br>- O sistema deve validar o formato do CPF e verificar duplicidade.<br>- Se o CPF já existir, deve direcionar ao perfil existente.</td>
 </tr>
 <tr>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">RF03 - Registrar consentimento LGPD no ato do cadastro.</td>
-<td style="text-align: left;">Como Recepcionista, eu quero registrar o consentimento LGPD do paciente durante o processo de cadastro, para que a clínica esteja em conformidade legal com o uso dos dados.</td>
-<td style="text-align: left;">* Durante o cadastro, deve haver uma opção (checkbox) para "Paciente deu consentimento (LGPD)". * O sistema deve registrar a data, hora e o usuário (Recepcionista) que marcou o consentimento. * O status do consentimento deve ser visível no perfil do paciente.</td>
+<td></td>
+<td><strong>RF03 - Registrar consentimento LGPD no ato do cadastro</strong></td>
+<td>Como Recepcionista, eu quero registrar o consentimento LGPD do paciente durante o cadastro, para que a clínica esteja em conformidade legal.</td>
+<td>- Checkbox para “Paciente deu consentimento (LGPD)”.<br>- Registrar data, hora e usuário que marcou.<br>- Status do consentimento visível no perfil do paciente.</td>
 </tr>
 <tr>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">RF04 - Acessar e editar seus dados cadastrais básicos.</td>
-<td style="text-align: left;">Como Paciente, eu quero acessar e editar meus dados cadastrais básicos (como telefone, endereço) através do portal ou aplicativo, para que minhas informações estejam sempre atualizadas sem precisar ligar para a clínica.</td>
-<td style="text-align: left;">* O paciente deve estar logado no portal/app. * Na área "Meu Perfil", o paciente deve conseguir visualizar e editar Telefone, E-mail e Endereço. * Campos como Nome e CPF não devem ser editáveis pelo paciente. * Ao salvar, o sistema deve confirmar a atualização e os dados devem refletir no sistema interno.</td>
+<td></td>
+<td><strong>RF04 - Acessar e editar seus dados cadastrais básicos</strong></td>
+<td>Como Paciente, eu quero acessar e editar meus dados cadastrais básicos (telefone, endereço) via portal/app, para manter informações atualizadas.</td>
+<td>- Paciente deve estar logado.<br>- Área "Meu Perfil" permite editar Telefone, E-mail e Endereço.<br>- Nome e CPF não editáveis.<br>- Atualização confirmada e refletida no sistema interno.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF05 - Visualizar horários disponíveis</strong></td>
+<td>Como Paciente, eu quero visualizar horários disponíveis dos médicos, para escolher o melhor momento da consulta.</td>
+<td>- Filtro por especialidade ou médico.<br>- Exibir calendário com dias e horários.<br>- Mostrar apenas horários livres.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF06 - Agendar consulta online</strong></td>
+<td>Como Paciente, eu quero agendar uma consulta online, para marcar meu atendimento com autonomia.</td>
+<td>- Após visualizar horários, o paciente escolhe um horário.<br>- Sistema solicita confirmação.<br>- Ao confirmar, o horário é bloqueado e mostra "Agendamento confirmado".</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF07 - Visualizar agenda unificada (médicos da unidade)</strong></td>
+<td>Como Recepcionista/Coordenador, eu quero visualizar uma agenda unificada, para gerenciar agendamentos e a operação.</td>
+<td>- Exibir visualização diária/semanal com colunas de médicos.<br>- Status claros (livre, agendado, confirmado, check-in) com cores diferentes.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF08 - Realizar agendamento/encaixe (balcão)</strong></td>
+<td>Como Recepcionista, eu quero agendar ou encaixar pacientes presencialmente, para atender no balcão.</td>
+<td>- Selecionar médico e dia.<br>- Escolher horário vago ou forçar encaixe (com confirmação).<br>- Agendamento vinculado ao cadastro do paciente.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF09 - Receber confirmação/lembrete automático (push/e-mail)</strong></td>
+<td>Como Paciente, eu quero receber confirmação e lembrete de consulta, para não esquecer o compromisso.</td>
+<td>- Enviar e-mail/push de confirmação ao agendar.<br>- Lembrete automático 24h antes.<br>- Conteúdo: médico, data, hora e local.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF10 - Realizar check-in do paciente (confirmação)</strong></td>
+<td>Como Recepcionista, eu quero realizar o check-in do paciente, para registrar presença e notificar o médico.</td>
+<td>- Localizar agendamento do dia.<br>- Botão “Realizar Check-in”.<br>- Status muda para “Em espera” e médico é notificado.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF11 - Acessar prontuário único (histórico de consultas)</strong></td>
+<td>Como Médico Clínico, eu quero acessar o prontuário único do paciente, para visualizar histórico de consultas.</td>
+<td>- Ao abrir o atendimento, o prontuário deve carregar o histórico.<br>- Exibir linha do tempo ou lista de evoluções passadas.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF12 - Registrar alergias</strong></td>
+<td>Como Médico Clínico, eu quero registrar alergias do paciente, para evitar riscos na prescrição.</td>
+<td>- Seção “Alergias” no prontuário.<br>- Permitir múltiplas alergias.<br>- Banner vermelho em caso de alergias.<br>- Opção “Nega alergias”.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF13 - Registrar evolução da consulta (texto simples)</strong></td>
+<td>Como Médico Clínico, eu quero registrar a evolução da consulta, para documentar o atendimento.</td>
+<td>- Campo de texto livre “Evolução”.<br>- Ao finalizar, salvar com data, hora e login do médico.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF14 - Gestão básica de usuários, senhas e perfis (Login)</strong></td>
+<td>Como Diretor de Tecnologia, eu quero gestão de usuários e perfis, para controlar o acesso.</td>
+<td>- Tela de login (usuário e senha).<br>- Criar/inativar usuários.<br>- Associar perfis (Recepcionista, Médico, Admin).<br>- Função “Esqueci minha senha”.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF15 - Log de auditoria (LGPD - quem acessou)</strong></td>
+<td>Como Diretor de Tecnologia, eu quero logs de acesso, para monitorar acessos a dados sensíveis.</td>
+<td>- Registrar acessos de leitura a prontuários.<br>- Log: Usuário, Paciente, Data/Hora, Ação.<br>- Relatórios de auditoria exportáveis.</td>
+</tr>
+<tr>
+<td><strong>Release 2 (R2)</strong></td>
+<td><strong>RF16 - Cancelar / Remarcar consulta</strong></td>
+<td>Como Paciente, eu quero cancelar ou remarcar consultas futuras, para ter autonomia.</td>
+<td>- Visualizar consultas futuras em “Meus Agendamentos”.<br>- Botões “Cancelar” e “Remarcar”.<br>- Cancelamento permitido até X horas antes.<br>- Remarcação redireciona a novos horários.<br>- Agenda do médico atualizada.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF17 - Configurar regras de agenda (bloqueios, horários)</strong></td>
+<td>Como Coordenador, eu quero configurar regras de agenda, para refletir disponibilidade real.</td>
+<td>- Selecionar médico.<br>- Definir horários recorrentes e bloqueios.<br>- Bloqueios não aparecem para pacientes.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF18 - Visualizar histórico de prescrições e exames</strong></td>
+<td>Como Médico Clínico, eu quero visualizar histórico de prescrições e exames, para entender tratamentos anteriores.</td>
+<td>- Abas “Prescrições” e “Exames” no prontuário.<br>- Lista cronológica (mais recente primeiro).<br>- Clicar para ver detalhes.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF19 - Alertas visuais de alergias</strong></td>
+<td>Como Médico Clínico, eu quero ver alertas de alergias durante a prescrição, para evitar reações adversas.</td>
+<td>- Banner com alergias na tela de prescrição.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF20 - Gerar prescrição eletrônica (base de medicamentos)</strong></td>
+<td>Como Médico Clínico, eu quero gerar prescrição eletrônica, para padronizar e garantir legibilidade.</td>
+<td>- Buscar medicamentos por nome.<br>- Adicionar dose, frequência e duração.<br>- Gerar PDF assinado digitalmente.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF21 - Receber prescrição eletrônica (fila de atendimento)</strong></td>
+<td>Como Farmacêutica, eu quero visualizar prescrições eletrônicas pendentes, para organizar dispensação.</td>
+<td>- Fila de prescrições pendentes com paciente, médico e horário.<br>- Visualizar detalhes.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF22 - Registrar dispensação (baixa simples)</strong></td>
+<td>Como Farmacêutica, eu quero registrar dispensação de medicamentos, para atualizar prontuário.</td>
+<td>- Botão “Dispensar”.<br>- Marcar itens dispensados.<br>- Status muda para “Dispensada”.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF23 - Visualizar prescrição ativa</strong></td>
+<td>Como Paciente, eu quero visualizar minhas prescrições, para consultar posologia.</td>
+<td>- Seção “Minhas Prescrições”.<br>- Prescrição mais recente disponível (PDF ou visualização).</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF24 - Solicitar exames (formulário digital)</strong></td>
+<td>Como Médico Clínico, eu quero solicitar exames via formulário digital, para registrar pedidos estruturados.</td>
+<td>- Buscar exames por nome/código.<br>- Adicionar múltiplos exames e indicações.<br>- Registro no histórico do paciente.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF25 - Acesso a resultados de exame</strong></td>
+<td>Como Paciente, eu quero acessar resultados de exames, para acompanhar minha saúde.</td>
+<td>- Seção “Meus Exames”.<br>- Exibir e permitir download dos resultados.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF26 - Visualizar resultados anexados ao prontuário</strong></td>
+<td>Como Médico Clínico, eu quero visualizar resultados dentro do prontuário, para análise clínica.</td>
+<td>- Anexar e abrir arquivos de resultados no prontuário.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF27 - Dashboard operacional básico</strong></td>
+<td>Como Gestora de Operações, eu quero visualizar indicadores operacionais, para monitorar eficiência.</td>
+<td>- Exibir total de agendamentos, taxa de No-Show e atendimentos concluídos.<br>- Filtragem por período (hoje, semana, mês).</td>
+</tr>
+<tr>
+<td><strong>Release 3 (R3)</strong></td>
+<td><strong>RF28 - Checklist de documentos e paridade de unidades</strong></td>
+<td>Como Recepcionista, eu quero checklist de documentos no cadastro, para garantir documentação completa.</td>
+<td>- Seção “Documentos/Paridade” no perfil.<br>- Marcar itens como “Coletado” ou “Pendente”.<br>- Alertas visuais para pendências.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF29 - Gestão de fila de espera e reacomodação dinâmica</strong></td>
+<td>Como Coordenador, eu quero gerenciar fila de espera e reacomodação, para otimizar a agenda.</td>
+<td>- Adicionar paciente à fila de espera.<br>- Ao cancelar horário, sugerir primeiro da fila.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF30 - Dashboard de indicadores de agendamento</strong></td>
+<td>Como Coordenador, eu quero indicadores de ocupação e não comparecimento, para análise de performance.</td>
+<td>- Mostrar taxa de ocupação e de faltas por médico.<br>- Filtragem por período e médico.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF31 - Usar modelos (templates) de evolução/anamnese</strong></td>
+<td>Como Médico Clínico, eu quero criar e usar modelos de evolução, para agilizar consultas.</td>
+<td>- Criar/salvar modelos de texto.<br>- Selecionar modelo ao iniciar nova evolução.<br>- Texto carregado e editável.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF32 - Suporte a CID / SNOMED (classificação)</strong></td>
+<td>Como Médico Clínico, eu quero usar códigos CID-10/11, para estruturar diagnósticos.</td>
+<td>- Campo “Diagnóstico (CID)” com autocomplete.<br>- Salvar código e descrição.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF33 - Checagem de interações medicamentosas</strong></td>
+<td>Como Médico/Farmacêutica, eu quero alertas de interações medicamentosas, para evitar reações adversas.</td>
+<td>- Sistema alerta se medicamento interagir com outro em uso.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF34 - Histórico de dispensações</strong></td>
+<td>Como Farmacêutica, eu quero visualizar histórico de dispensações, para controle de tratamento.</td>
+<td>- Lista cronológica de medicamentos dispensados, com data e responsável.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF35 - Integração com estoque (lotes/validade)</strong></td>
+<td>Como Farmacêutica, eu quero integração com estoque, para controle de lotes e validade.</td>
+<td>- Solicitar lote/validade ao dispensar.<br>- Baixa automática no estoque.<br>- Alerta para lote vencido.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF36 - Integração com laboratórios (API/HL7/FHIR)</strong></td>
+<td>Como Diretor de Tecnologia, eu quero integração com laboratórios, para receber resultados estruturados.</td>
+<td>- Receber mensagens HL7 ORU.<br>- Armazenar resultados numéricos estruturados.<br>- Eliminar uploads manuais de PDF.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF37 - Comparativo histórico de resultados de exames</strong></td>
+<td>Como Médico Clínico, eu quero comparar resultados de exames, para avaliar evolução do paciente.</td>
+<td>- Exibir resultados anteriores em lista ou gráfico.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF38 - Relatórios regulatórios e de conformidade (LGPD)</strong></td>
+<td>Como Diretor de Tecnologia, eu quero gerar relatórios LGPD, para auditorias e solicitações.</td>
+<td>- Extrato de acessos a um paciente.<br>- Relatório de consentimentos.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF39 - Dashboards de qualidade e segurança do paciente</strong></td>
+<td>Como Gestora de Operações, eu quero dashboards de qualidade, para monitorar aderência a protocolos.</td>
+<td>- Exibir tempo médio de espera e % de pacientes com alergias registradas.<br>- Dados agregados/anônimos.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF40 - Integração com Operadoras (faturamento)</strong></td>
+<td>Como Diretor de Tecnologia, eu quero integração com operadoras de saúde, para automatizar faturamento.</td>
+<td>- Gerar lote XML TISS com CID e procedimentos.<br>- Enviar para operadora.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>RF41 - Monitoramento proativo de performance e segurança</strong></td>
+<td>Como Diretor de Tecnologia, eu quero monitoramento proativo, para garantir estabilidade e segurança.</td>
+<td>- Alertas de tempo de resposta lento (&gt;3s).<br>- Alertas de falhas de login repetidas.<br>- Monitorar CPU e memória.</td>
 </tr>
 </tbody>
 </table>

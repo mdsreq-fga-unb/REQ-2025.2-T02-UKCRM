@@ -969,6 +969,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#criterios-de-validacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Critérios de validação
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1022,6 +1031,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#criterios-de-validacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Critérios de validação
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1048,6 +1066,206 @@ artísticos espalhados por diversas cidades brasileiras. Apesar de sua relevânc
 de impacto, a rede enfrenta sérios desafios de gestão e integração tecnológica. Cada espaço adota
 ferramentas diferentes para administrar programações, bilheterias, inscrições, artistas e
 divulgação, o que gera fragmentação e ineficiência.</p>
+<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJsvalhk=/?embedMode=view_only_without_ui&moveToViewport=-11215,-11472,17848,9771&embedId=460956883846" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
+
+<h2 id="criterios-de-validacao">Critérios de validação</h2>
+<h1 id="pbb-requisitos-funcionais">PBB - Requisitos Funcionais</h1>
+<table>
+<thead>
+<tr>
+<th>Item PBB</th>
+<th>História de Usuário</th>
+<th>Critérios de Validação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Permitir o cadastro, edição e visualização de eventos culturais em uma agenda única e integrada, acessível por todas as unidades.</strong></td>
+<td>Como Gestora Cultural, eu quero cadastrar, editar e visualizar eventos em uma agenda única e integrada, para que todas as unidades tenham acesso à programação atualizada e centralizada.</td>
+<td>- Crie um novo evento com título, data, local e descrição.<br>- Edite um evento existente e confirme a atualização na agenda.<br>- Exclua (ou arquive) um evento.<br>- Verifique se usuários de diferentes unidades (com permissão) visualizam a mesma agenda.<br>- Filtre a agenda por data, unidade e categoria.</td>
+</tr>
+<tr>
+<td><strong>Implementar um módulo para controle de orçamento, despesas e receitas associadas a cada evento.</strong></td>
+<td>Como Gestora Cultural, eu quero controlar o orçamento, despesas e receitas de cada evento, para que eu possa gerenciar a saúde financeira dos projetos.</td>
+<td>- Associe um orçamento inicial a um evento.<br>- Registre novas despesas (com categoria e valor) vinculadas ao evento.<br>- Registre receitas (ex: bilheteria) vinculadas ao evento.<br>- Visualize um resumo (Orçado vs. Realizado) para o evento.</td>
+</tr>
+<tr>
+<td><strong>Gerar automaticamente relatórios de público, orçamento e participação de artistas.</strong></td>
+<td>Como Gestora Cultural, eu quero gerar relatórios automáticos de público, orçamento e participação de artistas, para que eu possa analisar o desempenho e prestar contas de forma eficiente.</td>
+<td>- Gere um relatório de público por período ou evento.<br>- Gere um relatório financeiro (orçamento vs. realizado) por evento.<br>- Gere um relatório de participação de artistas (quantos artistas, cachês).<br>- Exporte os relatórios gerados em PDF e CSV.</td>
+</tr>
+<tr>
+<td><strong>Criar um sistema interno de mensagens e notificações para comunicação entre unidades e com artistas.</strong></td>
+<td>Como Gestora Cultural, eu quero um sistema interno de mensagens e notificações, para que eu possa me comunicar de forma ágil com outras unidades e artistas.</td>
+<td>- Envie uma mensagem direta para outro usuário (outra unidade).<br>- Envie uma mensagem para um grupo de artistas de um evento.<br>- Receba uma notificação (visual na plataforma) ao receber uma nova mensagem.</td>
+</tr>
+<tr>
+<td><strong>Desenvolver um banco de dados centralizado que armazene todas as informações de eventos, públicos, artistas e orçamentos.</strong></td>
+<td>Como Gestora Cultural, eu quero um banco de dados centralizado, para que todas as informações (eventos, públicos, artistas, orçamentos) estejam seguras e integradas como fonte única da verdade.</td>
+<td>- Confirme se dados de um novo evento são salvos na base central.<br>- Confirme se dados de um novo artista podem ser vinculados a um evento.<br>- Garanta que a exclusão de um evento não exclua o artista (integridade referencial).</td>
+</tr>
+<tr>
+<td><strong>Criar um painel visual com indicadores de desempenho, mostrando dados de eventos, públicos e finanças.</strong></td>
+<td>Como Gestora Cultural, eu quero um painel visual (dashboard) com indicadores de desempenho, para que eu possa monitorar rapidamente os dados principais de eventos, públicos e finanças.</td>
+<td>- Acesse o dashboard.<br>- Visualize um gráfico de "Eventos Realizados vs. Planejados".<br>- Visualize um indicador de "Público Total" no período.<br>- Visualize um medidor de "Orçamento Executado (%)" geral.<br>- Filtre o dashboard por um período (ex: últimos 30 dias).</td>
+</tr>
+<tr>
+<td><strong>Definir ingressos com preços, lotes e descontos para minhas produções.</strong></td>
+<td>Como Produtor Independente, eu quero definir preços, lotes e descontos para os ingressos, para que eu possa gerenciar a estratégia de vendas e maximizar a receita.</td>
+<td>- Crie um tipo de ingresso (ex: "Inteira") com preço fixo.<br>- Crie um segundo lote ativo após o primeiro esgotar (ou em data específica).<br>- Crie um cupom de desconto (ex: "PROMO10") com 10% de desconto.<br>- Defina a quantidade total de ingressos disponíveis.</td>
+</tr>
+<tr>
+<td><strong>Submeter propostas de projetos culturais por formulário padronizado.</strong></td>
+<td>Como Produtor Independente, eu quero submeter propostas por formulário padronizado, para que o processo de inscrição em editais seja claro e eficiente.</td>
+<td>- Acesse "Editais Abertos" e inicie uma submissão.<br>- Preencha campos obrigatórios.<br>- Anexe documentos exigidos (PDF, planilhas).<br>- Envie a proposta e receba e-mail de confirmação.<br>- Salve como rascunho antes de enviar.</td>
+</tr>
+<tr>
+<td><strong>Disponibilizar um link de compra direta para o público.</strong></td>
+<td>Como Produtor Independente, eu quero um link de compra direta para meu evento, para que eu possa divulgá-lo facilmente.</td>
+<td>- Após criar o evento e definir ingressos, localize o link de compra.<br>- Copie o link gerado.<br>- Acesse o link anonimamente e verifique se abre o evento correto.</td>
+</tr>
+<tr>
+<td><strong>Visualizar portfólio com artistas e grupos com quem trabalho (com histórico e necessidades técnicas).</strong></td>
+<td>Como Produtor Independente, eu quero visualizar um portfólio de artistas, para acessar rapidamente seus históricos e necessidades técnicas.</td>
+<td>- Acesse "Meus Artistas".<br>- Adicione um novo artista com informações de contato.<br>- Adicione notas de "Necessidades Técnicas" (Rider Técnico).<br>- Visualize histórico de eventos do artista.</td>
+</tr>
+<tr>
+<td><strong>Permitir acompanhar as vendas em tempo real.</strong></td>
+<td>Como Produtor Independente, eu quero acompanhar as vendas em tempo real, para tomar decisões rápidas sobre marketing e lotes.</td>
+<td>- Acesse o painel do evento.<br>- Visualize ingressos vendidos e receita atualizada.<br>- Simule nova compra e verifique atualização dos dados (em até 1 minuto).</td>
+</tr>
+<tr>
+<td><strong>Buscar e visualizar todas as oportunidades abertas em uma única listagem.</strong></td>
+<td>Como Artista Visual, eu quero buscar e visualizar oportunidades abertas, para encontrar novos projetos e me candidatar.</td>
+<td>- Acesse "Oportunidades" ou "Editais".<br>- Visualize lista de editais "Abertos".<br>- Filtre por categoria e prazo de inscrição.</td>
+</tr>
+<tr>
+<td><strong>Receber notificações automáticas (via plataforma e e-mail) sobre mudanças de status nas minhas propostas ou prazos importantes.</strong></td>
+<td>Como Artista Visual, eu quero receber notificações sobre mudanças de status, para não perder atualizações importantes.</td>
+<td>- Submeta uma proposta (simulação).<br>- (Admin) altere status para "Em Análise".<br>- Verifique notificação na plataforma e e-mail.</td>
+</tr>
+<tr>
+<td><strong>Preencher formulário padrão que anexa meu portfólio salvo com um clique.</strong></td>
+<td>Como Artista Visual, eu quero anexar meu portfólio salvo com um clique, para agilizar inscrições em editais.</td>
+<td>- Inicie inscrição em edital.<br>- Localize campo "Portfólio".<br>- Clique em "Anexar Portfólio da Plataforma".<br>- Verifique se foi anexado corretamente.</td>
+</tr>
+<tr>
+<td><strong>Alertas proativos sobre o andamento dos editais.</strong></td>
+<td>Como Artista Visual, eu quero alertas proativos sobre o andamento dos editais que sigo, para acompanhar as fases.</td>
+<td>- "Siga" um edital de interesse.<br>- (Admin) mude fase para "Em Análise".<br>- Verifique se notificação foi enviada ao artista seguidor.</td>
+</tr>
+<tr>
+<td><strong>Gerenciar (criar, editar, salvar) meu portfólio digital dentro da plataforma.</strong></td>
+<td>Como Artista Visual, eu quero gerenciar meu portfólio (bio, currículo, uploads), para mantê-lo atualizado.</td>
+<td>- Acesse "Meu Portfólio".<br>- Edite "Biografia".<br>- Faça upload de imagem (JPG/PNG).<br>- Faça upload de PDF (Currículo).<br>- Adicione link de vídeo (YouTube/Vimeo).</td>
+</tr>
+<tr>
+<td><strong>Visualizar um dashboard analítico com os dados agregados da rede.</strong></td>
+<td>Como Gestor Público de Cultura, eu quero visualizar um dashboard com dados agregados da rede, para ter visão macro do impacto cultural.</td>
+<td>- Acesse dashboard de gestão.<br>- Visualize número total de eventos e público agregado no trimestre.<br>- Veja mapa de calor por região.</td>
+</tr>
+<tr>
+<td><strong>Gerar e exportar relatórios padronizados (por período, região ou tipo de evento).</strong></td>
+<td>Como Gestor Público de Cultura, eu quero gerar relatórios padronizados, para analisar dados por período, região ou tipo.</td>
+<td>- Acesse "Relatórios Gerenciais".<br>- Gere relatório filtrando por região e período.<br>- Exporte relatório em PDF e CSV.</td>
+</tr>
+<tr>
+<td><strong>Gráficos e métricas sobre frequência total, diversidade de público, acessibilidade e número de eventos realizados.</strong></td>
+<td>Como Gestor Público de Cultura, eu quero gráficos sobre frequência e acessibilidade, para avaliar políticas de inclusão.</td>
+<td>- Visualize gráfico de pizza da "Diversidade de Público".<br>- Veja indicador "% de Eventos com Acessibilidade".<br>- Veja gráfico de linha da "Frequência Total" (últimos 12 meses).</td>
+</tr>
+<tr>
+<td><strong>Cruzar dados de público (gastos com bilhetes e outros) com os custos dos eventos.</strong></td>
+<td>Como Gestor Público de Cultura, eu quero cruzar dados de público e custos, para avaliar o impacto econômico.</td>
+<td>- Gere relatório com Evento, Custo Total, Receita e Público.<br>- Calcule "Custo por Espectador".<br>- Visualize "Ticket Médio".</td>
+</tr>
+<tr>
+<td><strong>Visualizar indicadores ROI das ações fomentadas.</strong></td>
+<td>Como Gestor Público de Cultura, eu quero visualizar indicadores de ROI, para justificar investimentos e otimizar recursos.</td>
+<td>- Exibir "ROI Financeiro" (Receita/Investimento).<br>- Exibir "ROI Social" (Custo por Pessoa Impactada).<br>- Filtrar por tipo de fomento.</td>
+</tr>
+<tr>
+<td><strong>Realizar um rápido onboarding no primeiro acesso.</strong></td>
+<td>Como Espectadora, eu quero realizar um onboarding inicial, para selecionar interesses e locais preferidos.</td>
+<td>- Crie conta.<br>- Verifique tela de onboarding.<br>- Selecione categorias e locais preferidos.<br>- Conclua onboarding e verifique persistência.</td>
+</tr>
+<tr>
+<td><strong>Navegar por uma agenda cultural unificada, com filtros de data, categoria e preço.</strong></td>
+<td>Como Espectadora, eu quero navegar pela agenda cultural unificada, para encontrar eventos de interesse.</td>
+<td>- Acesse "Agenda".<br>- Filtre por data, categoria e preço.<br>- Verifique se resultados correspondem aos filtros.</td>
+</tr>
+<tr>
+<td><strong>Salvar essas preferências.</strong></td>
+<td>Como Espectadora, eu quero salvar minhas preferências de filtro, para reutilizá-las automaticamente.</td>
+<td>- Aplique filtros e clique "Salvar Filtros".<br>- Faça logout/login e verifique se foram aplicados.</td>
+</tr>
+<tr>
+<td><strong>Submeter avaliação de feedback sobre eventos que participei.</strong></td>
+<td>Como Espectadora, eu quero avaliar eventos que participei, para compartilhar minha opinião.</td>
+<td>- Acesse evento passado.<br>- Atribua nota (1 a 5 estrelas).<br>- Escreva e envie comentário.<br>- Verifique se avaliação é pública.</td>
+</tr>
+<tr>
+<td><strong>Receber sugestões proativas de eventos com base no meu histórico.</strong></td>
+<td>Como Espectadora, eu quero receber sugestões personalizadas, para descobrir novos eventos relevantes.</td>
+<td>- Após participar de 3 eventos de "Música Clássica", acesse o feed.<br>- Verifique se aparecem eventos similares recomendados.</td>
+</tr>
+<tr>
+<td><strong>Garantir que o feed e as recomendações futuras sejam relevantes.</strong></td>
+<td>Como Espectadora, eu quero um feed personalizado de acordo com preferências, para ver conteúdo relevante.</td>
+<td>- Após selecionar "Teatro" e "Dança" no onboarding, verifique se o feed mostra majoritariamente essas categorias.</td>
+</tr>
+<tr>
+<td><strong>Acessar histórico dos eventos que frequentei e que vou participar.</strong></td>
+<td>Como Espectadora, eu quero acessar histórico de eventos passados e futuros, para me organizar.</td>
+<td>- Acesse "Meus Ingressos".<br>- Veja abas "Próximos Eventos" e "Eventos Passados".</td>
+</tr>
+<tr>
+<td><strong>Selecionar um evento e realizar a compra de ingresso dentro da plataforma.</strong></td>
+<td>Como Espectadora, eu quero comprar ingressos diretamente na plataforma, para um processo seguro e rápido.</td>
+<td>- Selecione evento.<br>- Escolha ingresso e quantidade.<br>- Faça checkout e pagamento.<br>- Receba e-mail de confirmação.<br>- Verifique ingresso em "Meus Ingressos".</td>
+</tr>
+<tr>
+<td><strong>Receber notificações sobre eventos que salvei e eventos que comprei.</strong></td>
+<td>Como Espectadora, eu quero notificações sobre eventos salvos ou comprados, para ser lembrada de datas e mudanças.</td>
+<td>- Favorite um evento.<br>- Receba notificação quando estiver quase esgotando.<br>- Receba lembrete 24h antes do evento comprado.</td>
+</tr>
+<tr>
+<td><strong>Receber notificações sobre atividades dos meus locais preferidos.</strong></td>
+<td>Como Espectadora, eu quero notificações sobre novas atividades dos meus locais preferidos, para acompanhar a programação.</td>
+<td>- Marque "Centro Cultural X" como preferido.<br>- (Admin) Cadastre novo evento nesse local.<br>- Verifique se a espectadora recebe notificação.</td>
+</tr>
+<tr>
+<td><strong>Permitir o agendamento e a publicação automática de postagens em múltiplas redes sociais.</strong></td>
+<td>Como Analista de Comunicação, eu quero agendar e publicar postagens em múltiplas redes, para otimizar o tempo e manter a cadência.</td>
+<td>- Conecte contas do Instagram e Facebook.<br>- Crie e agende postagem.<br>- Verifique publicação nas redes no horário agendado.</td>
+</tr>
+<tr>
+<td><strong>Integrar os principais canais de comunicação (redes sociais, site institucional e newsletter) em uma única interface.</strong></td>
+<td>Como Analista de Comunicação, eu quero integrar canais em uma interface única, para gerenciar toda a comunicação centralizadamente.</td>
+<td>- Verifique se painel de agendamento é o mesmo da plataforma.<br>- Crie banner e confirme exibição no site.<br>- Crie campanha de e-mail e envie teste.</td>
+</tr>
+<tr>
+<td><strong>Disponibilizar uma área para armazenar e organizar materiais de comunicação.</strong></td>
+<td>Como Analista de Comunicação, eu quero uma área de armazenamento e organização de mídia, para reutilizar assets facilmente.</td>
+<td>- Acesse "Biblioteca de Mídia".<br>- Faça upload de imagem com tags.<br>- Crie grupo de hashtags.<br>- Ao postar, importe imagem e hashtags.</td>
+</tr>
+<tr>
+<td><strong>Criar um painel de métricas consolidado (alcance, curtidas, compartilhamentos, comentários).</strong></td>
+<td>Como Analista de Comunicação, eu quero visualizar métricas agregadas de redes, para analisar desempenho geral.</td>
+<td>- Acesse "Dashboard de Métricas".<br>- Visualize Engajamento e Alcance Totais.<br>- Filtre por rede social (ex: Instagram).</td>
+</tr>
+<tr>
+<td><strong>Gerar relatórios periódicos com indicadores e recomendações.</strong></td>
+<td>Como Analista de Comunicação, eu quero gerar relatórios periódicos, para apresentar resultados e otimizar estratégias.</td>
+<td>- Gere relatório mensal.<br>- Verifique métricas e "Top Posts".<br>- Exporte em PDF.</td>
+</tr>
+<tr>
+<td><strong>Implementar um sistema de recomendação com base em desempenho anterior.</strong></td>
+<td>Como Analista de Comunicação, eu quero recomendações automáticas de horários, conteúdos e hashtags, para otimizar engajamento.</td>
+<td>- Ao criar postagem, veja sugestão de "Melhor horário".<br>- Veja painel de "Insights".<br>- Verifique quais tipos e hashtags geram mais engajamento.</td>
+</tr>
+</tbody>
+</table>
 
 
 
