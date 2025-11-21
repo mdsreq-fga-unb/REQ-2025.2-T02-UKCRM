@@ -1,3 +1,4 @@
+from ordered_model.serializers import OrderedModelSerializer
 from rest_framework import serializers
 
 from .models import Funnel, Lead, SalesTeam, Stage
@@ -6,21 +7,21 @@ from .models import Funnel, Lead, SalesTeam, Stage
 class SalesTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = SalesTeam
-        fields = ['id', 'name']
+        fields = "__all__"
 
 
-class LeadSerializer(serializers.ModelSerializer):
+class LeadSerializer(OrderedModelSerializer, serializers.ModelSerializer):
     class Meta:
         model = Lead
-        fields = ['id', 'name', 'email', 'phone', 'stage', 'order', 'created_at']
+        fields = "__all__"
 
 
-class StageSerializer(serializers.ModelSerializer):
+class StageSerializer(OrderedModelSerializer, serializers.ModelSerializer):
     leads = LeadSerializer(many=True, read_only=True)
 
     class Meta:
         model = Stage
-        fields = ['id', 'name', 'order', 'funnel', 'leads']
+        fields = "__all__"
 
 
 class FunnelSerializer(serializers.ModelSerializer):
@@ -31,9 +32,9 @@ class FunnelSerializer(serializers.ModelSerializer):
         queryset=SalesTeam.objects.all(),
         many=True,
         write_only=True,
-        source='teams',
+        source="teams",
     )
 
     class Meta:
         model = Funnel
-        fields = ['id', 'name', 'teams', 'team_ids', 'stages']
+        fields = "__all__"

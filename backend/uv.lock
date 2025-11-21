@@ -48,6 +48,15 @@ wheels = [
 ]
 
 [[package]]
+name = "django-ordered-model"
+version = "3.7.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/15/79/c320791f4f811045a77404d5a73e08e1d94767661dafd25324779e4f95d7/django-ordered-model-3.7.4.tar.gz", hash = "sha256:f258b9762525c00a53009e82f8b8bf2a3aa315e8b453e281e8fdbbfe2b8cb3ba", size = 203491, upload-time = "2023-03-17T15:53:40.529Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e8/cb/109ea0483080c0bec559c64c28959f9ff4d85b4ebc53b2726dbb6bc3fc59/django_ordered_model-3.7.4-py3-none-any.whl", hash = "sha256:dfcd3183fe0749dad1c9971cba1d6240ce7328742a30ddc92feca41107bb241d", size = 20532, upload-time = "2023-03-17T15:53:38.689Z" },
+]
+
+[[package]]
 name = "djangorestframework"
 version = "3.16.1"
 source = { registry = "https://pypi.org/simple" }
@@ -264,6 +273,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "django" },
     { name = "django-cors-headers" },
+    { name = "django-ordered-model" },
     { name = "djangorestframework" },
     { name = "djangorestframework-simplejwt" },
     { name = "drf-spectacular" },
@@ -275,6 +285,7 @@ dependencies = [
 requires-dist = [
     { name = "django", specifier = ">=5.2.8" },
     { name = "django-cors-headers", specifier = ">=4.9.0" },
+    { name = "django-ordered-model", specifier = ">=3.7.4" },
     { name = "djangorestframework", specifier = ">=3.16.1" },
     { name = "djangorestframework-simplejwt", specifier = ">=5.5.1" },
     { name = "drf-spectacular", specifier = ">=0.29.0" },

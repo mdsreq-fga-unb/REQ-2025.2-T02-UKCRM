@@ -1,3 +1,4 @@
+# views.py
 from rest_framework import viewsets
 
 from .models import Funnel, Lead, SalesTeam, Stage
@@ -15,10 +16,7 @@ class SalesTeamViewSet(viewsets.ModelViewSet):
 
 
 class FunnelViewSet(viewsets.ModelViewSet):
-    queryset = Funnel.objects.prefetch_related(
-        'teams',
-        'stages__leads',
-    ).all()
+    queryset = Funnel.objects.prefetch_related("teams", "stages__leads").all()
     serializer_class = FunnelSerializer
 
 
