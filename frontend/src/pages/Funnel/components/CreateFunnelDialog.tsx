@@ -32,20 +32,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useMemo, useState } from "react";
-import { formSchema, teamsList } from "../funnel.schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useMemo, useState } from "react";
+import { formSchema, teamsList } from "../schemas/funnel.schema";
 
 type CreateFunnelDialogProps = {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
+  isPending?: boolean;
 };
 
 export function CreateFunnelDialog({
   open,
   onOpenChange,
   onSubmit,
+  isPending,
 }: CreateFunnelDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -183,12 +185,12 @@ export function CreateFunnelDialog({
                 type="button"
                 variant="secondary"
                 onClick={() => handleOpenChange(false)}
-                disabled={form.formState.isSubmitting}
+                disabled={isPending}
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Salvando..." : "Salvar"}
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Salvando..." : "Salvar"}
               </Button>
             </DialogFooter>
           </form>

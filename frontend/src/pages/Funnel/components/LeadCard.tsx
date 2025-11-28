@@ -1,40 +1,24 @@
+import InactivityBadge from "@/components/InactivityBadge";
+import { TemperatureBadge } from "@/components/TemperatureBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { daysSince } from "@/lib/date-utils";
-import type { UniqueIdentifier } from "@dnd-kit/core";
+import { daysSince } from "@/lib/dateUtils";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripVertical, IdCardIcon, UserIcon } from "lucide-react";
-import InactivityBadge from "./InactivityBadge";
-import { type ColumnId } from "./KanbanBoard";
-import { TemperatureBadge } from "./TemperatureBadge";
-import type { TemperatureVariant } from "@/lib/temperature";
+import type { Lead } from "../types/kanban.types";
+import type { LeadDragData } from "../types/kanban.types";
 
-export interface Task {
-  id: UniqueIdentifier;
-  columnId: ColumnId;
-  title: string;
-  earning: number;
-  content: string;
-  temperature: TemperatureVariant;
-  date: Date;
-}
-
-interface TaskCardProps {
-  task: Task;
+interface LeadCardProps {
+  lead: Lead;
   isOverlay?: boolean;
 }
 
-export type TaskType = "Task";
+export type LeadType = "Lead";
 
-export interface TaskDragData {
-  type: TaskType;
-  task: Task;
-}
-
-export function TaskCard({ task, isOverlay }: TaskCardProps) {
+export function LeadCard({ lead, isOverlay }: LeadCardProps) {
   const {
     setNodeRef,
     attributes,
@@ -43,13 +27,13 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
     transition,
     isDragging,
   } = useSortable({
-    id: task.id,
+    id: lead.id,
     data: {
-      type: "Task",
-      task,
-    } satisfies TaskDragData,
+      type: "Lead",
+      lead,
+    } satisfies LeadDragData,
     attributes: {
-      roleDescription: "Task",
+      roleDescription: "Lead",
     },
   });
 
@@ -84,18 +68,18 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
             {...listeners}
             className="p-1 text-muted-foreground -ml-2 mb-0 h-auto cursor-grab"
           >
-            <span className="sr-only">Move task</span>
+            <span className="sr-only">Move lead</span>
             <GripVertical />
           </Button>
-          <span className="mb-0">{task.title}</span>
-          <InactivityBadge days={daysSince(task.date)} />
-          <TemperatureBadge variant={task.temperature} className="ml-auto">
-            {task.temperature}
+          <span className="mb-0">{lead.name}</span>
+          <InactivityBadge days={daysSince(lead.updatedAt)} />
+          <TemperatureBadge variant={lead.temperature} className="ml-auto">
+            {lead.temperature}
           </TemperatureBadge>
         </div>
       </CardHeader>
       <CardContent className="px-3 py-2 text-left whitespace-pre-wrap text-muted-foreground">
-        {task.content}
+        {lead.content}
         <div className="flex justify-between items-center w-full">
           <Button size="icon-sm" variant="ghost">
             <Avatar className="size-5">
@@ -109,7 +93,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
             {new Intl.NumberFormat("pt-BR", {
               style: "currency",
               currency: "BRL",
-            }).format(task.earning)}
+            }).format(lead.earning)}
           </span>
           <Button size="icon-sm" variant="ghost">
             <IdCardIcon className="size-5" />

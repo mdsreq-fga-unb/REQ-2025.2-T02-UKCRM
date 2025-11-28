@@ -1,10 +1,10 @@
 import { Outlet } from "react-router";
-import ThemeProvider from "@/components/ThemeProvider";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import ThemeProvider from "@/components/theme/ThemeProvider";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+    <ThemeProvider storageKey="vite-ui-theme">
       <div className="flex flex-col h-screen divide-y">
         <header className="flex justify-between w-full flex-row p-2">
           <ThemeToggle />

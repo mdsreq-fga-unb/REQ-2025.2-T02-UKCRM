@@ -1,15 +1,14 @@
 "use client";
 
 import CreateButton from "@/components/CreateButton";
+import DeleteButton from "@/components/DeleteButton";
 import { DoRedo } from "@/components/DoRedo";
 import FilterButton from "@/components/FilterButton";
 import SelectButton from "@/components/SelectButton";
+import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { ChartNoAxesCombinedIcon, PencilIcon, TagIcon } from "lucide-react";
-import { useState } from "react";
-import { sortOptionsList } from "../constants/action-bar.constants";
-import { Button } from "@/components/ui/button";
-import DeleteButton from "@/components/DeleteButton";
+import { sortOptionsList } from "../constants/actionBar.constants";
 
 type FunnelItem = {
   value: string;
@@ -19,10 +18,13 @@ type FunnelItem = {
 type ActionBarProps = {
   funnels: FunnelItem[];
   onCreateFunnelClick: () => void;
-  onDeleteFunnelClick: (funnelName: string) => void;
+  onDeleteFunnelClick: () => void;
   filterTerm: string;
   onFilterChange: (value: string) => void;
   onSortChange: (value: string) => void;
+  selectedFunnelId: string | null;
+  onFunnelSelect: (value: string | null) => void;
+  isLoading?: boolean;
 };
 
 export default function ActionBar({
@@ -32,23 +34,17 @@ export default function ActionBar({
   filterTerm,
   onFilterChange,
   onSortChange,
+  selectedFunnelId,
+  onFunnelSelect,
+  isLoading,
 }: ActionBarProps) {
-  const [selectedFunnel, setSelectedFunnel] = useState<string | null>(null);
-
-  const handleFunnelSelect = (funnelValue: string) => {
-    const funnel = funnels.find((f) => f.value === funnelValue);
-    setSelectedFunnel(funnel ? funnel.label : null);
-  };
-
   const handleDeleteClick = () => {
-    if (selectedFunnel) {
-      onDeleteFunnelClick(selectedFunnel);
-    }
+    onDeleteFunnelClick();
   };
-  
+
   const handleEditClick = () => {
-    if (selectedFunnel) {
-      onCreateFunnelClick();
+    if (selectedFunnelId) {
+      onCreateFunnelClick(); // TODO: Distinguir Criar de Editar
     }
   };
 
@@ -60,11 +56,13 @@ export default function ActionBar({
           label="Funils de Venda"
           icon={<TagIcon />}
           items={funnels}
-          onValueChange={handleFunnelSelect}
+          value={selectedFunnelId}
+          onValueChange={onFunnelSelect}
+          disabled={isLoading}
         />
         <Button
           onClick={handleEditClick}
-          disabled={!selectedFunnel}
+          disabled={!selectedFunnelId}
           size={"icon"}
           variant={"outline"}
         >
@@ -74,7 +72,7 @@ export default function ActionBar({
       <ButtonGroup>
         <DeleteButton
           onClick={handleDeleteClick}
-          disabled={!selectedFunnel}
+          disabled={!selectedFunnelId}
           label="Excluir Funil"
         />
         <CreateButton onClick={onCreateFunnelClick} label="Criar Funil" />

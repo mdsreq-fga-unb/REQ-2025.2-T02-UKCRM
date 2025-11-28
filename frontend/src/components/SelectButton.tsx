@@ -20,8 +20,10 @@ type SelectButtonProps = {
   label: string;
   icon: React.ReactNode;
   items: Item[];
+  value?: string | null;
   onValueChange?: (value: string) => void;
   className?: string;
+  disabled?: boolean;
 };
 
 export default function SelectButton({
@@ -29,11 +31,13 @@ export default function SelectButton({
   placeholder,
   icon,
   items,
+  value,
   onValueChange,
   className,
+  disabled,
 }: SelectButtonProps) {
   return (
-    <Select onValueChange={onValueChange}>
+    <Select value={value ?? undefined} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger className={cn("w-[220px]", className)}>
         {icon}
         <SelectValue placeholder={placeholder} />

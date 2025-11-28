@@ -1,45 +1,34 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDndContext, type UniqueIdentifier } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripHorizontal, PencilIcon, PlusIcon } from "lucide-react";
-import { useMemo } from "react";
-import { TaskCard, type Task } from "./TaskCard";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader } from "./ui/card";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import React from "react";
-
-export interface Column {
-  id: UniqueIdentifier;
-  title: string;
-  subtitle_left?: string;
-  subtitle_right?: string;
-}
+import React, { useMemo } from "react";
+import { LeadCard } from "./LeadCard";
+import type { Column, Lead } from "../types/kanban.types";
+import type { ColumnDragData } from "../types/kanban.types";
 
 export type ColumnType = "Column";
 
-export interface ColumnDragData {
-  type: ColumnType;
-  column: Column;
-}
-
 interface BoardColumnProps {
   column: Column;
-  tasks: Task[];
+  leads: Lead[];
   isOverlay?: boolean;
-  onAddTask: (columnId: UniqueIdentifier) => void;
+  onAddLead: (columnId: UniqueIdentifier) => void;
 }
 
 export function BoardColumn({
   column,
-  tasks,
+  leads,
   isOverlay,
-  onAddTask,
+  onAddLead,
 }: BoardColumnProps) {
-  const tasksIds = useMemo(() => {
-    return tasks.map((task) => task.id);
-  }, [tasks]);
+  const leadsIds = useMemo(() => {
+    return leads.map((lead) => lead.id);
+  }, [leads]);
 
   const {
     setNodeRef,
@@ -65,7 +54,7 @@ export function BoardColumn({
   };
 
   const variants = cva(
-    "w-[350px] max-w-full bg-sidebar flex flex-col flex-shrink-0 snap-center",
+    "h-full w-[350px] max-w-full bg-sidebar flex flex-col flex-shrink-0 snap-center",
     {
       variants: {
         dragging: {
@@ -113,15 +102,15 @@ export function BoardColumn({
       <Button
         variant="ghost"
         className="w-full h-fit rounded-none text-muted-foreground"
-        onClick={() => onAddTask(column.id)}
+        onClick={() => onAddLead(column.id)}
       >
         <PlusIcon />
       </Button>
-      <ScrollArea>
-        <CardContent className="flex flex-col gap-2 px-2 pt-0 ">
-          <SortableContext items={tasksIds}>
-            {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+      <ScrollArea className="h-full">
+        <CardContent className="flex flex-col grow gap-2 px-2 pt-0 ">
+          <SortableContext items={leadsIds}>
+            {leads.map((lead) => (
+              <LeadCard key={lead.id} lead={lead} />
             ))}
           </SortableContext>
         </CardContent>

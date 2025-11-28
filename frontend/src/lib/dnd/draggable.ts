@@ -1,8 +1,8 @@
 import { type Active, type DataRef, type Over } from "@dnd-kit/core";
-import { type ColumnDragData } from "./BoardColumn";
-import { type TaskDragData } from "./TaskCard";
+import { type ColumnDragData } from "@/pages/Funnel/components/BoardColumn";
+import { type LeadDragData } from "@/pages/Funnel/components/LeadCard";
 
-type DraggableData = ColumnDragData | TaskDragData;
+type DraggableData = ColumnDragData | LeadDragData;
 
 export function hasDraggableData<T extends Active | Over>(
   entry: T | null | undefined,
@@ -15,7 +15,7 @@ export function hasDraggableData<T extends Active | Over>(
 
   const data = entry.data.current;
 
-  if (data?.type === "Column" || data?.type === "Task") {
+  if (data?.type === "Column" || data?.type === "Lead") {
     return true;
   }
 

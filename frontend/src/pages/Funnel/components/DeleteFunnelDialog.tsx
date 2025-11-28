@@ -7,20 +7,20 @@ import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -29,6 +29,7 @@ type DeleteFunnelDialogProps = {
   onOpenChange: (isOpen: boolean) => void;
   onSubmit: () => void;
   funnelName: string;
+  isPending?: boolean;
 };
 
 type FormValues = {
@@ -40,6 +41,7 @@ export function DeleteFunnelDialog({
   onOpenChange,
   onSubmit,
   funnelName,
+  isPending,
 }: DeleteFunnelDialogProps) {
   const formSchema = z.object({
     confirmationName: z.string().refine((data) => data === funnelName, {
@@ -111,18 +113,16 @@ export function DeleteFunnelDialog({
                 type="button"
                 variant="secondary"
                 onClick={() => handleOpenChange(false)}
-                disabled={form.formState.isSubmitting}
+                disabled={isPending}
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
                 variant="destructive"
-                disabled={
-                  !form.formState.isValid || form.formState.isSubmitting
-                }
+                disabled={!form.formState.isValid || isPending}
               >
-                {form.formState.isSubmitting ? "Excluindo..." : "Excluir"}
+                {isPending ? "Excluindo..." : "Excluir"}
               </Button>
             </DialogFooter>
           </form>
