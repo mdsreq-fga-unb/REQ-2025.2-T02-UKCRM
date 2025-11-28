@@ -7,9 +7,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripHorizontal, PencilIcon, PlusIcon } from "lucide-react";
 import React, { useMemo } from "react";
+import type { Column, ColumnDragData, Lead } from "../types/kanban.types";
 import { LeadCard } from "./LeadCard";
-import type { Column, Lead } from "../types/kanban.types";
-import type { ColumnDragData } from "../types/kanban.types";
 
 export type ColumnType = "Column";
 

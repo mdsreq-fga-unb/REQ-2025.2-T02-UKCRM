@@ -34,7 +34,8 @@ import {
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMemo, useState } from "react";
-import { formSchema, teamsList } from "../schemas/funnel.schema";
+import { formSchema } from "../schemas/funnel.schema";
+import { useSalesTeams } from "../hooks/useTeams";
 
 type CreateFunnelDialogProps = {
   open: boolean;
@@ -49,11 +50,13 @@ export function CreateFunnelDialog({
   onSubmit,
   isPending,
 }: CreateFunnelDialogProps) {
+  const { data: teamsData = [], isLoading: isLoadingTeams } = useSalesTeams();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       funnelName: "",
-      teamNames: [],
+      teamIds: [],
     },
   });
 
@@ -75,12 +78,12 @@ export function CreateFunnelDialog({
 
   const filteredTeams = useMemo(() => {
     if (!filterTerm) {
-      return teamsList;
+      return teamsData;
     }
-    return teamsList.filter((team) =>
+    return teamsData.filter((team) =>
       team.name.toLowerCase().includes(filterTerm.toLowerCase()),
     );
-  }, [filterTerm]);
+  }, [filterTerm, teamsData]);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -124,7 +127,7 @@ export function CreateFunnelDialog({
 
               <FormField
                 control={form.control}
-                name="teamNames"
+                name="teamIds"
                 render={({ field }) => (
                   <FormItem className="w-full rounded-md border gap-0">
                     <Table>
@@ -132,45 +135,69 @@ export function CreateFunnelDialog({
                         <TableRow>
                           <TableHead className="w-[50px]"></TableHead>
                           <TableHead className="w-auto">Nome do Time</TableHead>
-                          <TableHead className="w-[100px] text-right pr-3">
-                            Membros
-                          </TableHead>
+                          {/* Backend atual não manda contagem de membros, removido por enquanto */}
+                          {/* <TableHead className="w-[100px] text-right pr-3">Membros</TableHead> */}
                         </TableRow>
                       </TableHeader>
                     </Table>
                     <ScrollArea className="h-[150px]">
                       <Table>
                         <TableBody>
-                          {filteredTeams.map((team) => (
-                            <TableRow key={team.name}>
-                              <TableCell className="w-[50px]">
-                                <Checkbox
-                                  checked={field.value?.includes(team.name)}
-                                  onCheckedChange={(isChecked) => {
-                                    const currentSelection = field.value || [];
-                                    if (isChecked) {
-                                      field.onChange([
-                                        ...currentSelection,
-                                        team.name,
-                                      ]);
-                                    } else {
-                                      field.onChange(
-                                        currentSelection.filter(
-                                          (name) => name !== team.name,
-                                        ),
-                                      );
-                                    }
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell className="w-auto">
-                                {team.name}
-                              </TableCell>
-                              <TableCell className="w-[100px] text-right pr-3">
-                                {team.members}
+                          {isLoadingTeams ? (
+                            <TableRow>
+                              <TableCell
+                                colSpan={2}
+                                className="text-center py-4"
+                              >
+                                Carregando times...
                               </TableCell>
                             </TableRow>
-                          ))}
+                          ) : filteredTeams.length === 0 ? (
+                            <TableRow>
+                              <TableCell
+                                colSpan={2}
+                                className="text-center py-4"
+                              >
+                                Nenhum time encontrado.
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            filteredTeams.map((team) => {
+                              const teamIdStr = team.id.toString();
+                              return (
+                                <TableRow key={team.id}>
+                                  <TableCell className="w-[50px]">
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(
+                                          teamIdStr,
+                                        )}
+                                        onCheckedChange={(isChecked) => {
+                                          const currentSelection =
+                                            field.value || [];
+                                          if (isChecked) {
+                                            field.onChange([
+                                              ...currentSelection,
+                                              teamIdStr,
+                                            ]);
+                                          } else {
+                                            field.onChange(
+                                              currentSelection.filter(
+                                                (value) => value !== teamIdStr,
+                                              ),
+                                            );
+                                          }
+                                        }}
+                                      />
+                                    </FormControl>
+                                  </TableCell>
+                                  <TableCell className="w-auto">
+                                    {team.name}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })
+                          )}
                         </TableBody>
                       </Table>
                     </ScrollArea>
@@ -189,7 +216,7 @@ export function CreateFunnelDialog({
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" disabled={isPending || isLoadingTeams}>
                 {isPending ? "Salvando..." : "Salvar"}
               </Button>
             </DialogFooter>

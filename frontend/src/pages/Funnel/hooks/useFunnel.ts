@@ -1,3 +1,5 @@
+import type { UniqueIdentifier } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import {
   type Dispatch,
   type SetStateAction,
@@ -6,8 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { UniqueIdentifier } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
+import type { ApiFunnel } from "../api/funnels.api";
 import { type FunnelFormValues } from "../schemas/funnel.schema";
 import type {
   Column,
@@ -15,18 +16,17 @@ import type {
   Lead,
   LeadDropEvent,
 } from "../types/kanban.types";
-import type { ApiFunnel } from "../api/funnelApi";
 
 import {
   useCreateFunnel,
-  useCreateLead,
   useCreateStage,
   useDeleteFunnel,
   useFunnelDetails,
   useFunnelsList,
   useUpdateStage,
-  useUpdateLead,
-} from "./useFunnelQueries";
+} from "./useFunnels";
+
+import { useCreateLead, useUpdateLead } from "./useLeads";
 
 import {
   extractId,
@@ -36,10 +36,8 @@ import {
 } from "../utils/funnelTransformers";
 
 export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
-  // --- ESTADOS ---
   const [columns, setColumns] = useState<Column[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
-
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
@@ -48,15 +46,22 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
 
   const [selectedFunnelId, setSelectedFunnelId] = useState<string | null>(null);
 
-  // --- QUERIES ---
+  // LEITURA
+  
   const { data: funnelsData, isLoading: isLoadingFunnels } = useFunnelsList();
 
   const { data: funnelDetailsData, isLoading: isLoadingFunnelDetails } =
     useFunnelDetails(selectedFunnelId);
 
-  // --- MUTAÇÕES ---
+  // ESCRITA
+
+  // FUNILS
+  
   const { mutate: createFunnel, isPending: isCreatingFunnel } = useCreateFunnel(
-    () => setIsCreateOpen(false),
+    (newFunnel) => {
+      setIsCreateOpen(false); 
+      setSelectedFunnelId(newFunnel.id.toString()); 
+    },
   );
 
   const { mutate: deleteFunnel, isPending: isDeletingFunnel } = useDeleteFunnel(
@@ -67,6 +72,8 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     },
   );
 
+  // LEADS E ETAPAS
+  
   const { mutate: updateLead } = useUpdateLead(selectedFunnelId, setLeads);
   const { mutate: updateStage } = useUpdateStage(selectedFunnelId);
   const { mutate: createLead, isPending: isCreatingLead } = useCreateLead(
@@ -76,7 +83,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const { mutate: createStage, isPending: isCreatingStage } =
     useCreateStage(selectedFunnelId);
 
-  // --- DERIVADOS (MEMOS) ---
+  // DADOS
 
   const funnelsList = useMemo(() => {
     const data = funnelsData as ApiFunnel[] | undefined;
@@ -102,7 +109,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     [columns, leads],
   );
 
-  // --- EFEITOS ---
+  // EFEITOS
 
   useEffect(() => {
     if (!funnelDetailsData) {
@@ -120,7 +127,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     setSortCriteria(null);
   }, [selectedFunnelId]);
 
-  // --- HANDLERS ---
+  // HANDLERS
 
   const getLeadsForColumn = useCallback(
     (columnId: ColumnId) =>
@@ -132,8 +139,8 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     (event: LeadDropEvent) => {
       const { leadId, newColumnId, newOrder } = event;
       updateLead({
-        id: extractId(leadId),
-        stage: extractId(newColumnId),
+        id: extractId(leadId), 
+        stage: extractId(newColumnId), 
         order: newOrder,
       });
     },
@@ -170,7 +177,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       createLead({
         name: "Novo Lead",
         stage: extractId(columnId),
-        order: 0,
+        order: 0, 
       });
     },
     [createLead],
@@ -181,12 +188,12 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       createStage({
         name: "Nova Etapa",
         funnel: Number(selectedFunnelId),
-        order: columns.length,
+        order: columns.length, 
       });
     }
   }, [selectedFunnelId, createStage, columns.length]);
 
-  // --- RETORNO ---
+  // RETORNO
   return useMemo(
     () => ({
       createDialog: {
@@ -248,8 +255,10 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       isCreatingStage,
       columnsWithSubtitles,
       leads,
+
       createFunnel,
       deleteFunnel,
+
       getLeadsForColumn,
       handleColumnsChange,
       handleColumnDrop,

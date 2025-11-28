@@ -1,16 +1,16 @@
-import { type Dispatch, type SetStateAction, useMemo } from "react";
-import { createPortal } from "react-dom";
-import { useKanbanDrag } from "./../hooks/useKanbanDrag";
 import { Button } from "@/components/ui/button";
 import { DndContext, DragOverlay, type UniqueIdentifier } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { PlusIcon } from "lucide-react";
+import { type Dispatch, type SetStateAction, useMemo } from "react";
+import { createPortal } from "react-dom";
 import type {
   Column,
   ColumnId,
   Lead,
   LeadDropEvent,
 } from "../types/kanban.types";
+import { useKanbanDrag } from "./../hooks/useKanbanDrag";
 import { BoardColumn, BoardContainer } from "./BoardColumn";
 import { LeadCard } from "./LeadCard";
 
@@ -30,7 +30,7 @@ export function KanbanBoard({
   leads,
   getFilteredAndSortedLeads,
   onColumnsChange,
-  onColumnDrop, // NOVO
+  onColumnDrop,
   onLeadDrop,
   onAddLead,
   onAddColumn,

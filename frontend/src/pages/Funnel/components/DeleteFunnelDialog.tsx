@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -43,11 +43,13 @@ export function DeleteFunnelDialog({
   funnelName,
   isPending,
 }: DeleteFunnelDialogProps) {
-  const formSchema = z.object({
-    confirmationName: z.string().refine((data) => data === funnelName, {
-      message: "O nome digitado não corresponde ao nome do funil.",
-    }),
-  });
+  const formSchema = useMemo(() => {
+    return z.object({
+      confirmationName: z.string().refine((val) => val === funnelName, {
+        message: "O nome digitado não corresponde ao nome do funil.",
+      }),
+    });
+  }, [funnelName]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -87,8 +89,8 @@ export function DeleteFunnelDialog({
               <DialogTitle>Excluir Funil?</DialogTitle>
               <DialogDescription>
                 Esta ação não pode ser desfeita. <br />
-                Ao excluir o funil de vendas, todos os membros do time de vendas
-                terão o seu acesso ao funil revogado. <br />
+                Todos os dados relacionados a este funil (etapas e leads) serão
+                permanentemente removidos. <br />
                 Para confirmar a exclusão, digite o nome exato do funil:{" "}
                 <strong className="text-foreground">{funnelName}</strong>
               </DialogDescription>
@@ -101,7 +103,11 @@ export function DeleteFunnelDialog({
                 <FormItem>
                   <FormLabel>Digite o nome do funil</FormLabel>
                   <FormControl>
-                    <Input placeholder={funnelName} {...field} />
+                    <Input
+                      placeholder={funnelName}
+                      {...field}
+                      autoComplete="off"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

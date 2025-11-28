@@ -8,8 +8,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripVertical, IdCardIcon, UserIcon } from "lucide-react";
-import type { Lead } from "../types/kanban.types";
-import type { LeadDragData } from "../types/kanban.types";
+import type { Lead, LeadDragData } from "../types/kanban.types";
 
 interface LeadCardProps {
   lead: Lead;

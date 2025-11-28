@@ -1,9 +1,10 @@
 import { temperatureSortOrder } from "@/lib/temperature";
 import type { UniqueIdentifier } from "@dnd-kit/core";
-import type { ApiFunnelDetails, ApiLead } from "../api/funnelApi";
+import type { ApiFunnelDetails } from "../api/funnels.api";
+import type { ApiLead } from "../api/leads.api";
 import type { Column, ColumnId, Lead } from "../types/kanban.types";
 
-// --- CONSTANTES & HELPERS DE ID ---
+// HELPERS DE ID
 
 const COL_PREFIX = "col-";
 const LEAD_PREFIX = "lead-";
@@ -19,7 +20,8 @@ export const extractId = (id: UniqueIdentifier): number => {
   return Number(str);
 };
 
-// --- HELPERS DE FORMATAÇÃO ---
+// HELPERS DE FORMATAÇÃO
+
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
@@ -92,7 +94,7 @@ export function getColumnsWithSubtitles(
   });
 }
 
-// --- ESTRATÉGIAS DE ORDENAÇÃO ---
+// ORDENAÇÃO
 
 type SortStrategy = (a: Lead, b: Lead) => number;
 

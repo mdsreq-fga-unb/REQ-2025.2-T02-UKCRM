@@ -1,22 +1,22 @@
+import { hasDraggableData } from "@/lib/dnd/draggable";
+import { coordinateGetter } from "@/lib/dnd/multipleContainersKeyboardPreset";
 import {
-  type DragEndEvent,
-  type DragStartEvent,
-  type Active,
-  type Over,
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
   useSensor,
   useSensors,
+  type Active,
+  type DragEndEvent,
+  type DragStartEvent,
+  type Over,
   type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
-import { coordinateGetter } from "@/lib/dnd/multipleContainersKeyboardPreset";
-import { hasDraggableData } from "@/lib/dnd/draggable";
 import type { Column, Lead, LeadDropEvent } from "../types/kanban.types";
 
-// --- HELPERS ---
+// HELPERS
 
 function calculateColumnMove(active: Active, over: Over, columns: Column[]) {
   const activeId = active.id;
@@ -61,7 +61,7 @@ function calculateLeadMove(active: Active, over: Over, leads: Lead[]) {
   return { newColumnId, newOrder };
 }
 
-// --- HOOK PRINCIPAL ---
+// HOOK PRINCIPAL
 
 type UseKanbanDragProps = {
   columns: Column[];
@@ -107,7 +107,8 @@ export function useKanbanDrag({
     const activeData = active.data.current;
     if (!activeData) return;
 
-    // --- COLUNAS ---
+    // ETAPAS
+    
     if (activeData.type === "Column") {
       const moveResult = calculateColumnMove(active, over, columns);
 
@@ -120,7 +121,8 @@ export function useKanbanDrag({
       return;
     }
 
-    // --- LEADS ---
+    // LEADS
+    
     if (activeData.type === "Lead") {
       const moveResult = calculateLeadMove(active, over, leads);
 

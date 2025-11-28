@@ -1,7 +1,7 @@
-import type { UniqueIdentifier } from "@dnd-kit/core";
 import type { TemperatureVariant } from "@/lib/temperature";
+import type { UniqueIdentifier } from "@dnd-kit/core";
 
-// --- ENTIDADES ---
+// ENTIDADES
 
 export interface Column {
   id: UniqueIdentifier;
@@ -23,7 +23,7 @@ export interface Lead {
   updatedAt: Date;
 }
 
-// --- DRAG & DROP DATA (Payloads) ---
+// DRAG & DROP DATA
 
 export type ColumnType = "Column";
 export type LeadType = "Lead";
