@@ -35,7 +35,16 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMemo, useState } from "react";
 import { formSchema } from "../schemas/funnel.schema";
+import { featureFlags, shouldUseMock } from "@/config/features";
 import { useSalesTeams } from "../hooks/useTeams";
+
+// Mock teams data
+const mockTeams = [
+  { id: 1, name: "Time Alpha" },
+  { id: 2, name: "Time Beta" },
+  { id: 3, name: "Time Gamma" },
+  { id: 4, name: "Time Delta" },
+];
 
 type CreateFunnelDialogProps = {
   open: boolean;
@@ -50,7 +59,15 @@ export function CreateFunnelDialog({
   onSubmit,
   isPending,
 }: CreateFunnelDialogProps) {
-  const { data: teamsData = [], isLoading: isLoadingTeams } = useSalesTeams();
+  // Switch between mock and real data based on feature flag
+  const useMockData = shouldUseMock(featureFlags.USE_MOCK_TEAMS);
+
+  // Only call the API hook if not using mock data
+  const { data: apiTeamsData, isLoading: isLoadingApiTeams } = useSalesTeams();
+
+  // Use mock or real data based on flag
+  const teamsData = useMockData ? mockTeams : (apiTeamsData || []);
+  const isLoadingTeams = useMockData ? false : isLoadingApiTeams;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

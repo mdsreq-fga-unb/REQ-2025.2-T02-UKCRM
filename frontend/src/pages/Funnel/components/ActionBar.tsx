@@ -7,6 +7,7 @@ import FilterButton from "@/components/FilterButton";
 import SelectButton from "@/components/SelectButton";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { usePermissions } from "@/auth/hooks/usePermissions";
 import { ChartNoAxesCombinedIcon, PencilIcon, TagIcon } from "lucide-react";
 import { sortOptionsList } from "../constants/actionBar.constants";
 
@@ -38,6 +39,8 @@ export default function ActionBar({
   onFunnelSelect,
   isLoading,
 }: ActionBarProps) {
+  const { hasPermission } = usePermissions();
+
   const handleDeleteClick = () => {
     onDeleteFunnelClick();
   };
@@ -47,6 +50,11 @@ export default function ActionBar({
       onCreateFunnelClick(); // TODO: Distinguir Criar de Editar
     }
   };
+
+  // Permission checks
+  const canCreateFunnel = hasPermission("funnel:create");
+  const canEditFunnel = hasPermission("funnel:edit");
+  const canDeleteFunnel = hasPermission("funnel:delete");
 
   return (
     <header className="flex justify-between w-full flex-row p-2">
@@ -60,22 +68,28 @@ export default function ActionBar({
           onValueChange={onFunnelSelect}
           disabled={isLoading}
         />
-        <Button
-          onClick={handleEditClick}
-          disabled={!selectedFunnelId}
-          size={"icon"}
-          variant={"outline"}
-        >
-          <PencilIcon />
-        </Button>
+        {canEditFunnel && (
+          <Button
+            onClick={handleEditClick}
+            disabled={!selectedFunnelId}
+            size={"icon"}
+            variant={"outline"}
+          >
+            <PencilIcon />
+          </Button>
+        )}
       </ButtonGroup>
       <ButtonGroup>
-        <DeleteButton
-          onClick={handleDeleteClick}
-          disabled={!selectedFunnelId}
-          label="Excluir Funil"
-        />
-        <CreateButton onClick={onCreateFunnelClick} label="Criar Funil" />
+        {canDeleteFunnel && (
+          <DeleteButton
+            onClick={handleDeleteClick}
+            disabled={!selectedFunnelId}
+            label="Excluir Funil"
+          />
+        )}
+        {canCreateFunnel && (
+          <CreateButton onClick={onCreateFunnelClick} label="Criar Funil" />
+        )}
       </ButtonGroup>
       <DoRedo />
       <SelectButton
