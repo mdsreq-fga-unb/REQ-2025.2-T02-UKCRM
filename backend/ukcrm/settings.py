@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "funnel",
     "drf_spectacular",
     "ordered_model",
+    "organization",
+    'accounts',
 ]
 
 REST_FRAMEWORK = {
