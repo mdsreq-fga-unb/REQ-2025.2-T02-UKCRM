@@ -1,7 +1,7 @@
 import { Building, Users, Filter, Chrome, UserCircle } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { UserProfileCard } from "@/components/ui/UserProfileCard";
 
 const navItems = [
   { title: "Organizações", href: "/", icon: Building },
@@ -13,25 +13,10 @@ const navItems = [
 export function AppSidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-[280px] flex-col border-r border-sidebar-border bg-sidebar">
-      {/* User Profile Card */}
       <div className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src="" alt="Udson Witer" />
-            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-              UW
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold text-sidebar-foreground">
-              Udson Witer
-            </span>
-            <span className="text-xs text-muted-foreground">Administrador</span>
-          </div>
-        </div>
+        <UserProfileCard />
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 space-y-1 p-4">
         <p className="mb-3 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Menu Principal
@@ -51,9 +36,7 @@ export function AppSidebar() {
         ))}
       </nav>
 
-      {/* Footer Section */}
       <div className="mt-auto space-y-4 p-4">
-        {/* Chrome Extension Card */}
         <div className="rounded-lg bg-muted p-3">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-card">
@@ -73,7 +56,6 @@ export function AppSidebar() {
           </div>
         </div>
 
-        {/* UK Logo */}
         <div className="flex items-center justify-center py-4">
           <div className="text-4xl font-bold tracking-tight">
             <span className="text-primary">U</span>

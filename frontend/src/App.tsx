@@ -8,6 +8,7 @@ import Times from "./pages/Times/index.tsx";
 import Membros from "./pages/Membros/index.tsx";
 import NotFound from "./pages/NotFound";
 import Funnel from "./pages/Funnel/index.tsx";
+import Profile from "./pages/Profile"; 
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/times" element={<Times />} />
           <Route path="/membros" element={<Membros />} />
           <Route path="/funis" element={<Funnel />} />
+          <Route path="/perfil" element={<Profile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
