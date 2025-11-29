@@ -1,3 +1,4 @@
+import { AppShell } from "@/components/layout/AppShell";
 import ActionBar from "./components/ActionBar";
 import { CreateFunnelDialog } from "./components/CreateFunnelDialog";
 import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
@@ -12,12 +13,20 @@ function Funnel() {
   );
 
   return (
-    <main className="h-full flex flex-col divide-y">
-      <ActionBar {...actionBar} />
-      <KanbanBoard {...kanban} />
-      <CreateFunnelDialog {...createDialog} />
-      <DeleteFunnelDialog {...deleteDialog} />
-    </main>
+    <AppShell
+      breadcrumbs={[
+        { label: "Funils", href: "/" },
+        { label: "Funils de Venda" },
+      ]}
+      className="p-0"
+    >
+      <div className="h-full flex flex-col divide-y">
+        <ActionBar {...actionBar} />
+        <KanbanBoard {...kanban} />
+        <CreateFunnelDialog {...createDialog} />
+        <DeleteFunnelDialog {...deleteDialog} />
+      </div>
+    </AppShell>
   );
 }
 

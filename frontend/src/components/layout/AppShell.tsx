@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 import { AppSidebar } from "./AppSidebar";
 import { Topbar } from "./Topbar";
 
@@ -10,15 +11,16 @@ interface BreadcrumbItem {
 interface AppShellProps {
   children: ReactNode;
   breadcrumbs?: BreadcrumbItem[];
+  className?: string;
 }
 
-export function AppShell({ children, breadcrumbs }: AppShellProps) {
+export function AppShell({ children, breadcrumbs, className }: AppShellProps) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background">
       <AppSidebar />
-      <div className="ml-[280px] flex min-h-screen flex-col">
+      <div className="ml-[280px] h-full flex flex-col">
         <Topbar breadcrumbs={breadcrumbs} />
-        <main className="flex-1 p-6">{children}</main>
+        <main className={cn("flex-1 p-6 min-h-0", className)}>{children}</main>
       </div>
     </div>
   );
