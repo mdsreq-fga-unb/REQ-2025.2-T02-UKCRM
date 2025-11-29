@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { DataTable, Column } from "@/components/ui/data-table";
+import { usePermissions } from "@/auth/hooks/usePermissions";
 import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CreateTeamModal } from "@/components/modals/CreateTeamModal";
@@ -35,6 +36,7 @@ const columns: Column<Team>[] = [
 ];
 
 const Times = () => {
+  const { hasPermission } = usePermissions();
   const [teams] = useState<Team[]>(mockTeams);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -55,6 +57,11 @@ const Times = () => {
     setSelectedTeam(team);
     setIsDeleteOpen(true);
   };
+
+  // Permission checks
+  const canCreateTeam = hasPermission("team:create");
+  const canEditTeam = hasPermission("team:edit");
+  const canDeleteTeam = hasPermission("team:delete");
 
   return (
     <AppShell
@@ -81,17 +88,19 @@ const Times = () => {
               className="pl-9"
             />
           </div>
-          <Button onClick={() => setIsCreateOpen(true)}>
-            Novo Time
-          </Button>
+          {canCreateTeam && (
+            <Button onClick={() => setIsCreateOpen(true)}>
+              Novo Time
+            </Button>
+          )}
         </div>
 
         {/* Table */}
         <DataTable
           columns={columns}
           data={filteredTeams}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+          onEdit={canEditTeam ? handleEdit : undefined}
+          onDelete={canDeleteTeam ? handleDelete : undefined}
         />
       </div>
 

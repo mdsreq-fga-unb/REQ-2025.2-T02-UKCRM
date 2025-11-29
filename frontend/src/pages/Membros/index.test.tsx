@@ -1,10 +1,32 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router';
+import { AuthContext } from '@/auth/context/AuthContext';
 import Membros from '.';
 
+// Mock user with Owner role (can manage members)
+const mockUser = {
+  id: 1,
+  email: 'test@test.com',
+  nome: 'Test User',
+  role: 'Owner' as const,
+};
+
+const mockAuthContextValue = {
+  user: mockUser,
+  isLoading: false,
+  error: null,
+  isAuthenticated: true,
+  login: vi.fn(),
+  logout: vi.fn(),
+};
+
 const renderWithRouter = (component: React.ReactElement) => {
-  return render(<BrowserRouter>{component}</BrowserRouter>);
+  return render(
+    <AuthContext.Provider value={mockAuthContextValue}>
+      <BrowserRouter>{component}</BrowserRouter>
+    </AuthContext.Provider>
+  );
 };
 
 describe('Membros Page', () => {

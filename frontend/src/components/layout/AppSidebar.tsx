@@ -5,16 +5,17 @@ import { UserProfileCard } from "@/components/ui/UserProfileCard";
 import { useAuth } from "@/auth/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
+import { hasPageAccess, type PageKey } from "@/auth/config/permissions";
 
-const navItems = [
-  { title: "Organizações", href: "/", icon: Building },
-  { title: "Times", href: "/times", icon: Users },
-  { title: "Membros", href: "/membros", icon: UserCircle },
-  { title: "Funis", href: "/funis", icon: Filter },
+const navItems: Array<{ title: string; href: string; icon: typeof Building; pageKey: PageKey }> = [
+  { title: "Organizações", href: "/", icon: Building, pageKey: "organizacoes" },
+  { title: "Times", href: "/times", icon: Users, pageKey: "times" },
+  { title: "Membros", href: "/membros", icon: UserCircle, pageKey: "membros" },
+  { title: "Funis", href: "/funis", icon: Filter, pageKey: "funis" },
 ];
 
 export function AppSidebar() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -26,6 +27,12 @@ export function AppSidebar() {
     }
   };
 
+  // Filter navigation items based on user role
+  const visibleNavItems = navItems.filter((item) => {
+    if (!user?.role) return false;
+    return hasPageAccess(user.role, item.pageKey);
+  });
+
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-[280px] flex-col border-r border-sidebar-border bg-sidebar">
       <div className="border-b border-sidebar-border p-4">
@@ -36,7 +43,7 @@ export function AppSidebar() {
         <p className="mb-3 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Menu Principal
         </p>
-        {navItems.map((item) => (
+        {visibleNavItems.map((item) => (
           <NavLink
             key={item.href}
             to={item.href}

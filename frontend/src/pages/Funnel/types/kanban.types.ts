@@ -12,6 +12,27 @@ export interface Column {
 
 export type ColumnId = Column["id"];
 
+export type LeadStatus = "Active" | "Gained" | "Lost";
+
+export type ContactOrigin =
+  | "Website"
+  | "Social Media"
+  | "Referral"
+  | "Cold Call"
+  | "Email Campaign"
+  | "Event"
+  | "Other";
+
+export type Campaign =
+  | "Summer Sale 2025"
+  | "Black Friday 2024"
+  | "Product Launch"
+  | "Retargeting"
+  | "LinkedIn Ads"
+  | "Google Ads"
+  | "Organic"
+  | "None";
+
 export interface Lead {
   id: UniqueIdentifier;
   columnId: ColumnId;
@@ -21,6 +42,21 @@ export interface Lead {
   temperature: TemperatureVariant;
   createdAt: Date;
   updatedAt: Date;
+
+  // Extended fields for detailed lead management
+  cpf?: string | null;
+  email?: string | null;
+  phone?: string;
+  career?: string | null;
+  income?: number | null;
+  interests?: string[];
+  campaign?: Campaign;
+  contactOrigin?: ContactOrigin;
+  status?: LeadStatus;
+  assignedTo?: number | null; // Member ID
+  gainLossValue?: number | null;
+  gainLossReason?: string | null;
+  createdBy?: number; // Member ID who created the lead
 }
 
 // DRAG & DROP DATA

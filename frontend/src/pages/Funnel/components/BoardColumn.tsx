@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { usePermissions } from "@/auth/hooks/usePermissions";
 import { useDndContext, type UniqueIdentifier } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -28,12 +29,17 @@ export function BoardColumn({
   onAddLead,
   onEditColumnName,
 }: BoardColumnProps) {
+  const { hasPermission, hasAnyPermission } = usePermissions();
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(column.title);
 
   const leadsIds = useMemo(() => {
     return leads.map((lead) => lead.id);
   }, [leads]);
+
+  // Permission checks
+  const canEditStepName = hasAnyPermission(["funnel-step:edit:assigned", "funnel-step:edit:all"]);
+  const canAddLead = hasPermission("lead:create");
 
   const {
     setNodeRef,
@@ -133,14 +139,16 @@ export function BoardColumn({
           ) : (
             <>
               <span className="font-semibold mb-0">{column.title}</span>
-              <Button
-                className="text-muted-foreground"
-                size="icon-sm"
-                variant="ghost"
-                onClick={() => setIsEditingName(true)}
-              >
-                <PencilIcon className="h-4 w-4" />
-              </Button>
+              {canEditStepName && (
+                <Button
+                  className="text-muted-foreground"
+                  size="icon-sm"
+                  variant="ghost"
+                  onClick={() => setIsEditingName(true)}
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+              )}
             </>
           )}
         </div>
@@ -149,13 +157,15 @@ export function BoardColumn({
           <span>{column.subtitle_right}</span>
         </div>
       </CardHeader>
-      <Button
-        variant="ghost"
-        className="w-full h-fit rounded-none text-muted-foreground"
-        onClick={() => onAddLead(column.id)}
-      >
-        <PlusIcon />
-      </Button>
+      {canAddLead && (
+        <Button
+          variant="ghost"
+          className="w-full h-fit rounded-none text-muted-foreground"
+          onClick={() => onAddLead(column.id)}
+        >
+          <PlusIcon />
+        </Button>
+      )}
       <ScrollArea className="h-full">
         <CardContent className="flex flex-col grow gap-2 px-2 pt-0 ">
           <SortableContext items={leadsIds}>

@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthContext } from '@/auth/context/AuthContext';
 import Funnel from './index';
 import * as features from '@/config/features';
 
@@ -24,11 +25,30 @@ const createTestQueryClient = () =>
     },
   });
 
+// Mock user with Owner role (has all permissions for testing)
+const mockUser = {
+  id: 1,
+  email: 'test@test.com',
+  nome: 'Test User',
+  role: 'Owner' as const,
+};
+
+const mockAuthContextValue = {
+  user: mockUser,
+  isLoading: false,
+  error: null,
+  isAuthenticated: true,
+  login: vi.fn(),
+  logout: vi.fn(),
+};
+
 const renderWithProviders = (component: React.ReactElement) => {
   const queryClient = createTestQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>{component}</BrowserRouter>
+      <AuthContext.Provider value={mockAuthContextValue}>
+        <BrowserRouter>{component}</BrowserRouter>
+      </AuthContext.Provider>
     </QueryClientProvider>
   );
 };

@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { BrowserRouter } from 'react-router';
+import { AuthContext } from '@/auth/context/AuthContext';
 import Organizacoes from './index';
 
 // Mock the hooks
@@ -10,9 +11,30 @@ vi.mock('./hooks/useOrganizacoesData', () => ({
 
 import { useOrganizacoesData } from './hooks/useOrganizacoesData';
 
+// Mock user with Admin role (can manage organizations)
+const mockUser = {
+  id: 1,
+  email: 'test@test.com',
+  nome: 'Test User',
+  role: 'Admin' as const,
+};
+
+const mockAuthContextValue = {
+  user: mockUser,
+  isLoading: false,
+  error: null,
+  isAuthenticated: true,
+  login: vi.fn(),
+  logout: vi.fn(),
+};
+
 // Mock router for AppShell component
 const renderWithRouter = (component: React.ReactElement) => {
-  return render(<BrowserRouter>{component}</BrowserRouter>);
+  return render(
+    <AuthContext.Provider value={mockAuthContextValue}>
+      <BrowserRouter>{component}</BrowserRouter>
+    </AuthContext.Provider>
+  );
 };
 
 const mockOrganizations = [

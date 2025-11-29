@@ -1,13 +1,64 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import type { User, LoginCredentials } from "../types/auth.types";
 
-const MOCK_USER: User = {
-  id: 1,
-  email: "udsonwiter@gmail.com",
-  nome: "Udson Witer",
+/**
+ * Mock users for testing different role permissions
+ * Password for all users: "123456"
+ *
+ * Available test users:
+ * - sdr@test.com - SDR role (only Funis page)
+ * - closer@test.com - Closer role (only Funis page)
+ * - coordinator@test.com - Sales Coordinator role (only Funis page)
+ * - manager@test.com - Sales Manager role (Funis + Times pages)
+ * - owner@test.com - Owner role (Funis + Times + Membros pages)
+ * - admin@test.com - Admin role (only Organizações page)
+ * - udsonwiter@gmail.com - Owner role (default user)
+ */
+const MOCK_USERS: Record<string, User> = {
+  "sdr@test.com": {
+    id: 1,
+    email: "sdr@test.com",
+    nome: "SDR User",
+    role: "SDR",
+  },
+  "closer@test.com": {
+    id: 2,
+    email: "closer@test.com",
+    nome: "Closer User",
+    role: "Closer",
+  },
+  "coordinator@test.com": {
+    id: 3,
+    email: "coordinator@test.com",
+    nome: "Sales Coordinator",
+    role: "Sales Coordinator",
+  },
+  "manager@test.com": {
+    id: 4,
+    email: "manager@test.com",
+    nome: "Sales Manager",
+    role: "Sales Manager",
+  },
+  "owner@test.com": {
+    id: 5,
+    email: "owner@test.com",
+    nome: "Owner User",
+    role: "Owner",
+  },
+  "admin@test.com": {
+    id: 6,
+    email: "admin@test.com",
+    nome: "Admin User",
+    role: "Admin",
+  },
+  "udsonwiter@gmail.com": {
+    id: 7,
+    email: "udsonwiter@gmail.com",
+    nome: "Udson Witer",
+    role: "Owner",
+  },
 };
 
-const MOCK_EMAIL = "udsonwiter@gmail.com";
 const MOCK_PASSWORD = "123456";
 
 export function useAuthMock() {
@@ -25,14 +76,13 @@ export function useAuthMock() {
     // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (
-      credentials.email === MOCK_EMAIL &&
-      credentials.password === MOCK_PASSWORD
-    ) {
-      setUser(MOCK_USER);
-      localStorage.setItem("mockUser", JSON.stringify(MOCK_USER));
+    const mockUser = MOCK_USERS[credentials.email];
+
+    if (mockUser && credentials.password === MOCK_PASSWORD) {
+      setUser(mockUser);
+      localStorage.setItem("mockUser", JSON.stringify(mockUser));
       setIsLoading(false);
-      return MOCK_USER;
+      return mockUser;
     } else {
       setError("Credenciais inválidas");
       setIsLoading(false);

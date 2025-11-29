@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { DataTable, Column } from "@/components/ui/data-table";
+import { usePermissions } from "@/auth/hooks/usePermissions";
 import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -51,6 +52,7 @@ const columns: Column<Member>[] = [
 ];
 
 const Membros = () => {
+  const { hasPermission } = usePermissions();
   const [members] = useState<Member[]>(mockMembers);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -73,6 +75,11 @@ const Membros = () => {
   const availableMembersForReallocation = mockMembers
     .filter((m) => m.id !== selectedMember?.id)
     .map((m) => ({ id: String(m.id), name: m.nome }));
+
+  // Permission checks
+  const canCreateMember = hasPermission("member:create");
+  const canEditMember = hasPermission("member:edit");
+  const canDeleteMember = hasPermission("member:delete");
 
   return (
     <AppShell
@@ -99,17 +106,19 @@ const Membros = () => {
               className="pl-9"
             />
           </div>
-          <Button onClick={() => setIsCreateOpen(true)}>
-            Novo Membro
-          </Button>
+          {canCreateMember && (
+            <Button onClick={() => setIsCreateOpen(true)}>
+              Novo Membro
+            </Button>
+          )}
         </div>
 
         {/* Table */}
         <DataTable
           columns={columns}
           data={filteredMembers}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+          onEdit={canEditMember ? handleEdit : undefined}
+          onDelete={canDeleteMember ? handleDelete : undefined}
         />
       </div>
 
