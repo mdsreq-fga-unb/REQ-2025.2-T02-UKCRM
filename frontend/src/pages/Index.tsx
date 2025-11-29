@@ -1,0 +1,144 @@
+import { useState } from "react";
+import { AppShell } from "@/components/layout/AppShell";
+import { Button } from "@/components/ui/button";
+import { DataTable, Column } from "@/components/ui/data-table";
+import { AlertBanner } from "@/components/ui/alert-banner";
+import { Plus, RefreshCw, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { CreateOrganizationModal } from "@/components/modals/CreateOrganizationModal";
+import { DeleteOrganizationModal } from "@/components/modals/DeleteOrganizationModal";
+
+interface Organization {
+  id: number;
+  nome: string;
+  dataCriacao: string;
+  dataAtualizacao: string;
+  proprietario: string;
+}
+
+const mockData: Organization[] = [
+  {
+    id: 1,
+    nome: "Ober",
+    dataCriacao: "14/10/2025",
+    dataAtualizacao: "15/10/2025",
+    proprietario: "José da Silva",
+  },
+];
+
+const columns: Column<Organization>[] = [
+  { key: "id", header: "ID" },
+  { key: "nome", header: "Nome" },
+  { key: "dataCriacao", header: "Data de Criação" },
+  { key: "dataAtualizacao", header: "Data de Atualização" },
+  { key: "proprietario", header: "Proprietário" },
+];
+
+const Index = () => {
+  const [showAlert, setShowAlert] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
+  const [organizations] = useState<Organization[]>(mockData);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredOrganizations = organizations.filter((org) =>
+    org.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleEdit = (item: Organization) => {
+    console.log("Edit:", item);
+  };
+
+  const handleDelete = (item: Organization) => {
+    setSelectedOrg(item);
+    setIsDeleteOpen(true);
+  };
+
+  return (
+    <AppShell
+      breadcrumbs={[
+        { label: "Organizações", href: "/organizacoes" },
+        { label: "Gestão de Organizações" },
+      ]}
+    >
+      {showAlert && (
+        <AlertBanner
+          message="Erro: Mensagem curta do erro"
+          onClose={() => setShowAlert(false)}
+        />
+      )}
+
+      <div className="space-y-6 animate-fade-in">
+        {/* Page Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-foreground">
+              Gestão de Organizações
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Gerencie todas as organizações do sistema
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="icon">
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            <Button onClick={() => setIsCreateOpen(true)}>
+              <Plus className="h-4 w-4" />
+              Criar Organização
+            </Button>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        <div className="rounded-lg bg-card p-6 shadow-sm border border-border">
+          <div className="mb-4 flex items-center gap-4">
+            <div className="relative flex-1 max-w-xs">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Escreva algo..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+
+          <DataTable
+            columns={columns}
+            data={filteredOrganizations}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+
+          {/* Create Organization Button */}
+          <div className="mt-4 flex justify-center">
+            <Button
+              variant="outline"
+              onClick={() => setIsCreateOpen(true)}
+              className="text-primary border-primary hover:bg-primary/10"
+            >
+              <Plus className="h-4 w-4" />
+              Criar Organização
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Modals */}
+      <CreateOrganizationModal
+        open={isCreateOpen}
+        onOpenChange={setIsCreateOpen}
+      />
+      <DeleteOrganizationModal
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+        organizationName={selectedOrg?.nome || ""}
+        onConfirm={() => console.log("Delete confirmed")}
+      />
+    </AppShell>
+  );
+};
+
+export default Index;

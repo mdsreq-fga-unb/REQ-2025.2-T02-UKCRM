@@ -1,20 +1,34 @@
-import { Outlet } from "react-router";
-import ThemeProvider from "@/components/theme/ThemeProvider";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router";
+import Index from "./pages/Index";
+import Times from "./pages/Times";
+import Membros from "./pages/Membros";
+import NotFound from "./pages/NotFound";
+import Funnel from "./pages/Funnel/index.tsx";
 
-function App() {
-  return (
-    <ThemeProvider storageKey="vite-ui-theme">
-      <div className="flex flex-col h-screen divide-y">
-        <header className="flex justify-between w-full flex-row p-2">
-          <ThemeToggle />
-        </header>
-        <div className="flex-1 min-h-0">
-          <Outlet />
-        </div>
-      </div>
-    </ThemeProvider>
-  );
-}
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/organizacoes" element={<Index />} />
+          <Route path="/times" element={<Times />} />
+          <Route path="/membros" element={<Membros />} />
+          <Route path="/funis" element={<Funnel />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
