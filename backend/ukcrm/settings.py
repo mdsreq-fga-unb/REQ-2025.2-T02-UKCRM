@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "ordered_model",
     "organization",
+    'accounts',
 ]
 
 REST_FRAMEWORK = {
