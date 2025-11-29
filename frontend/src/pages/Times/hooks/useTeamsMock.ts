@@ -1,48 +1,49 @@
 import { useState, useCallback, useMemo } from "react";
-import type { ApiOrganization, ApiOrganizationCreatePayload } from "../api/organizations.api";
-import { mockOrganizationsList } from "../data/mockOrganizations";
-import { apiToOrganizations } from "../utils/organizationTransformers";
+import type { ApiTeam, ApiTeamCreatePayload } from "../api/teams.api";
+import { mockTeamsList, mockMembers } from "../data/mockTeams";
 
-export function useOrganizacoesMock() {
-  const [organizations, setOrganizations] = useState<ApiOrganization[]>(mockOrganizationsList);
+export function useTeamsMock() {
+  const [teams, setTeams] = useState<ApiTeam[]>(mockTeamsList);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreate = useCallback(
-    (data: ApiOrganizationCreatePayload) => {
+    (data: ApiTeamCreatePayload) => {
       setIsLoading(true);
 
       // Simulate API delay
       setTimeout(() => {
-        const newOrg: ApiOrganization = {
-          id: Math.max(...organizations.map((o) => o.id), 0) + 1,
+        const newTeam: ApiTeam = {
+          id: Math.max(...teams.map((t) => t.id), 0) + 1,
           name: data.name,
-          owner: data.owner,
+          member_count: data.member_ids.length,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
+          members: data.member_ids,
         };
 
-        setOrganizations((prev) => [...prev, newOrg]);
+        setTeams((prev) => [...prev, newTeam]);
         setIsLoading(false);
       }, 300);
 
       return Promise.resolve();
     },
-    [organizations]
+    [teams]
   );
 
-  const handleUpdate = useCallback((id: number, data: Partial<ApiOrganization>) => {
+  const handleUpdate = useCallback((id: number, data: Partial<ApiTeam>) => {
     setIsLoading(true);
 
     setTimeout(() => {
-      setOrganizations((prev) =>
-        prev.map((org) =>
-          org.id === id
+      setTeams((prev) =>
+        prev.map((team) =>
+          team.id === id
             ? {
-                ...org,
+                ...team,
                 ...data,
+                member_count: data.members ? data.members.length : team.member_count,
                 updated_at: new Date().toISOString(),
               }
-            : org
+            : team
         )
       );
       setIsLoading(false);
@@ -55,7 +56,7 @@ export function useOrganizacoesMock() {
     setIsLoading(true);
 
     setTimeout(() => {
-      setOrganizations((prev) => prev.filter((org) => org.id !== id));
+      setTeams((prev) => prev.filter((team) => team.id !== id));
       setIsLoading(false);
     }, 300);
 
@@ -66,20 +67,21 @@ export function useOrganizacoesMock() {
     setIsLoading(true);
 
     setTimeout(() => {
-      setOrganizations(mockOrganizationsList);
+      setTeams(mockTeamsList);
       setIsLoading(false);
     }, 500);
   }, []);
 
   return useMemo(
     () => ({
-      organizations: apiToOrganizations(organizations),
+      teams,
+      members: mockMembers,
       isLoading,
       handleCreate,
       handleUpdate,
       handleDelete,
       handleRefresh,
     }),
-    [organizations, isLoading, handleCreate, handleUpdate, handleDelete, handleRefresh]
+    [teams, isLoading, handleCreate, handleUpdate, handleDelete, handleRefresh]
   );
 }

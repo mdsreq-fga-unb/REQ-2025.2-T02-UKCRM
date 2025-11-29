@@ -1,0 +1,94 @@
+import type { ApiMember } from "../api/members.api";
+
+export const mockMembersList: ApiMember[] = [
+  {
+    id: 1,
+    name: "Ugi Nam",
+    email: "ugi.nam@ukcrm.com",
+    hierarchy: "Closer",
+    joined_at: "2025-10-14T10:00:00Z",
+    updated_at: "2025-10-14T10:00:00Z",
+  },
+  {
+    id: 2,
+    name: "Brenda Silva",
+    email: "brenda.silva@ukcrm.com",
+    hierarchy: "SDR",
+    joined_at: "2025-10-12T10:00:00Z",
+    updated_at: "2025-10-12T10:00:00Z",
+  },
+  {
+    id: 3,
+    name: "Luis Terra",
+    email: "luis.terra@ukcrm.com",
+    hierarchy: "Coordenador de Vendas",
+    joined_at: "2025-10-10T10:00:00Z",
+    updated_at: "2025-10-10T10:00:00Z",
+  },
+  {
+    id: 4,
+    name: "Ana Clara",
+    email: "ana.clara@ukcrm.com",
+    hierarchy: "Closer",
+    joined_at: "2025-10-08T10:00:00Z",
+    updated_at: "2025-10-08T10:00:00Z",
+  },
+  {
+    id: 5,
+    name: "Bruno Esteves",
+    email: "bruno.esteves@ukcrm.com",
+    hierarchy: "SDR",
+    joined_at: "2025-10-05T10:00:00Z",
+    updated_at: "2025-10-05T10:00:00Z",
+  },
+  {
+    id: 6,
+    name: "Carla Souza",
+    email: "carla.souza@ukcrm.com",
+    hierarchy: "Closer",
+    joined_at: "2025-10-01T10:00:00Z",
+    updated_at: "2025-10-01T10:00:00Z",
+  },
+  {
+    id: 7,
+    name: "Daniel Pereira",
+    email: "daniel.pereira@ukcrm.com",
+    hierarchy: "SDR",
+    joined_at: "2025-09-28T10:00:00Z",
+    updated_at: "2025-09-28T10:00:00Z",
+  },
+  {
+    id: 8,
+    name: "Elena Santos",
+    email: "elena.santos@ukcrm.com",
+    hierarchy: "Gerente",
+    joined_at: "2025-09-25T10:00:00Z",
+    updated_at: "2025-09-25T10:00:00Z",
+  },
+  {
+    id: 9,
+    name: "Felipe Lima",
+    email: "felipe.lima@ukcrm.com",
+    hierarchy: "SDR",
+    joined_at: "2025-09-20T10:00:00Z",
+    updated_at: "2025-09-20T10:00:00Z",
+  },
+  {
+    id: 10,
+    name: "Gabriela Costa",
+    email: "gabriela.costa@ukcrm.com",
+    hierarchy: "Diretor",
+    joined_at: "2025-09-15T10:00:00Z",
+    updated_at: "2025-09-15T10:00:00Z",
+  },
+];
+
+export const HIERARCHY_OPTIONS = [
+  "Closer",
+  "SDR",
+  "Coordenador de Vendas",
+  "Gerente",
+  "Diretor",
+] as const;
+
+export type HierarchyLevel = typeof HIERARCHY_OPTIONS[number];

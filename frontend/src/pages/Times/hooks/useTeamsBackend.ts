@@ -1,50 +1,46 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
-import type {
-  ApiOrganization,
-  ApiOrganizationCreatePayload,
-  ApiOrganizationUpdatePayload,
-} from "../api/organizations.api";
+import type { ApiTeam, ApiTeamCreatePayload, ApiTeamUpdatePayload } from "../api/teams.api";
 import {
-  fetchOrganizations,
-  createOrganization,
-  updateOrganization,
-  deleteOrganization,
-} from "../api/organizations.api";
-import { apiToOrganizations } from "../utils/organizationTransformers";
+  fetchTeams,
+  createTeam,
+  updateTeam,
+  deleteTeam,
+} from "../api/teams.api";
+import { mockMembers } from "../data/mockTeams";
 
-export function useOrganizacoesBackend() {
-  const [organizations, setOrganizations] = useState<ApiOrganization[]>([]);
+export function useTeamsBackend() {
+  const [teams, setTeams] = useState<ApiTeam[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOrganizationsList = useCallback(async () => {
+  const fetchTeamsList = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const data = await fetchOrganizations();
-      setOrganizations(data);
+      const data = await fetchTeams();
+      setTeams(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
       setError(errorMessage);
-      console.error("Erro ao buscar organizações:", err);
+      console.error("Erro ao buscar times:", err);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   const handleCreate = useCallback(
-    async (data: ApiOrganizationCreatePayload) => {
+    async (data: ApiTeamCreatePayload) => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const newOrg = await createOrganization(data);
-        setOrganizations((prev) => [...prev, newOrg]);
+        const newTeam = await createTeam(data);
+        setTeams((prev) => [...prev, newTeam]);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
         setError(errorMessage);
-        console.error("Erro ao criar organização:", err);
+        console.error("Erro ao criar time:", err);
         throw err;
       } finally {
         setIsLoading(false);
@@ -54,19 +50,19 @@ export function useOrganizacoesBackend() {
   );
 
   const handleUpdate = useCallback(
-    async (id: number, data: ApiOrganizationUpdatePayload) => {
+    async (id: number, data: ApiTeamUpdatePayload) => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const updatedOrg = await updateOrganization(id, data);
-        setOrganizations((prev) =>
-          prev.map((org) => (org.id === id ? updatedOrg : org))
+        const updatedTeam = await updateTeam(id, data);
+        setTeams((prev) =>
+          prev.map((team) => (team.id === id ? updatedTeam : team))
         );
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
         setError(errorMessage);
-        console.error("Erro ao atualizar organização:", err);
+        console.error("Erro ao atualizar time:", err);
         throw err;
       } finally {
         setIsLoading(false);
@@ -80,12 +76,12 @@ export function useOrganizacoesBackend() {
     setError(null);
 
     try {
-      await deleteOrganization(id);
-      setOrganizations((prev) => prev.filter((org) => org.id !== id));
+      await deleteTeam(id);
+      setTeams((prev) => prev.filter((team) => team.id !== id));
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
       setError(errorMessage);
-      console.error("Erro ao deletar organização:", err);
+      console.error("Erro ao deletar time:", err);
       throw err;
     } finally {
       setIsLoading(false);
@@ -93,17 +89,18 @@ export function useOrganizacoesBackend() {
   }, []);
 
   const handleRefresh = useCallback(() => {
-    fetchOrganizationsList();
-  }, [fetchOrganizationsList]);
+    fetchTeamsList();
+  }, [fetchTeamsList]);
 
-  // Fetch organizations on mount
+  // Fetch teams on mount
   useEffect(() => {
-    fetchOrganizationsList();
-  }, [fetchOrganizationsList]);
+    fetchTeamsList();
+  }, [fetchTeamsList]);
 
   return useMemo(
     () => ({
-      organizations: apiToOrganizations(organizations),
+      teams,
+      members: mockMembers, // TODO: Replace with API call when members endpoint is ready
       isLoading,
       error,
       handleCreate,
@@ -111,6 +108,6 @@ export function useOrganizacoesBackend() {
       handleDelete,
       handleRefresh,
     }),
-    [organizations, isLoading, error, handleCreate, handleUpdate, handleDelete, handleRefresh]
+    [teams, isLoading, error, handleCreate, handleUpdate, handleDelete, handleRefresh]
   );
 }

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { CreateOrganizationModal } from "@/components/modals/CreateOrganizationModal";
 import { DeleteOrganizationModal } from "@/components/modals/DeleteOrganizationModal";
 import { useOrganizacoesData } from "./hooks/useOrganizacoesData";
-import type { Organization } from "./hooks/useOrganizacoesMock";
+import type { Organization } from "./types/organizations.types";
 
 const columns: Column<Organization>[] = [
   { key: "id", header: "ID" },
