@@ -24,8 +24,13 @@ export type ApiLeadCreatePayload = {
 
 export type ApiLeadUpdatePayload = {
   id: number;
-  stage: number;
-  order: number;
+  stage?: number;
+  order?: number;
+  name?: string;
+  email?: string | null;
+  phone?: string;
+  earning?: string | number; 
+  temperature?: TemperatureVariant;
 };
 
 // LEADS

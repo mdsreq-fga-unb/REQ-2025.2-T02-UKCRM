@@ -17,6 +17,7 @@ interface BoardColumnProps {
   leads: Lead[];
   isOverlay?: boolean;
   onAddLead: (columnId: UniqueIdentifier) => void;
+  onLeadEdit: (lead: Lead) => void;
 }
 
 export function BoardColumn({
@@ -24,6 +25,7 @@ export function BoardColumn({
   leads,
   isOverlay,
   onAddLead,
+  onLeadEdit,
 }: BoardColumnProps) {
   const leadsIds = useMemo(() => {
     return leads.map((lead) => lead.id);
@@ -109,7 +111,11 @@ export function BoardColumn({
         <CardContent className="flex flex-col grow gap-2 px-2 pt-0 ">
           <SortableContext items={leadsIds}>
             {leads.map((lead) => (
-              <LeadCard key={lead.id} lead={lead} />
+              <LeadCard 
+                 key={lead.id}
+                 lead={lead} 
+                 onEditClick={onLeadEdit} 
+              />
             ))}
           </SortableContext>
         </CardContent>

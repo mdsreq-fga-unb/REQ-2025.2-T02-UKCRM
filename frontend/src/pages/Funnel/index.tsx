@@ -1,12 +1,13 @@
 import ActionBar from "./components/ActionBar";
 import { CreateFunnelDialog } from "./components/CreateFunnelDialog";
 import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
+import { EditLeadDialog } from "./components/EditLeadDialog";
 import { KanbanBoard } from "./components/KanbanBoard";
 import { defaultCols, initialLeads } from "./data/defaultKanbanData";
 import { useFunnel } from "./hooks/useFunnel";
 
 function Funnel() {
-  const { actionBar, kanban, createDialog, deleteDialog } = useFunnel(
+  const { actionBar, kanban, createDialog, deleteDialog, editLeadDialog } = useFunnel(
     defaultCols,
     initialLeads,
   );
@@ -17,6 +18,7 @@ function Funnel() {
       <KanbanBoard {...kanban} />
       <CreateFunnelDialog {...createDialog} />
       <DeleteFunnelDialog {...deleteDialog} />
+      <EditLeadDialog {...editLeadDialog} />
     </main>
   );
 }

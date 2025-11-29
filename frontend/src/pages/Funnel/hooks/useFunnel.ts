@@ -10,6 +10,7 @@ import {
 } from "react";
 import type { ApiFunnel } from "../api/funnels.api";
 import { type FunnelFormValues } from "../schemas/funnel.schema";
+import type { LeadFormValues } from "../schemas/lead.schema";
 import type {
   Column,
   ColumnId,
@@ -23,10 +24,10 @@ import {
   useDeleteFunnel,
   useFunnelDetails,
   useFunnelsList,
-  useUpdateStage,
+  useMoveStage,
 } from "./useFunnels";
 
-import { useCreateLead, useUpdateLead } from "./useLeads";
+import { useCreateLead, useEditLeadDetails, useMoveLead } from "./useLeads";
 
 import {
   extractId,
@@ -40,27 +41,25 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortCriteria, setSortCriteria] = useState<string | null>(null);
-
   const [selectedFunnelId, setSelectedFunnelId] = useState<string | null>(null);
 
   // LEITURA
-  
+
   const { data: funnelsData, isLoading: isLoadingFunnels } = useFunnelsList();
 
   const { data: funnelDetailsData, isLoading: isLoadingFunnelDetails } =
     useFunnelDetails(selectedFunnelId);
 
-  // ESCRITA
+  // ESCRITA - FUNIS
 
-  // FUNILS
-  
   const { mutate: createFunnel, isPending: isCreatingFunnel } = useCreateFunnel(
     (newFunnel) => {
-      setIsCreateOpen(false); 
-      setSelectedFunnelId(newFunnel.id.toString()); 
+      setIsCreateOpen(false);
+      setSelectedFunnelId(newFunnel.id.toString());
     },
   );
 
@@ -72,14 +71,20 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     },
   );
 
-  // LEADS E ETAPAS
-  
-  const { mutate: updateLead } = useUpdateLead(selectedFunnelId, setLeads);
-  const { mutate: updateStage } = useUpdateStage(selectedFunnelId);
+  // ESCRITA - LEADS E ETAPAS
+
+  const { mutate: moveLead } = useMoveLead(selectedFunnelId, setLeads);
+  const { mutate: moveStage } = useMoveStage(selectedFunnelId);
   const { mutate: createLead, isPending: isCreatingLead } = useCreateLead(
     selectedFunnelId,
     setLeads,
   );
+
+  const { mutate: editLead, isPending: isEditingLead } = useEditLeadDetails(
+    selectedFunnelId,
+    setLeads,
+  );
+
   const { mutate: createStage, isPending: isCreatingStage } =
     useCreateStage(selectedFunnelId);
 
@@ -138,13 +143,13 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const handleLeadDrop = useCallback(
     (event: LeadDropEvent) => {
       const { leadId, newColumnId, newOrder } = event;
-      updateLead({
-        id: extractId(leadId), 
-        stage: extractId(newColumnId), 
+      moveLead({
+        id: extractId(leadId),
+        stage: extractId(newColumnId),
         order: newOrder,
       });
     },
-    [updateLead],
+    [moveLead],
   );
 
   const handleColumnDrop = useCallback(
@@ -155,12 +160,12 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         return arrayMove(prev, oldIndex, newOrder);
       });
 
-      updateStage({
+      moveStage({
         id: extractId(columnId),
         order: newOrder,
       });
     },
-    [updateStage],
+    [moveStage],
   );
 
   const handleColumnsChange = useCallback<Dispatch<SetStateAction<Column[]>>>(
@@ -177,7 +182,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       createLead({
         name: "Novo Lead",
         stage: extractId(columnId),
-        order: 0, 
+        order: 0,
       });
     },
     [createLead],
@@ -188,7 +193,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       createStage({
         name: "Nova Etapa",
         funnel: Number(selectedFunnelId),
-        order: columns.length, 
+        order: columns.length,
       });
     }
   }, [selectedFunnelId, createStage, columns.length]);
@@ -210,6 +215,21 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         },
         funnelName: funnelToDelete || "",
         isPending: isDeletingFunnel,
+      },
+      editLeadDialog: {
+        open: !!editingLead,
+        lead: editingLead,
+        onOpenChange: (isOpen: boolean) => !isOpen && setEditingLead(null),
+        onSubmit: (values: LeadFormValues) => {
+          if (editingLead) {
+            editLead({
+              id: extractId(editingLead.id),
+              ...values,
+            });
+            setEditingLead(null);
+          }
+        },
+        isPending: isEditingLead,
       },
       actionBar: {
         onCreateFunnelClick: () => setIsCreateOpen(true),
@@ -236,6 +256,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onLeadDrop: handleLeadDrop,
         onAddLead: handleAddLead,
         onAddColumn: handleAddColumn,
+        onLeadEdit: setEditingLead,
         isLoading: isLoadingFunnelDetails || isCreatingLead || isCreatingStage,
       },
     }),
@@ -245,6 +266,8 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       isDeleteOpen,
       isDeletingFunnel,
       funnelToDelete,
+      editingLead,
+      isEditingLead,
       selectedFunnelId,
       selectedFunnelName,
       filterTerm,
@@ -255,10 +278,9 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       isCreatingStage,
       columnsWithSubtitles,
       leads,
-
       createFunnel,
       deleteFunnel,
-
+      editLead,
       getLeadsForColumn,
       handleColumnsChange,
       handleColumnDrop,

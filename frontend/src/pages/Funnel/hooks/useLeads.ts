@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ApiFunnelDetails } from "../api/funnels.api";
 import * as leadApi from "../api/leads.api";
+import type { LeadFormValues } from "../schemas/lead.schema";
 import type { Lead } from "../types/kanban.types";
 import { mapApiLeadToKanbanLead } from "../utils/funnelTransformers";
 import { queryKeys } from "./queryKeys";
+
+// HOOKS
 
 export const useCreateLead = (
   funnelId: string | null,
@@ -17,8 +19,7 @@ export const useCreateLead = (
 
     onMutate: async (payload) => {
       await queryClient.cancelQueries({ queryKey: detailKey });
-      const previousFunnel =
-        queryClient.getQueryData<ApiFunnelDetails>(detailKey);
+
       const tempId = `lead-temp-${crypto.randomUUID()}`;
       const newColumnId = `col-${payload.stage}`;
 
@@ -34,14 +35,12 @@ export const useCreateLead = (
       };
 
       setLeads((prev) => [optimisticLead, ...prev]);
-      return { tempId, previousFunnel };
+
+      return { tempId };
     },
 
     onError: (_err, _vars, context) => {
       setLeads((prev) => prev.filter((l) => l.id !== context?.tempId));
-      if (context?.previousFunnel) {
-        queryClient.setQueryData(detailKey, context.previousFunnel);
-      }
     },
 
     onSuccess: (createdLead, _, context) => {
@@ -50,23 +49,6 @@ export const useCreateLead = (
       setLeads((prev) =>
         prev.map((l) => (l.id === context?.tempId ? realLead : l)),
       );
-
-      queryClient.setQueryData<ApiFunnelDetails>(detailKey, (old) => {
-        if (!old) return old;
-
-        return {
-          ...old,
-          stages: old.stages.map((stage) => {
-            if (stage.id === createdLead.stage) {
-              return {
-                ...stage,
-                leads: [...stage.leads, createdLead],
-              };
-            }
-            return stage;
-          }),
-        };
-      });
     },
 
     onSettled: () => {
@@ -75,7 +57,7 @@ export const useCreateLead = (
   });
 };
 
-export const useUpdateLead = (
+export const useEditLeadDetails = (
   funnelId: string | null,
   setLeads: React.Dispatch<React.SetStateAction<Lead[]>>,
 ) => {
@@ -83,7 +65,54 @@ export const useUpdateLead = (
   const detailKey = queryKeys.funnels.detail(funnelId);
 
   return useMutation({
-    mutationFn: leadApi.updateLead,
+    mutationFn: (vals: { id: number } & LeadFormValues) => {
+      return leadApi.updateLead({
+        id: vals.id,
+        name: vals.name,
+        email: vals.email || null,
+        phone: vals.phone || "",
+        earning: vals.earning,
+        temperature: vals.temperature,
+      });
+    },
+    onSuccess: (updatedApiLead) => {
+      setLeads((prev) =>
+        prev.map((l) => {
+          if (l.id === `lead-${updatedApiLead.id}`) {
+            return {
+              ...l,
+              name: updatedApiLead.name,
+              earning: Number(updatedApiLead.earning),
+              temperature: updatedApiLead.temperature,
+              content:
+                [updatedApiLead.email, updatedApiLead.phone]
+                  .filter(Boolean)
+                  .join(" | ") || "...",
+            };
+          }
+          return l;
+        }),
+      );
+      queryClient.invalidateQueries({ queryKey: detailKey });
+    },
+  });
+};
+
+type MoveLeadVariables = {
+  id: number;
+  stage: number;
+  order: number;
+};
+
+export const useMoveLead = (
+  funnelId: string | null,
+  setLeads: React.Dispatch<React.SetStateAction<Lead[]>>,
+) => {
+  const queryClient = useQueryClient();
+  const detailKey = queryKeys.funnels.detail(funnelId);
+
+  return useMutation({
+    mutationFn: (vars: MoveLeadVariables) => leadApi.updateLead(vars),
 
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: detailKey });
@@ -104,7 +133,7 @@ export const useUpdateLead = (
     },
 
     onError: (err, _, context) => {
-      console.error("Erro ao atualizar lead:", err);
+      console.error("Erro ao mover lead:", err);
       if (context?.previousLeads) {
         setLeads(context.previousLeads);
       }
@@ -116,6 +145,8 @@ export const useUpdateLead = (
   });
 };
 
+// HELPERS
+
 function reorderLeadsLocally(
   oldLeads: Lead[],
   movedLeadId: string,
@@ -125,17 +156,13 @@ function reorderLeadsLocally(
   const leadToMove = oldLeads.find((l) => l.id === movedLeadId);
   if (!leadToMove) return oldLeads;
   const updatedLead = { ...leadToMove, columnId: targetColumnId };
-  const allOtherLeads = oldLeads.filter((l) => l.id !== movedLeadId);
-
-  const leadsInTargetColumn = allOtherLeads.filter(
+  const remainingLeads = oldLeads.filter((l) => l.id !== movedLeadId);
+  const targetColumnLeads = remainingLeads.filter(
     (l) => l.columnId === targetColumnId,
   );
-
-  const leadsInOtherColumns = allOtherLeads.filter(
+  const otherColumnLeads = remainingLeads.filter(
     (l) => l.columnId !== targetColumnId,
   );
-
-  const newTargetList = [...leadsInTargetColumn];
-  newTargetList.splice(targetOrder, 0, updatedLead);
-  return [...leadsInOtherColumns, ...newTargetList];
+  targetColumnLeads.splice(targetOrder, 0, updatedLead);
+  return [...otherColumnLeads, ...targetColumnLeads];
 }

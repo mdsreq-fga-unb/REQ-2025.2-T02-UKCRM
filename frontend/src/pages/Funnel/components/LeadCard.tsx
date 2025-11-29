@@ -13,11 +13,12 @@ import type { Lead, LeadDragData } from "../types/kanban.types";
 interface LeadCardProps {
   lead: Lead;
   isOverlay?: boolean;
+  onEditClick?: (lead: Lead) => void;
 }
 
 export type LeadType = "Lead";
 
-export function LeadCard({ lead, isOverlay }: LeadCardProps) {
+export function LeadCard({ lead, isOverlay, onEditClick }: LeadCardProps) {
   const {
     setNodeRef,
     attributes,
@@ -94,7 +95,11 @@ export function LeadCard({ lead, isOverlay }: LeadCardProps) {
               currency: "BRL",
             }).format(lead.earning)}
           </span>
-          <Button size="icon-sm" variant="ghost">
+          <Button 
+            size="icon-sm" 
+            variant="ghost" 
+            onClick={() => onEditClick?.(lead)}
+          >
             <IdCardIcon className="size-5" />
           </Button>
         </div>
