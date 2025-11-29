@@ -3,9 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router";
-import Index from "./pages/Index";
-import Times from "./pages/Times";
-import Membros from "./pages/Membros";
+import Organizacoes from "./pages/Organizacoes";
+import Times from "./pages/Times/index.tsx";
+import Membros from "./pages/Membros/index.tsx";
 import NotFound from "./pages/NotFound";
 import Funnel from "./pages/Funnel/index.tsx";
 
@@ -18,8 +18,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/organizacoes" element={<Index />} />
+          <Route path="/" element={<Organizacoes />} />
+          <Route path="/organizacoes" element={<Organizacoes />} />
           <Route path="/times" element={<Times />} />
           <Route path="/membros" element={<Membros />} />
           <Route path="/funis" element={<Funnel />} />

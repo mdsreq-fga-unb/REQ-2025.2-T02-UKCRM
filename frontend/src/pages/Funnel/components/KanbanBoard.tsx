@@ -23,6 +23,7 @@ export type KanbanBoardProps = {
   onLeadDrop: (event: LeadDropEvent) => void;
   onAddLead: (columnId: ColumnId) => void;
   onAddColumn: () => void;
+  onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
 };
 
 export function KanbanBoard({
@@ -34,6 +35,7 @@ export function KanbanBoard({
   onLeadDrop,
   onAddLead,
   onAddColumn,
+  onEditColumnName,
 }: KanbanBoardProps) {
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
@@ -60,6 +62,7 @@ export function KanbanBoard({
               column={col}
               leads={getFilteredAndSortedLeads(col.id)}
               onAddLead={onAddLead}
+              onEditColumnName={onEditColumnName}
             />
           ))}
         </SortableContext>
@@ -81,6 +84,7 @@ export function KanbanBoard({
                 column={activeColumn}
                 leads={getFilteredAndSortedLeads(activeColumn.id)}
                 onAddLead={onAddLead}
+                onEditColumnName={onEditColumnName}
               />
             )}
             {activeLead && <LeadCard lead={activeLead} isOverlay />}

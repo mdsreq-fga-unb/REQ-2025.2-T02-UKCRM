@@ -7,24 +7,8 @@ import { Plus, RefreshCw, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CreateOrganizationModal } from "@/components/modals/CreateOrganizationModal";
 import { DeleteOrganizationModal } from "@/components/modals/DeleteOrganizationModal";
-
-interface Organization {
-  id: number;
-  nome: string;
-  dataCriacao: string;
-  dataAtualizacao: string;
-  proprietario: string;
-}
-
-const mockData: Organization[] = [
-  {
-    id: 1,
-    nome: "Ober",
-    dataCriacao: "14/10/2025",
-    dataAtualizacao: "15/10/2025",
-    proprietario: "José da Silva",
-  },
-];
+import { useOrganizacoesData } from "./hooks/useOrganizacoesData";
+import type { Organization } from "./hooks/useOrganizacoesMock";
 
 const columns: Column<Organization>[] = [
   { key: "id", header: "ID" },
@@ -34,12 +18,12 @@ const columns: Column<Organization>[] = [
   { key: "proprietario", header: "Proprietário" },
 ];
 
-const Index = () => {
+const Organizacoes = () => {
+  const { organizations, isLoading, handleDelete, handleRefresh } = useOrganizacoesData();
   const [showAlert, setShowAlert] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
-  const [organizations] = useState<Organization[]>(mockData);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredOrganizations = organizations.filter((org) =>
@@ -50,9 +34,22 @@ const Index = () => {
     console.log("Edit:", item);
   };
 
-  const handleDelete = (item: Organization) => {
+  const onDeleteClick = (item: Organization) => {
     setSelectedOrg(item);
     setIsDeleteOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (selectedOrg) {
+      try {
+        await handleDelete(selectedOrg.id);
+        setIsDeleteOpen(false);
+        setSelectedOrg(null);
+      } catch (error) {
+        console.error("Error deleting organization:", error);
+        setShowAlert(true);
+      }
+    }
   };
 
   return (
@@ -81,8 +78,13 @@ const Index = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon">
-              <RefreshCw className="h-4 w-4" />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleRefresh}
+              disabled={isLoading}
+            >
+              <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             </Button>
             <Button onClick={() => setIsCreateOpen(true)}>
               <Plus className="h-4 w-4" />
@@ -109,7 +111,7 @@ const Index = () => {
             columns={columns}
             data={filteredOrganizations}
             onEdit={handleEdit}
-            onDelete={handleDelete}
+            onDelete={onDeleteClick}
           />
 
           {/* Create Organization Button */}
@@ -135,10 +137,10 @@ const Index = () => {
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
         organizationName={selectedOrg?.nome || ""}
-        onConfirm={() => console.log("Delete confirmed")}
+        onConfirm={confirmDelete}
       />
     </AppShell>
   );
 };
 
-export default Index;
+export default Organizacoes;

@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 import { useDndContext, type UniqueIdentifier } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
-import { GripHorizontal, PencilIcon, PlusIcon } from "lucide-react";
-import React, { useMemo } from "react";
+import { GripHorizontal, PencilIcon, PlusIcon, Check, X } from "lucide-react";
+import React, { useMemo, useState } from "react";
 import type { Column, ColumnDragData, Lead } from "../types/kanban.types";
 import { LeadCard } from "./LeadCard";
 
@@ -17,6 +18,7 @@ interface BoardColumnProps {
   leads: Lead[];
   isOverlay?: boolean;
   onAddLead: (columnId: UniqueIdentifier) => void;
+  onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
 }
 
 export function BoardColumn({
@@ -24,7 +26,11 @@ export function BoardColumn({
   leads,
   isOverlay,
   onAddLead,
+  onEditColumnName,
 }: BoardColumnProps) {
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState(column.title);
+
   const leadsIds = useMemo(() => {
     return leads.map((lead) => lead.id);
   }, [leads]);
@@ -83,15 +89,60 @@ export function BoardColumn({
           <span className="sr-only">{`Move column: ${column.title}`}</span>
           <GripHorizontal />
         </Button>
-        <div className="flex justify-center items-center w-full">
-          <span className="font-semibold mb-0">{column.title}</span>
-          <Button
-            className="text-muted-foreground "
-            size="icon-sm"
-            variant="ghost"
-          >
-            <PencilIcon />
-          </Button>
+        <div className="flex justify-center items-center w-full gap-1">
+          {isEditingName ? (
+            <>
+              <Input
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    onEditColumnName?.(column.id, editedName);
+                    setIsEditingName(false);
+                  } else if (e.key === 'Escape') {
+                    setEditedName(column.title);
+                    setIsEditingName(false);
+                  }
+                }}
+                autoFocus
+                className="h-7 text-sm font-semibold text-center"
+              />
+              <Button
+                className="text-muted-foreground h-7 w-7"
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => {
+                  onEditColumnName?.(column.id, editedName);
+                  setIsEditingName(false);
+                }}
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+              <Button
+                className="text-muted-foreground h-7 w-7"
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => {
+                  setEditedName(column.title);
+                  setIsEditingName(false);
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </>
+          ) : (
+            <>
+              <span className="font-semibold mb-0">{column.title}</span>
+              <Button
+                className="text-muted-foreground"
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => setIsEditingName(true)}
+              >
+                <PencilIcon className="h-4 w-4" />
+              </Button>
+            </>
+          )}
         </div>
         <div className="flex justify-between items-center w-full text-muted-foreground">
           <span>{column.subtitle_left}</span>
