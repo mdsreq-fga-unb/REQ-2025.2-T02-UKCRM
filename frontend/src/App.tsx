@@ -1,15 +1,17 @@
 import { Outlet } from "react-router";
-import { ThemeProvider } from "@/components/theme-provider";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import ThemeProvider from "@/components/theme/ThemeProvider";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="min-h-screen flex flex-col">
-        <header className="flex justify-between w-full flex-row p-4">
+    <ThemeProvider storageKey="vite-ui-theme">
+      <div className="flex flex-col h-screen divide-y">
+        <header className="flex justify-between w-full flex-row p-2">
           <ThemeToggle />
         </header>
-        <Outlet />
+        <div className="flex-1 min-h-0">
+          <Outlet />
+        </div>
       </div>
     </ThemeProvider>
   );
