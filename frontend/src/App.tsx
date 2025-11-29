@@ -3,6 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router";
+import { AuthProvider } from "@/auth/context/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
 import Organizacoes from "./pages/Organizacoes";
 import Times from "./pages/Times/index.tsx";
 import Membros from "./pages/Membros/index.tsx";
@@ -18,16 +22,66 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Organizacoes />} />
-          <Route path="/organizacoes" element={<Organizacoes />} />
-          <Route path="/times" element={<Times />} />
-          <Route path="/membros" element={<Membros />} />
-          <Route path="/funis" element={<Funnel />} />
-          <Route path="/perfil" element={<Profile />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Organizacoes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/organizacoes"
+              element={
+                <ProtectedRoute>
+                  <Organizacoes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/times"
+              element={
+                <ProtectedRoute>
+                  <Times />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membros"
+              element={
+                <ProtectedRoute>
+                  <Membros />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/funis"
+              element={
+                <ProtectedRoute>
+                  <Funnel />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/perfil"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

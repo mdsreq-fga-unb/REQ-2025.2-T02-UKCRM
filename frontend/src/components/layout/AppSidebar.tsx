@@ -1,7 +1,10 @@
-import { Building, Users, Filter, Chrome, UserCircle } from "lucide-react";
+import { Building, Users, Filter, Chrome, UserCircle, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { cn } from "@/lib/utils";
 import { UserProfileCard } from "@/components/ui/UserProfileCard";
+import { useAuth } from "@/auth/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 const navItems = [
   { title: "Organizações", href: "/", icon: Building },
@@ -11,6 +14,18 @@ const navItems = [
 ];
 
 export function AppSidebar() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/landing");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-[280px] flex-col border-r border-sidebar-border bg-sidebar">
       <div className="border-b border-sidebar-border p-4">
@@ -37,6 +52,15 @@ export function AppSidebar() {
       </nav>
 
       <div className="mt-auto space-y-4 p-4">
+        <Button
+          onClick={handleLogout}
+          variant="outline"
+          className="w-full justify-start gap-3"
+        >
+          <LogOut className="h-5 w-5" />
+          Sair
+        </Button>
+
         <div className="rounded-lg bg-muted p-3">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-card">

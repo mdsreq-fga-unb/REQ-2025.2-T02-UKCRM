@@ -47,6 +47,13 @@ export const featureFlags = {
    * Specific flag for Organizations feature
    */
   USE_MOCK_ORGANIZATIONS: undefined as boolean | undefined,
+
+  /**
+   * USE_MOCK_AUTH
+   *
+   * Specific flag for Authentication feature
+   */
+  USE_MOCK_AUTH: undefined as boolean | undefined,
 } as const;
 
 /**
