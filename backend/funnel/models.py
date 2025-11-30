@@ -41,6 +41,45 @@ class Lead(OrderedModel):
     earning = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     stage = models.ForeignKey(Stage, related_name="leads", on_delete=models.CASCADE)
 
+    # New fields
+    cpf = models.CharField(max_length=14, null=True, blank=True)
+    career = models.CharField(max_length=100, null=True, blank=True)
+    income = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    interests = models.JSONField(default=list, blank=True)
+
+    class CampaignChoices(models.TextChoices):
+        SUMMER_SALE_2025 = "Summer Sale 2025", "Summer Sale 2025"
+        BLACK_FRIDAY_2024 = "Black Friday 2024", "Black Friday 2024"
+        PRODUCT_LAUNCH = "Product Launch", "Product Launch"
+        RETARGETING = "Retargeting", "Retargeting"
+        LINKEDIN_ADS = "LinkedIn Ads", "LinkedIn Ads"
+        GOOGLE_ADS = "Google Ads", "Google Ads"
+        ORGANIC = "Organic", "Organic"
+        NONE = "None", "None"
+
+    campaign = models.CharField(
+        max_length=50,
+        choices=CampaignChoices.choices,
+        default=CampaignChoices.NONE,
+    )
+
+    class ContactOriginChoices(models.TextChoices):
+        WEBSITE = "Website", "Website"
+        SOCIAL_MEDIA = "Social Media", "Social Media"
+        REFERRAL = "Referral", "Referral"
+        COLD_CALL = "Cold Call", "Cold Call"
+        EMAIL_CAMPAIGN = "Email Campaign", "Email Campaign"
+        EVENT = "Event", "Event"
+        OTHER = "Other", "Other"
+
+    contact_origin = models.CharField(
+        max_length=50,
+        choices=ContactOriginChoices.choices,
+        default=ContactOriginChoices.OTHER,
+    )
+
+    content = models.TextField(blank=True, default="")
+
     class TemperatureChoices(models.TextChoices):
         QUENTE = "Quente", "Quente"
         MORNO = "Morno", "Morno"

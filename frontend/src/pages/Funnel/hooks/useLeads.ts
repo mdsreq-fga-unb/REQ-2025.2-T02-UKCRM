@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as leadApi from "../api/leads.api";
-import type { LeadFormValues } from "../schemas/lead.schema";
+// import type { LeadFormValues } from "../schemas/lead.schema"; 
 import type { Lead } from "../types/kanban.types";
 import { mapApiLeadToKanbanLead } from "../utils/funnelTransformers";
 import { queryKeys } from "./queryKeys";
@@ -17,21 +17,31 @@ export const useCreateLead = (
   return useMutation({
     mutationFn: leadApi.createLead,
 
-    onMutate: async (payload) => {
+    onMutate: async (payload: any) => {
       await queryClient.cancelQueries({ queryKey: detailKey });
 
       const tempId = `lead-temp-${crypto.randomUUID()}`;
       const newColumnId = `col-${payload.stage}`;
 
+      // Cria lead otimista com TODOS os dados do formulário
       const optimisticLead: Lead = {
         id: tempId,
         columnId: newColumnId,
         name: payload.name,
-        earning: 0,
-        temperature: "Neutro",
+        // Novos campos com fallbacks seguros
+        cpf: payload.cpf || null,
+        email: payload.email || null,
+        phone: payload.phone || "",
+        career: payload.career || null,
+        income: payload.income ? Number(payload.income) : 0,
+        interests: payload.interests || [],
+        campaign: payload.campaign || "None",
+        contactOrigin: payload.contactOrigin || "Other",
+        earning: payload.earning ? Number(payload.earning) : 0,
+        temperature: payload.temperature || "Neutro",
+        content: payload.content || "",
         createdAt: new Date(),
         updatedAt: new Date(),
-        content: "...",
       };
 
       setLeads((prev) => [optimisticLead, ...prev]);
@@ -65,29 +75,35 @@ export const useEditLeadDetails = (
   const detailKey = queryKeys.funnels.detail(funnelId);
 
   return useMutation({
-    mutationFn: (vals: { id: number } & LeadFormValues) => {
+    // Aceita objeto flexível para cobrir todos os novos campos
+    mutationFn: (vals: { id: number } & any) => {
       return leadApi.updateLead({
         id: vals.id,
-        name: vals.name,
-        email: vals.email || null,
-        phone: vals.phone || "",
-        earning: vals.earning,
-        temperature: vals.temperature,
+        // Espalha todos os campos (name, cpf, income, interests, etc.)
+        ...vals, 
       });
     },
     onSuccess: (updatedApiLead) => {
       setLeads((prev) =>
         prev.map((l) => {
+          // Verifica ID (assumindo formato 'lead-ID' no front e ID numérico vindo da API)
           if (l.id === `lead-${updatedApiLead.id}`) {
             return {
               ...l,
+              // Atualização granular do estado local
               name: updatedApiLead.name,
-              earning: Number(updatedApiLead.earning),
+              cpf: updatedApiLead.cpf,
+              email: updatedApiLead.email,
+              phone: updatedApiLead.phone,
+              career: updatedApiLead.career,
+              income: Number(updatedApiLead.income),
+              interests: updatedApiLead.interests,
+              campaign: updatedApiLead.campaign,
+              contactOrigin: updatedApiLead.contactOrigin,
               temperature: updatedApiLead.temperature,
-              content:
-                [updatedApiLead.email, updatedApiLead.phone]
-                  .filter(Boolean)
-                  .join(" | ") || "...",
+              earning: Number(updatedApiLead.earning),
+              content: updatedApiLead.content, // Agora mapeia o conteúdo real (obs)
+              updatedAt: new Date(),
             };
           }
           return l;

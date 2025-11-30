@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/apiClient";
 import type { TemperatureVariant } from "@/lib/temperature";
+import type { Campaign, ContactOrigin } from "../types/kanban.types";
 
 // TIPOS
 
@@ -8,18 +9,40 @@ export type ApiLead = {
   name: string;
   email: string | null;
   phone: string;
-  earning: string; // Django decimal vem como string
+  earning: string | number; // Django decimal vem como string
   temperature: TemperatureVariant;
   created_at: string;
   updated_at: string;
   order: number;
   stage: number;
+
+  // Novos campos sincronizados com EditLeadDialog
+  cpf?: string | null;
+  career?: string | null;
+  income?: string | number;
+  interests?: string[];
+  campaign?: Campaign;
+  contactOrigin?: ContactOrigin;
+  content: string; // Observações
 };
 
 export type ApiLeadCreatePayload = {
   name: string;
   stage: number;
   order: number;
+
+  // Opcionais na criação
+  email?: string | null;
+  phone?: string;
+  earning?: string | number;
+  temperature?: TemperatureVariant;
+  cpf?: string | null;
+  career?: string | null;
+  income?: string | number;
+  interests?: string[];
+  campaign?: Campaign;
+  contactOrigin?: ContactOrigin;
+  content?: string;
 };
 
 export type ApiLeadUpdatePayload = {
@@ -29,8 +52,17 @@ export type ApiLeadUpdatePayload = {
   name?: string;
   email?: string | null;
   phone?: string;
-  earning?: string | number; 
+  earning?: string | number;
   temperature?: TemperatureVariant;
+
+  // Novos campos para atualização
+  cpf?: string | null;
+  career?: string | null;
+  income?: string | number;
+  interests?: string[];
+  campaign?: Campaign;
+  contactOrigin?: ContactOrigin;
+  content?: string;
 };
 
 // LEADS
