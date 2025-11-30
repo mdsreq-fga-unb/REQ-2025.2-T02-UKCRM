@@ -1,9 +1,13 @@
 from django.db import models
+from django.utils import timezone
 from ordered_model.models import OrderedModel
 
 
 class SalesTeam(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    members = models.ManyToManyField('accounts.Employee', related_name='sales_teams', blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
     def __str__(self):

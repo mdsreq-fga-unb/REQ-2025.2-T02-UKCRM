@@ -12,7 +12,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return EmployeeSerializer
 
     def create(self, request, *args, **kwargs):
+        print(f"Received data: {request.data}", flush=True)
         serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            print(f"Validation errors: {serializer.errors}", flush=True)
         serializer.is_valid(raise_exception=True)
         employee = serializer.save()
         return Response(EmployeeSerializer(employee).data, status=status.HTTP_201_CREATED)

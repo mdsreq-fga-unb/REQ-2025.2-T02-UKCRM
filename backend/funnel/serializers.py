@@ -5,9 +5,15 @@ from .models import Funnel, Lead, SalesTeam, Stage
 
 
 class SalesTeamSerializer(serializers.ModelSerializer):
+    member_count = serializers.SerializerMethodField()
+
     class Meta:
         model = SalesTeam
-        fields = "__all__"
+        fields = ['id', 'name', 'members', 'member_count', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
+
+    def get_member_count(self, obj):
+        return obj.members.count()
 
 
 class LeadSerializer(OrderedModelSerializer, serializers.ModelSerializer):

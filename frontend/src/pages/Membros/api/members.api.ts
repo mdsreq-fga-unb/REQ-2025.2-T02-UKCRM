@@ -14,8 +14,8 @@ export type ApiMember = {
 export type ApiMemberCreatePayload = {
   name: string;
   email: string;
-  hierarchy: string;
-  password: string;
+  role: string;
+  organization_id: number;
 };
 
 export type ApiMemberUpdatePayload = {
