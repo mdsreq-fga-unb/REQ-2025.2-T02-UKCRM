@@ -25,6 +25,7 @@ export type KanbanBoardProps = {
   onAddLead: (columnId: ColumnId) => void;
   onAddColumn: () => void;
   onLeadEdit: (lead: Lead) => void;
+  onLeadView: (lead: Lead) => void;
   onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
 };
 
@@ -38,6 +39,7 @@ export function KanbanBoard({
   onAddLead,
   onAddColumn,
   onLeadEdit,
+  onLeadView,
   onEditColumnName,
 }: KanbanBoardProps) {
   const { hasPermission } = usePermissions();
@@ -70,6 +72,7 @@ export function KanbanBoard({
               leads={getFilteredAndSortedLeads(col.id)}
               onAddLead={onAddLead}
               onLeadEdit={onLeadEdit}
+              onLeadView={onLeadView}
               onEditColumnName={onEditColumnName}
             />
           ))}
@@ -95,6 +98,7 @@ export function KanbanBoard({
                 leads={getFilteredAndSortedLeads(activeColumn.id)}
                 onAddLead={onAddLead}
                 onLeadEdit={onLeadEdit}
+                onLeadView={onLeadView}
                 onEditColumnName={onEditColumnName}
               />
             )}
