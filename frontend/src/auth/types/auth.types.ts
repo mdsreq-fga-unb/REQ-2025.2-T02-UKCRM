@@ -5,6 +5,7 @@ export interface User {
   email: string;
   nome: string;
   role: UserRole;
+  organization_id: number;
 }
 
 export interface LoginCredentials {

@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { DataTable, Column } from "@/components/ui/data-table";
 import { usePermissions } from "@/auth/hooks/usePermissions";
-import { Plus, Search } from "lucide-react";
+import { useAuthContext } from "@/auth/context/AuthContext";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useMembers, useCreateMember, useDeleteMember } from "./hooks/useMembers";
+import { shouldUseMock } from "@/config/features";
+import { featureFlags } from "@/config/features";
 import {
   Dialog,
   DialogContent,
@@ -51,13 +55,53 @@ const columns: Column<Member>[] = [
   { key: "dataEntrada", header: "Data de Entrada" },
 ];
 
+// Map frontend hierarchy values to backend role values
+const hierarchyToRoleMap: Record<string, string> = {
+  "Closer": "closer",
+  "SDR": "sdr",
+  "Coordenador de Vendas": "coordinator",
+  "Gerente": "manager",
+  "Diretor": "owner",
+};
+
 const Membros = () => {
   const { hasPermission } = usePermissions();
-  const [members] = useState<Member[]>(mockMembers);
+  const { user } = useAuthContext();
+  const useMockData = shouldUseMock(featureFlags.USE_MOCK_MEMBERS);
+
+  // Backend integration
+  const { data: apiMembersData } = useMembers();
+  const { mutate: createMemberMutation } = useCreateMember(() => setIsCreateOpen(false));
+  const { mutate: deleteMemberMutation } = useDeleteMember(() => {
+    setIsDeleteOpen(false);
+    setSelectedMember(null);
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    hierarchy: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  // Transform API data to match component interface
+  const members = useMemo(() => {
+    if (useMockData) {
+      return mockMembers;
+    }
+    if (!apiMembersData) return [];
+    return apiMembersData.map((member: { id: number; name: string; hierarchy: string; joined_at: string }) => ({
+      id: member.id,
+      nome: member.name,
+      hierarquia: member.hierarchy,
+      dataEntrada: new Date(member.joined_at).toLocaleDateString("pt-BR"),
+    }));
+  }, [useMockData, apiMembersData]);
 
   const filteredMembers = members.filter((member) =>
     member.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -123,7 +167,12 @@ const Membros = () => {
       </div>
 
       {/* Create Member Modal */}
-      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+      <Dialog open={isCreateOpen} onOpenChange={(open: boolean) => {
+        setIsCreateOpen(open);
+        if (!open) {
+          setFormData({ name: "", email: "", hierarchy: "", password: "", confirmPassword: "" });
+        }
+      }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-center text-lg font-semibold">
@@ -135,8 +184,15 @@ const Membros = () => {
             <Label className="text-muted-foreground text-xs uppercase tracking-wide">
               Dados do Membro
             </Label>
-            <Input placeholder="Nome Completo" />
-            <Select>
+            <Input
+              placeholder="Nome Completo"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+            <Select
+              value={formData.hierarchy}
+              onValueChange={(value: string) => setFormData({ ...formData, hierarchy: value })}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Nível de Hierarquia" />
               </SelectTrigger>
@@ -148,16 +204,60 @@ const Membros = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Input type="email" placeholder="E-mail" />
-            <PasswordInput placeholder="Senha" />
-            <Input type="password" placeholder="Confirmar Senha" />
+            <Input
+              type="email"
+              placeholder="E-mail"
+              value={formData.email}
+              onChange={(e: any) => setFormData({ ...formData, email: e.target.value })}
+            />
+            <PasswordInput
+              placeholder="Senha"
+              value={formData.password}
+              onChange={(e: any) => setFormData({ ...formData, password: e.target.value })}
+            />
+            <Input
+              type="password"
+              placeholder="Confirmar Senha"
+              value={formData.confirmPassword}
+              onChange={(e: any) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            />
           </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
               Cancelar
             </Button>
-            <Button variant="invite">
+            <Button
+              variant="invite"
+              onClick={() => {
+                if (useMockData) {
+                  console.log("Create member:", formData);
+                  setIsCreateOpen(false);
+                } else {
+                  if (formData.password !== formData.confirmPassword) {
+                    alert("As senhas não coincidem");
+                    return;
+                  }
+                  if (!user?.organization_id) {
+                    alert("Erro: organização não encontrada");
+                    return;
+                  }
+                  const role = hierarchyToRoleMap[formData.hierarchy];
+                  if (!role) {
+                    alert("Erro: hierarquia inválida");
+                    return;
+                  }
+                  const payload = {
+                    name: formData.name,
+                    email: formData.email,
+                    role: role,
+                    organization_id: user.organization_id,
+                  };
+                  console.log("Sending payload:", payload);
+                  createMemberMutation(payload);
+                }
+              }}
+            >
               <Send className="h-4 w-4" />
               Convidar
             </Button>
@@ -171,9 +271,21 @@ const Membros = () => {
         onOpenChange={setIsDeleteOpen}
         memberName={selectedMember?.nome || ""}
         availableMembers={availableMembersForReallocation}
-        onConfirm={(action, targetId) =>
-          console.log("Delete confirmed:", action, targetId)
-        }
+        onConfirm={(action: string, targetId?: string) => {
+          if (useMockData) {
+            console.log("Delete confirmed:", action, targetId);
+            setIsDeleteOpen(false);
+            setSelectedMember(null);
+          } else if (selectedMember) {
+            deleteMemberMutation({
+              id: selectedMember.id,
+              payload: {
+                action: action as "delete" | "reallocate",
+                target_member_id: targetId ? parseInt(targetId) : undefined,
+              },
+            });
+          }
+        }}
       />
     </AppShell>
   );

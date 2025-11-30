@@ -7,6 +7,7 @@ import { AuthProvider } from "@/auth/context/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
+import Home from "./pages/Home";
 import Organizacoes from "./pages/Organizacoes";
 import Times from "./pages/Times/index.tsx";
 import Membros from "./pages/Membros/index.tsx";
@@ -33,7 +34,7 @@ const App = () => (
               path="/"
               element={
                 <ProtectedRoute>
-                  <Organizacoes />
+                  <Home />
                 </ProtectedRoute>
               }
             />

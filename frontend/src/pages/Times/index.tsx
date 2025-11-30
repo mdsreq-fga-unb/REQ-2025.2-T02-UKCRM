@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { DataTable, Column } from "@/components/ui/data-table";
 import { usePermissions } from "@/auth/hooks/usePermissions";
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CreateTeamModal } from "@/components/modals/CreateTeamModal";
 import { EditTeamModal } from "@/components/modals/EditTeamModal";
 import { DeleteTeamModal } from "@/components/modals/DeleteTeamModal";
+import { useTeams, useCreateTeam, useUpdateTeam, useDeleteTeam } from "./hooks/useTeams";
+import { shouldUseMock } from "@/config/features";
+import { featureFlags } from "@/config/features";
 
 interface Team {
   id: number;
@@ -37,12 +40,36 @@ const columns: Column<Team>[] = [
 
 const Times = () => {
   const { hasPermission } = usePermissions();
-  const [teams] = useState<Team[]>(mockTeams);
+  const useMockData = shouldUseMock(featureFlags.USE_MOCK_TEAMS);
+
+  // Backend integration
+  const { data: apiTeamsData, isLoading } = useTeams();
+  const { mutate: createTeamMutation } = useCreateTeam(() => setIsCreateOpen(false));
+  const { mutate: updateTeamMutation } = useUpdateTeam(() => setIsEditOpen(false));
+  const { mutate: deleteTeamMutation } = useDeleteTeam(() => {
+    setIsDeleteOpen(false);
+    setSelectedTeam(null);
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+
+  // Transform API data to match component interface
+  const teams = useMemo(() => {
+    if (useMockData) {
+      return mockTeams;
+    }
+    if (!apiTeamsData) return [];
+    return apiTeamsData.map((team: { id: number; name: string; member_count: number; created_at: string }) => ({
+      id: team.id,
+      nome: team.name,
+      membros: team.member_count,
+      dataCriacao: new Date(team.created_at).toLocaleDateString("pt-BR"),
+    }));
+  }, [useMockData, apiTeamsData]);
 
   const filteredTeams = teams.filter((team) =>
     team.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -109,7 +136,17 @@ const Times = () => {
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
         availableMembers={mockMembers}
-        onSave={(name, members) => console.log("Create team:", name, members)}
+        onSave={(name, members) => {
+          if (useMockData) {
+            console.log("Create team:", name, members);
+            setIsCreateOpen(false);
+          } else {
+            createTeamMutation({
+              name,
+              member_ids: members.map((m) => parseInt(typeof m === 'string' ? m : m.id)),
+            });
+          }
+        }}
       />
       <EditTeamModal
         open={isEditOpen}
@@ -117,13 +154,33 @@ const Times = () => {
         teamName={selectedTeam?.nome || ""}
         currentMembers={mockMembers.slice(0, 2)}
         availableMembers={mockMembers.slice(2)}
-        onSave={(name, members) => console.log("Edit team:", name, members)}
+        onSave={(name, members) => {
+          if (useMockData) {
+            console.log("Edit team:", name, members);
+            setIsEditOpen(false);
+          } else if (selectedTeam) {
+            updateTeamMutation({
+              id: selectedTeam.id,
+              payload: {
+                name,
+                member_ids: members.map((m) => parseInt(typeof m === 'string' ? m : m.id)),
+              },
+            });
+          }
+        }}
       />
       <DeleteTeamModal
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
         teamName={selectedTeam?.nome || ""}
-        onConfirm={() => console.log("Delete confirmed")}
+        onConfirm={() => {
+          if (useMockData) {
+            console.log("Delete confirmed");
+            setIsDeleteOpen(false);
+          } else if (selectedTeam) {
+            deleteTeamMutation(selectedTeam.id);
+          }
+        }}
       />
     </AppShell>
   );

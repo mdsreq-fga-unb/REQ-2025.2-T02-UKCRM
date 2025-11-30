@@ -16,7 +16,7 @@ export const featureFlags = {
    * - true: During frontend development without backend
    * - false: When integrating with real backend API
    */
-  USE_MOCK_DATA: true,
+  USE_MOCK_DATA: false,
 
   /**
    * USE_MOCK_FUNNEL

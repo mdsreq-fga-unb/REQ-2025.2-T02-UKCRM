@@ -3,7 +3,9 @@ import { apiClient } from "@/lib/apiClient";
 export type ApiUser = {
   id: number;
   email: string;
-  name: string;
+  nome: string;
+  role: string;
+  organization_id: number;
 };
 
 export type ApiLoginPayload = {

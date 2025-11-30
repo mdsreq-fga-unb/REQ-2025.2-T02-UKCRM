@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 interface ApiClientOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
@@ -10,10 +10,14 @@ export async function apiClient<T>(
 ): Promise<T> {
   const { method = "GET", body, headers, ...customConfig } = options;
 
+  // Get auth token from localStorage
+  const token = localStorage.getItem("authToken");
+
   const config: RequestInit = {
     method,
     headers: {
       "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...headers,
     },
     ...customConfig,
