@@ -16,10 +16,16 @@ class SalesTeamViewSet(viewsets.ModelViewSet):
     serializer_class = SalesTeamSerializer
 
     def get_queryset(self):
-        """Filter sales teams to only show those from the user's organization"""
+        """Filter sales teams based on user role"""
         user = self.request.user
         if hasattr(user, 'employee_profile'):
-            return SalesTeam.objects.filter(organization=user.employee_profile.organization)
+            employee = user.employee_profile
+            # Owners and managers can see all teams from their organization
+            if employee.role in ['owner', 'manager']:
+                return SalesTeam.objects.filter(organization=employee.organization)
+            # Other roles can only see teams they're members of
+            else:
+                return SalesTeam.objects.filter(members=employee)
         return SalesTeam.objects.none()
 
     def create(self, request, *args, **kwargs):
@@ -61,14 +67,20 @@ class FunnelViewSet(viewsets.ModelViewSet):
     serializer_class = FunnelSerializer
 
     def get_queryset(self):
-        """Filter funnels to only show those where the user is a team member"""
+        """Filter funnels based on user role"""
         user = self.request.user
         if hasattr(user, 'employee_profile'):
             employee = user.employee_profile
-            # Filter funnels that have teams where this employee is a member
-            return Funnel.objects.filter(
-                teams__members=employee
-            ).prefetch_related("teams", "stages__leads").distinct()
+            # Owners and managers can see all funnels from their organization
+            if employee.role in ['owner', 'manager']:
+                return Funnel.objects.filter(
+                    teams__organization=employee.organization
+                ).prefetch_related("teams", "stages__leads").distinct()
+            # Other roles can only see funnels where they're a team member
+            else:
+                return Funnel.objects.filter(
+                    teams__members=employee
+                ).prefetch_related("teams", "stages__leads").distinct()
         return Funnel.objects.none()
 
     def create(self, request, *args, **kwargs):
@@ -92,14 +104,20 @@ class StageViewSet(viewsets.ModelViewSet):
     serializer_class = StageSerializer
 
     def get_queryset(self):
-        """Filter stages to only show those from funnels where the user is a team member"""
+        """Filter stages based on user role"""
         user = self.request.user
         if hasattr(user, 'employee_profile'):
             employee = user.employee_profile
-            # Filter stages that belong to funnels where this employee is a team member
-            return Stage.objects.filter(
-                funnel__teams__members=employee
-            ).distinct()
+            # Owners and managers can see all stages from their organization
+            if employee.role in ['owner', 'manager']:
+                return Stage.objects.filter(
+                    funnel__teams__organization=employee.organization
+                ).distinct()
+            # Other roles can only see stages where they're a team member
+            else:
+                return Stage.objects.filter(
+                    funnel__teams__members=employee
+                ).distinct()
         return Stage.objects.none()
 
 
@@ -108,14 +126,20 @@ class LeadViewSet(viewsets.ModelViewSet):
     serializer_class = LeadSerializer
 
     def get_queryset(self):
-        """Filter leads to only show those from funnels where the user is a team member"""
+        """Filter leads based on user role"""
         user = self.request.user
         if hasattr(user, 'employee_profile'):
             employee = user.employee_profile
-            # Filter leads that belong to stages of funnels where this employee is a team member
-            return Lead.objects.filter(
-                stage__funnel__teams__members=employee
-            ).distinct()
+            # Owners and managers can see all leads from their organization
+            if employee.role in ['owner', 'manager']:
+                return Lead.objects.filter(
+                    stage__funnel__teams__organization=employee.organization
+                ).distinct()
+            # Other roles can only see leads where they're a team member
+            else:
+                return Lead.objects.filter(
+                    stage__funnel__teams__members=employee
+                ).distinct()
         return Lead.objects.none()
 
     def create(self, request, *args, **kwargs):

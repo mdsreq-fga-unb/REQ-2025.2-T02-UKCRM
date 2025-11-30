@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from .serializers import EmployeeSerializer
+from funnel.models import SalesTeam
 
 
 @api_view(['POST'])
@@ -132,3 +133,76 @@ def me_view(request):
             {'error': 'User is not an employee'},
             status=status.HTTP_403_FORBIDDEN
         )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile_view(request):
+    """
+    Get detailed profile information including organization and teams
+    """
+    # Check if user is admin (staff/superuser)
+    if request.user.is_staff:
+        return Response({
+            'id': request.user.id,
+            'email': request.user.email,
+            'nome': request.user.first_name or request.user.username,
+            'role': 'Admin',
+            'organization': None,
+            'teams': [],
+            'joined_at': request.user.date_joined.isoformat(),
+        }, status=status.HTTP_200_OK)
+
+    try:
+        employee = request.user.employee_profile
+
+        # Get teams the employee is part of
+        teams = SalesTeam.objects.filter(members=employee)
+        teams_data = [{'id': team.id, 'name': team.name} for team in teams]
+
+        return Response({
+            'id': employee.id,
+            'email': request.user.email,
+            'nome': request.user.first_name,
+            'role': employee.role,
+            'organization': {
+                'id': employee.organization.id,
+                'name': employee.organization.name,
+            },
+            'teams': teams_data,
+            'joined_at': request.user.date_joined.isoformat(),
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {'error': 'User is not an employee'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_profile_view(request):
+    """
+    Update user profile information
+    """
+    user = request.user
+
+    # Update name if provided
+    if 'nome' in request.data:
+        user.first_name = request.data['nome']
+        user.save()
+
+    # Update password if provided
+    if 'password' in request.data:
+        password = request.data['password']
+        if len(password) >= 8:
+            user.set_password(password)
+            user.save()
+        else:
+            return Response(
+                {'error': 'Password must be at least 8 characters long'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    # Return updated profile
+    return profile_view(request)
