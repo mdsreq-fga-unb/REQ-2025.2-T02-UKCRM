@@ -6,7 +6,7 @@ import { usePermissions } from "@/auth/hooks/usePermissions";
 import { useAuthContext } from "@/auth/context/AuthContext";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useMembers, useCreateMember, useDeleteMember } from "./hooks/useMembers";
+import { useMembers, useCreateMember, useUpdateMember, useDeleteMember } from "./hooks/useMembers";
 import { shouldUseMock } from "@/config/features";
 import { featureFlags } from "@/config/features";
 import {
@@ -31,6 +31,7 @@ import { Send } from "lucide-react";
 interface Member {
   id: number;
   nome: string;
+  email?: string;
   hierarquia: string;
   dataEntrada: string;
 }
@@ -72,6 +73,10 @@ const Membros = () => {
   // Backend integration
   const { data: apiMembersData } = useMembers();
   const { mutate: createMemberMutation } = useCreateMember(() => setIsCreateOpen(false));
+  const { mutate: updateMemberMutation } = useUpdateMember(() => {
+    setIsEditOpen(false);
+    setSelectedMember(null);
+  });
   const { mutate: deleteMemberMutation } = useDeleteMember(() => {
     setIsDeleteOpen(false);
     setSelectedMember(null);
@@ -79,12 +84,18 @@ const Membros = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     hierarchy: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [editFormData, setEditFormData] = useState({
+    name: "",
     password: "",
     confirmPassword: "",
   });
@@ -95,9 +106,10 @@ const Membros = () => {
       return mockMembers;
     }
     if (!apiMembersData) return [];
-    return apiMembersData.map((member: { id: number; name: string; hierarchy: string; joined_at: string }) => ({
+    return apiMembersData.map((member: { id: number; name: string; email: string; hierarchy: string; joined_at: string }) => ({
       id: member.id,
       nome: member.name,
+      email: member.email,
       hierarquia: member.hierarchy,
       dataEntrada: new Date(member.joined_at).toLocaleDateString("pt-BR"),
     }));
@@ -108,7 +120,13 @@ const Membros = () => {
   );
 
   const handleEdit = (member: Member) => {
-    console.log("Edit:", member);
+    setSelectedMember(member);
+    setEditFormData({
+      name: member.nome,
+      password: "",
+      confirmPassword: "",
+    });
+    setIsEditOpen(true);
   };
 
   const handleDelete = (member: Member) => {
@@ -260,6 +278,115 @@ const Membros = () => {
             >
               <Send className="h-4 w-4" />
               Convidar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Member Modal */}
+      <Dialog open={isEditOpen} onOpenChange={(open: boolean) => {
+        setIsEditOpen(open);
+        if (!open) {
+          setEditFormData({ name: "", password: "", confirmPassword: "" });
+          setSelectedMember(null);
+        }
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lg font-semibold">
+              Editar Membro
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
+              Dados do Membro
+            </Label>
+            <Input
+              placeholder="Nome Completo"
+              value={editFormData.name}
+              onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+            />
+            <Input
+              type="email"
+              placeholder="E-mail"
+              value={selectedMember?.email || ""}
+              disabled
+              className="bg-muted cursor-not-allowed"
+            />
+            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
+              Alterar Senha (Opcional)
+            </Label>
+            <PasswordInput
+              placeholder="Nova Senha"
+              value={editFormData.password}
+              onChange={(e: any) => setEditFormData({ ...editFormData, password: e.target.value })}
+            />
+            <Input
+              type="password"
+              placeholder="Confirmar Nova Senha"
+              value={editFormData.confirmPassword}
+              onChange={(e: any) => setEditFormData({ ...editFormData, confirmPassword: e.target.value })}
+            />
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => {
+                if (useMockData) {
+                  console.log("Edit member:", editFormData);
+                  setIsEditOpen(false);
+                } else {
+                  if (!selectedMember) return;
+
+                  // Validate passwords if user is trying to change password
+                  if (editFormData.password || editFormData.confirmPassword) {
+                    if (editFormData.password !== editFormData.confirmPassword) {
+                      alert("As senhas não coincidem");
+                      return;
+                    }
+                    if (editFormData.password.length < 8) {
+                      alert("A senha deve ter pelo menos 8 caracteres");
+                      return;
+                    }
+                    if (!/[A-Z]/.test(editFormData.password)) {
+                      alert("A senha deve conter letras maiúsculas");
+                      return;
+                    }
+                    if (!/[a-z]/.test(editFormData.password)) {
+                      alert("A senha deve conter letras minúsculas");
+                      return;
+                    }
+                    if (!/\d/.test(editFormData.password)) {
+                      alert("A senha deve conter números");
+                      return;
+                    }
+                    if (!/[!@#$%^&*(),.?":{}|<>]/.test(editFormData.password)) {
+                      alert("A senha deve conter símbolos");
+                      return;
+                    }
+                  }
+
+                  const payload: any = {
+                    name: editFormData.name,
+                  };
+
+                  // Only include password if it's being changed
+                  if (editFormData.password) {
+                    payload.password = editFormData.password;
+                  }
+
+                  updateMemberMutation({
+                    id: selectedMember.id,
+                    payload,
+                  });
+                }
+              }}
+            >
+              Salvar
             </Button>
           </DialogFooter>
         </DialogContent>

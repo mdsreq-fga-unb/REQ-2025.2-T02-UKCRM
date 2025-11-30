@@ -9,6 +9,7 @@ import { CreateTeamModal } from "@/components/modals/CreateTeamModal";
 import { EditTeamModal } from "@/components/modals/EditTeamModal";
 import { DeleteTeamModal } from "@/components/modals/DeleteTeamModal";
 import { useTeams, useCreateTeam, useUpdateTeam, useDeleteTeam } from "./hooks/useTeams";
+import { useMembers } from "@/pages/Membros/hooks/useMembers";
 import { shouldUseMock } from "@/config/features";
 import { featureFlags } from "@/config/features";
 
@@ -17,6 +18,7 @@ interface Team {
   nome: string;
   membros: number;
   dataCriacao: string;
+  memberIds?: number[];
 }
 
 const mockTeams: Team[] = [
@@ -44,6 +46,7 @@ const Times = () => {
 
   // Backend integration
   const { data: apiTeamsData, isLoading } = useTeams();
+  const { data: apiMembersData } = useMembers();
   const { mutate: createTeamMutation } = useCreateTeam(() => setIsCreateOpen(false));
   const { mutate: updateTeamMutation } = useUpdateTeam(() => setIsEditOpen(false));
   const { mutate: deleteTeamMutation } = useDeleteTeam(() => {
@@ -56,6 +59,7 @@ const Times = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [selectedTeamMembers, setSelectedTeamMembers] = useState<number[]>([]);
 
   // Transform API data to match component interface
   const teams = useMemo(() => {
@@ -63,20 +67,50 @@ const Times = () => {
       return mockTeams;
     }
     if (!apiTeamsData) return [];
-    return apiTeamsData.map((team: { id: number; name: string; member_count: number; created_at: string }) => ({
+    return apiTeamsData.map((team: { id: number; name: string; member_count: number; created_at: string; members: number[] }) => ({
       id: team.id,
       nome: team.name,
       membros: team.member_count,
       dataCriacao: new Date(team.created_at).toLocaleDateString("pt-BR"),
+      memberIds: team.members || [],
     }));
   }, [useMockData, apiTeamsData]);
+
+  // Transform members data for the modal
+  const availableMembers = useMemo(() => {
+    if (useMockData) {
+      return mockMembers;
+    }
+    if (!apiMembersData) return [];
+
+    return apiMembersData.map((member: { id: number; name: string; hierarchy: string }) => {
+      const initials = member.name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+
+      const colors = ['#059669', '#0891b2', '#7c3aed', '#dc2626', '#ea580c', '#ca8a04'];
+      const color = colors[member.id % colors.length];
+
+      return {
+        id: String(member.id),
+        name: member.name,
+        role: member.hierarchy,
+        initials,
+        color,
+      };
+    });
+  }, [useMockData, apiMembersData]);
 
   const filteredTeams = teams.filter((team) =>
     team.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (team: Team) => {
+  const handleEdit = (team: Team & { memberIds?: number[] }) => {
     setSelectedTeam(team);
+    setSelectedTeamMembers(team.memberIds || []);
     setIsEditOpen(true);
   };
 
@@ -135,7 +169,7 @@ const Times = () => {
       <CreateTeamModal
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
-        availableMembers={mockMembers}
+        availableMembers={availableMembers}
         onSave={(name, members) => {
           if (useMockData) {
             console.log("Create team:", name, members);
@@ -152,8 +186,8 @@ const Times = () => {
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
         teamName={selectedTeam?.nome || ""}
-        currentMembers={mockMembers.slice(0, 2)}
-        availableMembers={mockMembers.slice(2)}
+        currentMembers={availableMembers.filter((m: { id: string }) => selectedTeamMembers.includes(parseInt(m.id)))}
+        availableMembers={availableMembers.filter((m: { id: string }) => !selectedTeamMembers.includes(parseInt(m.id)))}
         onSave={(name, members) => {
           if (useMockData) {
             console.log("Edit team:", name, members);

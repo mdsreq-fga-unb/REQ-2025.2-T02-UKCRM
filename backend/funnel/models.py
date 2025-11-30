@@ -5,6 +5,13 @@ from ordered_model.models import OrderedModel
 
 class SalesTeam(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    organization = models.ForeignKey(
+        'organization.Organization',
+        on_delete=models.CASCADE,
+        related_name='sales_teams',
+        null=True,
+        blank=True
+    )
     members = models.ManyToManyField('accounts.Employee', related_name='sales_teams', blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -44,6 +51,14 @@ class Lead(OrderedModel):
     phone = models.CharField(max_length=20, blank=True, default="")
     earning = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     stage = models.ForeignKey(Stage, related_name="leads", on_delete=models.CASCADE)
+    account = models.ForeignKey(
+        'accounts.Employee',
+        on_delete=models.SET_NULL,
+        related_name='leads',
+        null=True,
+        blank=True,
+        verbose_name="Responsável"
+    )
 
     # New fields
     cpf = models.CharField(max_length=14, null=True, blank=True)

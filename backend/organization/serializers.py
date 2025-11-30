@@ -2,7 +2,8 @@ from rest_framework import serializers
 from .models import Organization
 
 class OrganizationSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(source='owner_name')
+    owner_name = serializers.SerializerMethodField(read_only=True)
+    owner_email = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Organization

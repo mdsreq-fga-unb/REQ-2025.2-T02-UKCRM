@@ -6,10 +6,11 @@ from .models import Funnel, Lead, SalesTeam, Stage
 
 class SalesTeamSerializer(serializers.ModelSerializer):
     member_count = serializers.SerializerMethodField()
+    organization_name = serializers.CharField(source='organization.name', read_only=True)
 
     class Meta:
         model = SalesTeam
-        fields = ['id', 'name', 'members', 'member_count', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'organization', 'organization_name', 'members', 'member_count', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
     def get_member_count(self, obj):
@@ -22,6 +23,8 @@ class LeadSerializer(OrderedModelSerializer, serializers.ModelSerializer):
         source="contact_origin",
         required=False,
     )
+    account_name = serializers.CharField(source='account.user.first_name', read_only=True)
+    account_email = serializers.CharField(source='account.user.email', read_only=True)
 
     class Meta:
         model = Lead

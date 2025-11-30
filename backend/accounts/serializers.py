@@ -49,3 +49,22 @@ class InviteUserSerializer(serializers.Serializer):
             role=validated_data['role']
         )
         return employee
+
+class UpdateEmployeeSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=255, required=False)
+    password = serializers.CharField(write_only=True, required=False, min_length=8)
+
+    def update(self, instance, validated_data):
+        """Update employee name and/or password"""
+        user = instance.user
+
+        # Update name if provided
+        if 'name' in validated_data:
+            user.first_name = validated_data['name']
+
+        # Update password if provided
+        if 'password' in validated_data:
+            user.set_password(validated_data['password'])
+
+        user.save()
+        return instance
