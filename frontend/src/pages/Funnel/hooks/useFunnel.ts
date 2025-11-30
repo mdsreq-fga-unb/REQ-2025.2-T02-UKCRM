@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import {
@@ -12,6 +13,7 @@ import {
   type ApiFunnel,
   createStage as apiCreateStage,
 } from "../api/funnels.api";
+import { queryKeys } from "./queryKeys";
 import { createLead as apiCreateLead } from "../api/leads.api";
 import { type FunnelFormValues } from "../schemas/funnel.schema";
 import type { LeadFormValues } from "../schemas/lead.schema";
@@ -41,6 +43,7 @@ import {
 } from "../utils/funnelTransformers";
 
 export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
+  const queryClient = useQueryClient();
   const [columns, setColumns] = useState<Column[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -106,6 +109,10 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         });
 
         await Promise.all(leadPromises);
+
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.funnels.detail(newFunnel.id),
+        });
       } catch (error) {
         console.error("Erro ao popular dados iniciais:", error);
       }
@@ -169,8 +176,15 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   // EFEITOS
 
   useEffect(() => {
-    if (!selectedFunnelId && funnelsList.length > 0) {
-      setSelectedFunnelId(funnelsList[0].value);
+    if (funnelsList.length > 0) {
+      const currentExists = funnelsList.some(
+        (f) => f.value === selectedFunnelId,
+      );
+      if (!selectedFunnelId || !currentExists) {
+        setSelectedFunnelId(funnelsList[0].value);
+      }
+    } else if (funnelsList.length === 0 && selectedFunnelId) {
+      setSelectedFunnelId(null);
     }
   }, [funnelsList, selectedFunnelId]);
 
