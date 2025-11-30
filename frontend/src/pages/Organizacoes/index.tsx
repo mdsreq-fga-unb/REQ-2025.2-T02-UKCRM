@@ -8,7 +8,10 @@ import { Plus, RefreshCw, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CreateOrganizationModal } from "@/components/modals/CreateOrganizationModal";
 import { DeleteOrganizationModal } from "@/components/modals/DeleteOrganizationModal";
+import { EditOrganizationModal, type EditOrganizationFormData } from "@/components/modals/EditOrganizationModal";
 import { useOrganizacoesData } from "./hooks/useOrganizacoesData";
+import { fetchOrganizationDetails } from "./api/organizations.api";
+import { fetchMembers } from "@/pages/Membros/api/members.api";
 import type { Organization } from "./types/organizations.types";
 
 const columns: Column<Organization>[] = [
@@ -21,19 +24,80 @@ const columns: Column<Organization>[] = [
 
 const Organizacoes = () => {
   const { hasPermission } = usePermissions();
-  const { organizations, isLoading, handleCreate, handleDelete, handleRefresh } = useOrganizacoesData();
+  const { organizations, isLoading, handleCreate, handleUpdate, handleDelete, handleRefresh } = useOrganizacoesData();
   const [showAlert, setShowAlert] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editOrgData, setEditOrgData] = useState<any>(null);
+  const [allMembers, setAllMembers] = useState<any[]>([]);
 
   const filteredOrganizations = organizations.filter((org) =>
     org.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (item: Organization) => {
-    console.log("Edit:", item);
+  const handleEdit = async (item: Organization) => {
+    try {
+      // Fetch organization details and all members
+      const [orgDetails, members] = await Promise.all([
+        fetchOrganizationDetails(item.id),
+        fetchMembers(),
+      ]);
+
+      // Helper function to generate initials
+      const getInitials = (name: string) => {
+        return name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()
+          .substring(0, 2);
+      };
+
+      // Helper function to generate color
+      const getColor = (id: number) => {
+        const colors = ["#8B5CF6", "#EC4899", "#10B981", "#F59E0B", "#3B82F6", "#EF4444"];
+        return colors[id % colors.length];
+      };
+
+      // Transform members data
+      const transformedMembers = members.map((member) => ({
+        id: member.id,
+        name: member.name,
+        email: member.email,
+        role: member.hierarchy,
+        initials: getInitials(member.name),
+        color: getColor(member.id),
+        organizationId: member.organization,
+      }));
+
+      // Separate organization members from available members
+      const organizationMembers = transformedMembers.filter(
+        (member) => member.organizationId === item.id
+      );
+      const availableMembers = transformedMembers.filter(
+        (member) => member.organizationId !== item.id
+      );
+
+      setAllMembers(availableMembers);
+
+      // Set organization data for editing
+      setEditOrgData({
+        id: orgDetails.id,
+        name: orgDetails.name,
+        logo: undefined,
+        ownerName: orgDetails.owner_name,
+        ownerEmail: orgDetails.owner_email,
+        members: organizationMembers,
+      });
+
+      setIsEditOpen(true);
+    } catch (error) {
+      console.error("Error loading organization details:", error);
+      setShowAlert(true);
+    }
   };
 
   const onDeleteClick = (item: Organization) => {
@@ -65,6 +129,29 @@ const Organizacoes = () => {
       setIsCreateOpen(false);
     } catch (error) {
       console.error("Error creating organization:", error);
+      setShowAlert(true);
+    }
+  };
+
+  const handleEditOrganization = async (formData: EditOrganizationFormData) => {
+    try {
+      const updatePayload: any = {
+        name: formData.name,
+        owner_name_input: formData.ownerName,
+      };
+
+      if (formData.ownerPassword) {
+        updatePayload.owner_password = formData.ownerPassword;
+      }
+
+      // Update organization details
+      await handleUpdate(formData.id, updatePayload);
+
+      setIsEditOpen(false);
+      setEditOrgData(null);
+      handleRefresh();
+    } catch (error) {
+      console.error("Error updating organization:", error);
       setShowAlert(true);
     }
   };
@@ -159,6 +246,13 @@ const Organizacoes = () => {
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
         onSave={handleCreateOrganization}
+      />
+      <EditOrganizationModal
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        organization={editOrgData}
+        availableMembers={allMembers}
+        onSave={handleEditOrganization}
       />
       <DeleteOrganizationModal
         open={isDeleteOpen}
