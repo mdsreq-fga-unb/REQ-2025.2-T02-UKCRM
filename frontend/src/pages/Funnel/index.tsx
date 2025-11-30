@@ -8,10 +8,8 @@ import { defaultCols, initialLeads } from "./data/defaultKanbanData";
 import { useFunnel } from "./hooks/useFunnel";
 
 function Funnel() {
-  const { actionBar, kanban, createDialog, deleteDialog, editLeadDialog } = useFunnel(
-    defaultCols,
-    initialLeads,
-  );
+  const { actionBar, kanban, createDialog, deleteDialog, editLeadDialog } =
+    useFunnel(defaultCols, initialLeads);
 
   return (
     <AppShell
@@ -23,7 +21,17 @@ function Funnel() {
     >
       <div className="h-full flex flex-col divide-y">
         <ActionBar {...actionBar} />
-        <KanbanBoard {...kanban} />
+        {actionBar.isLoading ? (
+          <div className="flex h-full items-center justify-center text-muted-foreground">
+            Carregando funis...
+          </div>
+        ) : actionBar.selectedFunnelId ? (
+          <KanbanBoard {...kanban} />
+        ) : (
+          <div className="flex h-full items-center justify-center text-muted-foreground text-lg">
+            Crie seu primeiro funil
+          </div>
+        )}
       </div>
 
       {/* Modals */}
