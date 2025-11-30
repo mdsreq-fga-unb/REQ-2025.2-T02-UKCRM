@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import { hasPageAccess, type PageKey } from "@/auth/config/permissions";
 
 const navItems: Array<{ title: string; href: string; icon: typeof Building; pageKey: PageKey }> = [
-  { title: "Organizações", href: "/", icon: Building, pageKey: "organizacoes" },
+  { title: "Organizações", href: "/organizacoes", icon: Building, pageKey: "organizacoes" },
   { title: "Times", href: "/times", icon: Users, pageKey: "times" },
   { title: "Membros", href: "/membros", icon: UserCircle, pageKey: "membros" },
   { title: "Funis", href: "/funis", icon: Filter, pageKey: "funis" },

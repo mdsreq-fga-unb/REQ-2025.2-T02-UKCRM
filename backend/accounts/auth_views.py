@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from .serializers import EmployeeSerializer
 
 
@@ -22,8 +23,16 @@ def login_view(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Django's authenticate expects username, but we're using email
+    # Try to authenticate with email as username first
     user = authenticate(username=email, password=password)
+
+    # If that fails, try to find user by email and authenticate with their username
+    if user is None:
+        try:
+            user_obj = User.objects.get(email=email)
+            user = authenticate(username=user_obj.username, password=password)
+        except User.DoesNotExist:
+            pass
 
     if user is None:
         return Response(
@@ -39,6 +48,20 @@ def login_view(request):
 
     # Generate JWT tokens
     refresh = RefreshToken.for_user(user)
+
+    # Check if user is admin (staff/superuser)
+    if user.is_staff:
+        return Response({
+            'token': str(refresh.access_token),
+            'refresh': str(refresh),
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'nome': user.first_name or user.username,
+                'role': 'Admin',
+                'organization_id': None,
+            }
+        }, status=status.HTTP_200_OK)
 
     # Get employee data
     try:
@@ -85,6 +108,16 @@ def me_view(request):
     """
     Get current authenticated user data
     """
+    # Check if user is admin (staff/superuser)
+    if request.user.is_staff:
+        return Response({
+            'id': request.user.id,
+            'email': request.user.email,
+            'nome': request.user.first_name or request.user.username,
+            'role': 'Admin',
+            'organization_id': None,
+        }, status=status.HTTP_200_OK)
+
     try:
         employee = request.user.employee_profile
         return Response({

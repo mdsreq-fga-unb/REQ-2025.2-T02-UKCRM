@@ -34,6 +34,21 @@ export function useCreateTeam(onSuccess?: (team: ApiTeam) => void) {
       queryClient.invalidateQueries({ queryKey: teamKeys.lists() });
       onSuccess?.(data);
     },
+    onError: (error: any) => {
+      console.error("Error creating team:", error);
+
+      // Extract validation errors from the response
+      let errorMessage = "Erro ao criar time.";
+      if (error.member_ids && Array.isArray(error.member_ids)) {
+        errorMessage = error.member_ids.join(" ");
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      alert(errorMessage);
+    },
   });
 }
 
@@ -48,6 +63,21 @@ export function useUpdateTeam(onSuccess?: (team: ApiTeam) => void) {
       queryClient.invalidateQueries({ queryKey: teamKeys.lists() });
       queryClient.invalidateQueries({ queryKey: teamKeys.details(data.id) });
       onSuccess?.(data);
+    },
+    onError: (error: any) => {
+      console.error("Error updating team:", error);
+
+      // Extract validation errors from the response
+      let errorMessage = "Erro ao atualizar time.";
+      if (error.member_ids && Array.isArray(error.member_ids)) {
+        errorMessage = error.member_ids.join(" ");
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      alert(errorMessage);
     },
   });
 }

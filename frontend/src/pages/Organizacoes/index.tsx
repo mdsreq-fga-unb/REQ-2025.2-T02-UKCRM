@@ -21,7 +21,7 @@ const columns: Column<Organization>[] = [
 
 const Organizacoes = () => {
   const { hasPermission } = usePermissions();
-  const { organizations, isLoading, handleDelete, handleRefresh } = useOrganizacoesData();
+  const { organizations, isLoading, handleCreate, handleDelete, handleRefresh } = useOrganizacoesData();
   const [showAlert, setShowAlert] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -51,6 +51,21 @@ const Organizacoes = () => {
         console.error("Error deleting organization:", error);
         setShowAlert(true);
       }
+    }
+  };
+
+  const handleCreateOrganization = async (formData: any) => {
+    try {
+      await handleCreate({
+        name: formData.nome,
+        owner: formData.proprietario.nome,
+        owner_email_input: formData.proprietario.email,
+        owner_password: formData.proprietario.senha,
+      });
+      setIsCreateOpen(false);
+    } catch (error) {
+      console.error("Error creating organization:", error);
+      setShowAlert(true);
     }
   };
 
@@ -143,6 +158,7 @@ const Organizacoes = () => {
       <CreateOrganizationModal
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
+        onSave={handleCreateOrganization}
       />
       <DeleteOrganizationModal
         open={isDeleteOpen}

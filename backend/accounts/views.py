@@ -6,6 +6,13 @@ from .serializers import EmployeeSerializer, InviteUserSerializer, UpdateEmploye
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
 
+    def get_queryset(self):
+        """Filter employees to only show those from the user's organization"""
+        user = self.request.user
+        if hasattr(user, 'employee_profile'):
+            return Employee.objects.filter(organization=user.employee_profile.organization)
+        return Employee.objects.none()
+
     def get_serializer_class(self):
         if self.action == 'create':
             return InviteUserSerializer
@@ -47,7 +54,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         # Transfer leads to another employee if specified
         if transfer_to_id:
             try:
-                transfer_to_employee = Employee.objects.get(id=transfer_to_id)
+                # Ensure transfer target is from the same organization
+                transfer_to_employee = Employee.objects.get(
+                    id=transfer_to_id,
+                    organization=employee_to_delete.organization
+                )
                 Lead.objects.filter(account=employee_to_delete).update(account=transfer_to_employee)
                 print(f"Transferindo leads de {employee_to_delete.id} para {transfer_to_id}", flush=True)
             except Employee.DoesNotExist:
