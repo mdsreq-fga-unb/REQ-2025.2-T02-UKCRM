@@ -2,7 +2,7 @@ import { Search, Sun, Moon, Bell } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useTheme } from "@/components/theme/theme.context";
 
 interface BreadcrumbItem {
   label: string;
@@ -14,12 +14,15 @@ interface TopbarProps {
 }
 
 export function Topbar({ breadcrumbs = [] }: TopbarProps) {
-  const [isDark, setIsDark] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle("dark");
+    // Toggle between light and dark (ignore system for simplicity)
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
   };
+
+  const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card px-6">

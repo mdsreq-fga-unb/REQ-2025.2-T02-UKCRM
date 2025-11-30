@@ -109,6 +109,13 @@ const Times = () => {
   );
 
   const handleEdit = (team: Team & { memberIds?: number[] }) => {
+    console.log("Editing team:", team);
+    console.log("Team member IDs:", team.memberIds);
+    console.log("Available members:", availableMembers);
+    const currentMembersFiltered = availableMembers.filter((m: { id: string }) =>
+      (team.memberIds || []).includes(parseInt(m.id))
+    );
+    console.log("Current members filtered:", currentMembersFiltered);
     setSelectedTeam(team);
     setSelectedTeamMembers(team.memberIds || []);
     setIsEditOpen(true);

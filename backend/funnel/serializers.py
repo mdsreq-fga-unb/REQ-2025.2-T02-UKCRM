@@ -2,16 +2,24 @@ from ordered_model.serializers import OrderedModelSerializer
 from rest_framework import serializers
 
 from .models import Funnel, Lead, SalesTeam, Stage
+from accounts.models import Employee
 
 
 class SalesTeamSerializer(serializers.ModelSerializer):
     member_count = serializers.SerializerMethodField()
     organization_name = serializers.CharField(source='organization.name', read_only=True)
+    member_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Employee.objects.all(),
+        many=True,
+        write_only=True,
+        source='members',
+        required=False
+    )
 
     class Meta:
         model = SalesTeam
-        fields = ['id', 'name', 'organization', 'organization_name', 'members', 'member_count', 'created_at', 'updated_at']
-        read_only_fields = ['created_at', 'updated_at']
+        fields = ['id', 'name', 'organization', 'organization_name', 'members', 'member_ids', 'member_count', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at', 'members']
 
     def get_member_count(self, obj):
         return obj.members.count()

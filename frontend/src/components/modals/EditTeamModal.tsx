@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -42,6 +42,16 @@ export function EditTeamModal({
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [available, setAvailable] = useState<Member[]>(initialAvailable);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Reset state when modal opens or props change
+  useEffect(() => {
+    if (open) {
+      setTeamName(initialTeamName);
+      setMembers(initialMembers);
+      setAvailable(initialAvailable);
+      setSearchTerm("");
+    }
+  }, [open, initialTeamName, initialMembers, initialAvailable]);
 
   const filteredAvailable = available.filter(
     (m) =>

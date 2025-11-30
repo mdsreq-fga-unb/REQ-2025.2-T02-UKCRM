@@ -5,7 +5,7 @@ import { apiToUser } from "../utils/authTransformers";
 
 export function useAuthBackend() {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
@@ -59,7 +59,6 @@ export function useAuthBackend() {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token) {
-      setIsLoading(true);
       getCurrentUserApi()
         .then((apiUser) => {
           setUser(apiToUser(apiUser));
@@ -71,6 +70,9 @@ export function useAuthBackend() {
         .finally(() => {
           setIsLoading(false);
         });
+    } else {
+      // No token found, stop loading
+      setIsLoading(false);
     }
   }, []);
 
