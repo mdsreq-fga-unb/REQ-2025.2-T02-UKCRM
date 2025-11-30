@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as leadApi from "../api/leads.api";
-// import type { LeadFormValues } from "../schemas/lead.schema"; 
+// import type { LeadFormValues } from "../schemas/lead.schema";
 import type { Lead } from "../types/kanban.types";
 import { mapApiLeadToKanbanLead } from "../utils/funnelTransformers";
 import { queryKeys } from "./queryKeys";
@@ -80,7 +80,7 @@ export const useEditLeadDetails = (
       return leadApi.updateLead({
         id: vals.id,
         // Espalha todos os campos (name, cpf, income, interests, etc.)
-        ...vals, 
+        ...vals,
       });
     },
     onSuccess: (updatedApiLead) => {
@@ -103,6 +103,7 @@ export const useEditLeadDetails = (
               temperature: updatedApiLead.temperature,
               earning: Number(updatedApiLead.earning),
               content: updatedApiLead.content, // Agora mapeia o conteúdo real (obs)
+              assignedTo: updatedApiLead.account,
               updatedAt: new Date(),
             };
           }

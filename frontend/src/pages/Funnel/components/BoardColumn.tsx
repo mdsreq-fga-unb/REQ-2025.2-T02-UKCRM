@@ -21,6 +21,7 @@ interface BoardColumnProps {
   onAddLead: (columnId: UniqueIdentifier) => void;
   onLeadEdit: (lead: Lead) => void;
   onLeadView: (lead: Lead) => void;
+  onLeadAssign: (lead: Lead) => void;
   onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
 }
 
@@ -31,6 +32,7 @@ export function BoardColumn({
   onAddLead,
   onLeadEdit,
   onLeadView,
+  onLeadAssign,
   onEditColumnName,
 }: BoardColumnProps) {
   const { hasPermission, hasAnyPermission } = usePermissions();
@@ -182,6 +184,7 @@ export function BoardColumn({
                 lead={lead}
                 onEditClick={onLeadEdit}
                 onViewDetails={onLeadView}
+                onAssign={onLeadAssign}
               />
             ))}
           </SortableContext>

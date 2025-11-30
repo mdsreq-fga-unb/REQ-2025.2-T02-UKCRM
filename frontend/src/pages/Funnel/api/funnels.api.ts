@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/apiClient";
 import type { ApiLead } from "./leads.api";
+import type { ApiSalesTeam } from "./teams.api";
 
 // TIPOS
 
@@ -20,7 +21,7 @@ export type ApiFunnelDetails = {
 export type ApiFunnel = {
   id: number;
   name: string;
-  teams: number[];
+  teams: ApiSalesTeam[];
 };
 
 export type ApiFunnelCreatePayload = {

@@ -15,6 +15,7 @@ export type ApiLead = {
   updated_at: string;
   order: number;
   stage: number;
+  account?: number | null;
 
   // Novos campos sincronizados com EditLeadDialog
   cpf?: string | null;
@@ -54,6 +55,7 @@ export type ApiLeadUpdatePayload = {
   phone?: string;
   earning?: string | number;
   temperature?: TemperatureVariant;
+  account?: number | null;
 
   // Novos campos para atualização
   cpf?: string | null;
