@@ -120,7 +120,7 @@ export function LeadCard({
           {!isOverlay && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button size="icon-sm" variant="ghost" className="ml-1">
+                <Button size="icon" variant="ghost" className="ml-1 h-6 w-6">
                   <MoreVertical className="h-4 w-4" />
                   <span className="sr-only">Ações</span>
                 </Button>
@@ -177,7 +177,12 @@ export function LeadCard({
       <CardContent className="px-3 py-2 text-left whitespace-pre-wrap text-muted-foreground">
         {lead.email || lead.phone || lead.content}
         <div className="flex justify-between items-center w-full mt-2">
-          <Button size="icon-sm" variant="ghost" title="Membro atribuído">
+          <Button
+            size="icon"
+            variant="ghost"
+            title="Membro atribuído"
+            className="h-6 w-6"
+          >
             <Avatar className="size-5">
               <AvatarImage src="https://github.com/Carlos-UCH.png" />
               <AvatarFallback>
@@ -192,10 +197,11 @@ export function LeadCard({
             }).format(lead.earning)}
           </span>
           <Button
-            size="icon-sm"
+            size="icon"
             variant="ghost"
             onClick={() => onViewDetails?.(lead)}
             title="Ver detalhes"
+            className="h-6 w-6"
           >
             <IdCardIcon className="size-5" />
           </Button>

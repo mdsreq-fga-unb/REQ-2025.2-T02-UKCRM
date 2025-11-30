@@ -15,8 +15,8 @@ import {
 } from "../api/funnels.api";
 import { queryKeys } from "./queryKeys";
 import { createLead as apiCreateLead } from "../api/leads.api";
+import type { EditLeadFormValues } from "../components/EditLeadDialog";
 import { type FunnelFormValues } from "../schemas/funnel.schema";
-import type { LeadFormValues } from "../schemas/lead.schema";
 import type {
   Column,
   ColumnId,
@@ -49,6 +49,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
+  const [viewingLead, setViewingLead] = useState<Lead | null>(null);
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortCriteria, setSortCriteria] = useState<string | null>(null);
@@ -292,7 +293,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         open: !!editingLead,
         lead: editingLead,
         onOpenChange: (isOpen: boolean) => !isOpen && setEditingLead(null),
-        onSubmit: (values: LeadFormValues) => {
+        onSubmit: (values: EditLeadFormValues) => {
           if (editingLead) {
             editLead({
               id: extractId(editingLead.id),
@@ -302,6 +303,14 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
           }
         },
         isPending: isEditingLead,
+      },
+      viewLeadDialog: {
+        open: !!viewingLead,
+        lead: viewingLead,
+        onOpenChange: (isOpen: boolean) => !isOpen && setViewingLead(null),
+        onSubmit: () => setViewingLead(null),
+        isPending: false,
+        readOnly: true,
       },
       actionBar: {
         onCreateFunnelClick: () => setIsCreateOpen(true),
@@ -329,6 +338,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onAddLead: handleAddLead,
         onAddColumn: handleAddColumn,
         onLeadEdit: setEditingLead,
+        onLeadView: setViewingLead,
         isLoading: isLoadingFunnelDetails || isCreatingLead || isCreatingStage,
       },
     }),
@@ -339,6 +349,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       isDeletingFunnel,
       funnelToDelete,
       editingLead,
+      viewingLead,
       isEditingLead,
       selectedFunnelId,
       selectedFunnelName,

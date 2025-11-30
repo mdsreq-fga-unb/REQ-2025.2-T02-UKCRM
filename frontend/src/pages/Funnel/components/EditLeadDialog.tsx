@@ -24,12 +24,28 @@ import type { Lead, Campaign, ContactOrigin } from "../types/kanban.types";
 type TemperatureVariant = "Frio" | "Morno" | "Quente" | "Neutro";
 
 // Interfaces adaptadas para o código atual
+export interface EditLeadFormValues {
+  name: string;
+  phone: string;
+  interests: string[];
+  campaign: Campaign;
+  contactOrigin: ContactOrigin;
+  temperature: TemperatureVariant;
+  content: string;
+  income: number;
+  earning: number;
+  cpf: string | null;
+  email: string | null;
+  career: string | null;
+}
+
 interface EditLeadDialogProps {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
   lead: Lead | null;
-  onSubmit: (values: any) => void; // Aceita any aqui para flexibilidade com o novo formato
+  onSubmit: (values: EditLeadFormValues) => void;
   isPending?: boolean;
+  readOnly?: boolean;
 }
 
 const CAMPAIGNS: Campaign[] = [
@@ -84,6 +100,7 @@ export function EditLeadDialog({
   lead,
   onSubmit,
   isPending,
+  readOnly,
 }: EditLeadDialogProps) {
   const [interestInput, setInterestInput] = useState("");
 
@@ -169,7 +186,9 @@ export function EditLeadDialog({
       <DialogContent className="max-w-3xl p-0 overflow-hidden">
         <div className="max-h-[90vh] overflow-y-auto p-6">
           <DialogHeader>
-            <DialogTitle>Editar Lead</DialogTitle>
+            <DialogTitle>
+              {readOnly ? "Detalhes do Lead" : "Editar Lead"}
+            </DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -190,6 +209,7 @@ export function EditLeadDialog({
                       setFormData({ ...formData, name: e.target.value })
                     }
                     required
+                    disabled={readOnly}
                   />
                 </div>
                 <div>
@@ -201,6 +221,7 @@ export function EditLeadDialog({
                       setFormData({ ...formData, cpf: e.target.value })
                     }
                     placeholder="000.000.000-00"
+                    disabled={readOnly}
                   />
                 </div>
                 <div>
@@ -212,6 +233,7 @@ export function EditLeadDialog({
                       setFormData({ ...formData, phone: e.target.value })
                     }
                     placeholder="(00) 00000-0000"
+                    disabled={readOnly}
                   />
                 </div>
                 <div>
@@ -223,6 +245,7 @@ export function EditLeadDialog({
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
+                    disabled={readOnly}
                   />
                 </div>
               </div>
@@ -242,6 +265,7 @@ export function EditLeadDialog({
                     onChange={(e) =>
                       setFormData({ ...formData, career: e.target.value })
                     }
+                    disabled={readOnly}
                   />
                 </div>
                 <div>
@@ -253,6 +277,7 @@ export function EditLeadDialog({
                     onChange={(e) =>
                       setFormData({ ...formData, income: e.target.value })
                     }
+                    disabled={readOnly}
                   />
                 </div>
               </div>
@@ -264,7 +289,11 @@ export function EditLeadDialog({
                 Interesses
               </h3>
               <div className="flex gap-2">
-                <Select value={interestInput} onValueChange={setInterestInput}>
+                <Select
+                  value={interestInput}
+                  onValueChange={setInterestInput}
+                  disabled={readOnly}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione um interesse" />
                   </SelectTrigger>
@@ -280,6 +309,7 @@ export function EditLeadDialog({
                   type="button"
                   onClick={handleAddInterest}
                   variant="secondary"
+                  disabled={readOnly}
                 >
                   Adicionar
                 </Button>
@@ -293,13 +323,15 @@ export function EditLeadDialog({
                       className="bg-secondary text-secondary-foreground px-3 py-1 rounded-md text-sm flex items-center gap-2"
                     >
                       {interest}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveInterest(interest)}
-                        className="hover:text-destructive font-bold"
-                      >
-                        ×
-                      </button>
+                      {!readOnly && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveInterest(interest)}
+                          className="hover:text-destructive font-bold"
+                        >
+                          ×
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -319,6 +351,7 @@ export function EditLeadDialog({
                     onValueChange={(value) =>
                       setFormData({ ...formData, campaign: value as Campaign })
                     }
+                    disabled={readOnly}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -343,6 +376,7 @@ export function EditLeadDialog({
                         contactOrigin: value as ContactOrigin,
                       })
                     }
+                    disabled={readOnly}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -370,6 +404,7 @@ export function EditLeadDialog({
                       setFormData({ ...formData, earning: e.target.value })
                     }
                     required
+                    disabled={readOnly}
                   />
                 </div>
 
@@ -383,6 +418,7 @@ export function EditLeadDialog({
                         temperature: value as TemperatureVariant,
                       })
                     }
+                    disabled={readOnly}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -412,21 +448,34 @@ export function EditLeadDialog({
                 }
                 placeholder="Notas sobre o lead..."
                 rows={3}
+                disabled={readOnly}
               />
             </section>
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isPending}
-              >
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Salvando..." : "Salvar Alterações"}
-              </Button>
+              {readOnly ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Fechar
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    disabled={isPending}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={isPending}>
+                    {isPending ? "Salvando..." : "Salvar Alterações"}
+                  </Button>
+                </>
+              )}
             </DialogFooter>
           </form>
         </div>

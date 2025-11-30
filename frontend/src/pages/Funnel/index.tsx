@@ -8,8 +8,14 @@ import { defaultCols, initialLeads } from "./data/defaultKanbanData";
 import { useFunnel } from "./hooks/useFunnel";
 
 function Funnel() {
-  const { actionBar, kanban, createDialog, deleteDialog, editLeadDialog } =
-    useFunnel(defaultCols, initialLeads);
+  const {
+    actionBar,
+    kanban,
+    createDialog,
+    deleteDialog,
+    editLeadDialog,
+    viewLeadDialog,
+  } = useFunnel(defaultCols, initialLeads);
 
   return (
     <AppShell
@@ -38,6 +44,7 @@ function Funnel() {
       <CreateFunnelDialog {...createDialog} />
       <DeleteFunnelDialog {...deleteDialog} />
       <EditLeadDialog {...editLeadDialog} />
+      <EditLeadDialog {...viewLeadDialog} />
     </AppShell>
   );
 }

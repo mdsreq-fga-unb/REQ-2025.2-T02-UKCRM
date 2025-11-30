@@ -20,6 +20,7 @@ interface BoardColumnProps {
   isOverlay?: boolean;
   onAddLead: (columnId: UniqueIdentifier) => void;
   onLeadEdit: (lead: Lead) => void;
+  onLeadView: (lead: Lead) => void;
   onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
 }
 
@@ -29,6 +30,7 @@ export function BoardColumn({
   isOverlay,
   onAddLead,
   onLeadEdit,
+  onLeadView,
   onEditColumnName,
 }: BoardColumnProps) {
   const { hasPermission, hasAnyPermission } = usePermissions();
@@ -40,7 +42,10 @@ export function BoardColumn({
   }, [leads]);
 
   // Permission checks
-  const canEditStepName = hasAnyPermission(["funnel-step:edit:assigned", "funnel-step:edit:all"]);
+  const canEditStepName = hasAnyPermission([
+    "funnel-step:edit:assigned",
+    "funnel-step:edit:all",
+  ]);
   const canAddLead = hasPermission("lead:create");
 
   const {
@@ -104,10 +109,10 @@ export function BoardColumn({
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     onEditColumnName?.(column.id, editedName);
                     setIsEditingName(false);
-                  } else if (e.key === 'Escape') {
+                  } else if (e.key === "Escape") {
                     setEditedName(column.title);
                     setIsEditingName(false);
                   }
@@ -117,7 +122,7 @@ export function BoardColumn({
               />
               <Button
                 className="text-muted-foreground h-7 w-7"
-                size="icon-sm"
+                size="icon"
                 variant="ghost"
                 onClick={() => {
                   onEditColumnName?.(column.id, editedName);
@@ -128,7 +133,7 @@ export function BoardColumn({
               </Button>
               <Button
                 className="text-muted-foreground h-7 w-7"
-                size="icon-sm"
+                size="icon"
                 variant="ghost"
                 onClick={() => {
                   setEditedName(column.title);
@@ -143,8 +148,8 @@ export function BoardColumn({
               <span className="font-semibold mb-0">{column.title}</span>
               {canEditStepName && (
                 <Button
-                  className="text-muted-foreground"
-                  size="icon-sm"
+                  className="text-muted-foreground h-7 w-7"
+                  size="icon"
                   variant="ghost"
                   onClick={() => setIsEditingName(true)}
                 >
@@ -172,10 +177,11 @@ export function BoardColumn({
         <CardContent className="flex flex-col grow gap-2 px-2 pt-0 ">
           <SortableContext items={leadsIds}>
             {leads.map((lead) => (
-              <LeadCard 
-                 key={lead.id}
-                 lead={lead} 
-                 onEditClick={onLeadEdit} 
+              <LeadCard
+                key={lead.id}
+                lead={lead}
+                onEditClick={onLeadEdit}
+                onViewDetails={onLeadView}
               />
             ))}
           </SortableContext>
