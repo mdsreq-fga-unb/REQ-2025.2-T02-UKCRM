@@ -7,6 +7,8 @@ export type ApiMember = {
   name: string;
   email: string;
   hierarchy: string;
+  organization: number;
+  organization_name: string;
   joined_at: string;
   updated_at: string;
 };
@@ -22,6 +24,7 @@ export type ApiMemberUpdatePayload = {
   name?: string;
   email?: string;
   hierarchy?: string;
+  organization_id?: number;
 };
 
 export type ApiMemberDeletePayload = {
