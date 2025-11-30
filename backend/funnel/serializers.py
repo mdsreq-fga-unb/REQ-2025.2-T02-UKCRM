@@ -17,6 +17,12 @@ class SalesTeamSerializer(serializers.ModelSerializer):
 
 
 class LeadSerializer(OrderedModelSerializer, serializers.ModelSerializer):
+    contactOrigin = serializers.ChoiceField(
+        choices=Lead.ContactOriginChoices.choices,
+        source="contact_origin",
+        required=False,
+    )
+
     class Meta:
         model = Lead
         fields = "__all__"

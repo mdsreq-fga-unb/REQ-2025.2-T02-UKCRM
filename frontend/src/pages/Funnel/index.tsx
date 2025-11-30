@@ -2,12 +2,13 @@ import { AppShell } from "@/components/layout/AppShell";
 import ActionBar from "./components/ActionBar";
 import { CreateFunnelDialog } from "./components/CreateFunnelDialog";
 import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
+import { EditLeadDialog } from "./components/EditLeadDialog";
 import { KanbanBoard } from "./components/KanbanBoard";
 import { defaultCols, initialLeads } from "./data/defaultKanbanData";
 import { useFunnelData } from "./hooks/useFunnelData";
 
 function Funnel() {
-  const { actionBar, kanban, createDialog, deleteDialog } = useFunnelData(
+  const { actionBar, kanban, createDialog, deleteDialog, editLeadDialog } = useFunnel(
     defaultCols,
     initialLeads,
   );
@@ -28,6 +29,7 @@ function Funnel() {
       {/* Modals */}
       <CreateFunnelDialog {...createDialog} />
       <DeleteFunnelDialog {...deleteDialog} />
+      <EditLeadDialog {...editLeadDialog} />
     </AppShell>
   );
 }

@@ -24,7 +24,6 @@ import {
   Trash2,
   UserPlus,
   CheckCircle,
-  XCircle,
 } from "lucide-react";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import type { Lead, LeadDragData } from "../types/kanban.types";
@@ -32,6 +31,7 @@ import type { Lead, LeadDragData } from "../types/kanban.types";
 interface LeadCardProps {
   lead: Lead;
   isOverlay?: boolean;
+  onEditClick?: (lead: Lead) => void;
   onViewDetails?: (lead: Lead) => void;
   onEdit?: (lead: Lead) => void;
   onDelete?: (lead: Lead) => void;
@@ -45,7 +45,7 @@ export function LeadCard({
   lead,
   isOverlay,
   onViewDetails,
-  onEdit,
+  onEditClick,
   onDelete,
   onAssign,
   onMarkGainLoss,
@@ -132,7 +132,7 @@ export function LeadCard({
                 </DropdownMenuItem>
 
                 {canEdit && (
-                  <DropdownMenuItem onClick={() => onEdit?.(lead)}>
+                  <DropdownMenuItem onClick={() => onEditClick?.(lead)}>
                     <Edit className="mr-2 h-4 w-4" />
                     Editar
                   </DropdownMenuItem>
@@ -145,15 +145,17 @@ export function LeadCard({
                   </DropdownMenuItem>
                 )}
 
-                {canMarkGainLoss && lead.status !== "Gained" && lead.status !== "Lost" && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => onMarkGainLoss?.(lead)}>
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
-                      Marcar Ganho/Perda
-                    </DropdownMenuItem>
-                  </>
-                )}
+                {canMarkGainLoss &&
+                  lead.status !== "Gained" &&
+                  lead.status !== "Lost" && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onMarkGainLoss?.(lead)}>
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                        Marcar Ganho/Perda
+                      </DropdownMenuItem>
+                    </>
+                  )}
 
                 {canDelete && (
                   <>
@@ -173,7 +175,7 @@ export function LeadCard({
         </div>
       </CardHeader>
       <CardContent className="px-3 py-2 text-left whitespace-pre-wrap text-muted-foreground">
-        {lead.content}
+        {lead.email || lead.phone || lead.content}
         <div className="flex justify-between items-center w-full mt-2">
           <Button size="icon-sm" variant="ghost" title="Membro atribuído">
             <Avatar className="size-5">

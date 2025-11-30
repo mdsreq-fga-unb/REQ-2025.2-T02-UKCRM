@@ -36,7 +36,15 @@ export function mapApiLeadToKanbanLead(lead: ApiLead, tempId?: string): Lead {
     temperature: lead.temperature,
     createdAt: new Date(lead.created_at),
     updatedAt: new Date(lead.updated_at),
-    content: [lead.email, lead.phone].filter(Boolean).join(" | ") || "...",
+    content: lead.content || "",
+    email: lead.email,
+    phone: lead.phone,
+    cpf: lead.cpf,
+    career: lead.career,
+    income: lead.income ? Number(lead.income) : null,
+    interests: lead.interests,
+    campaign: lead.campaign,
+    contactOrigin: lead.contactOrigin,
   };
 }
 

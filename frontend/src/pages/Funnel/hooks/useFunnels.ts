@@ -110,7 +110,7 @@ export const useCreateStage = (funnelId: string | null) => {
   });
 };
 
-export const useUpdateStage = (funnelId: string | null) => {
+export const useMoveStage = (funnelId: string | null) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: funnelApi.updateStage,
