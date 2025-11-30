@@ -45,6 +45,7 @@ export function mapApiLeadToKanbanLead(lead: ApiLead, tempId?: string): Lead {
     interests: lead.interests,
     campaign: lead.campaign,
     contactOrigin: lead.contactOrigin,
+    assignedTo: lead.account,
   };
 }
 

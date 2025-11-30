@@ -5,6 +5,7 @@ import { apiClient } from "@/lib/apiClient";
 export type ApiSalesTeam = {
   id: number;
   name: string;
+  members: number[];
 };
 
 // TIMES

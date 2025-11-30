@@ -182,6 +182,7 @@ export function LeadCard({
             variant="ghost"
             title="Membro atribuído"
             className="h-6 w-6"
+            onClick={() => onAssign?.(lead)}
           >
             <Avatar className="size-5">
               <AvatarImage src="https://github.com/Carlos-UCH.png" />

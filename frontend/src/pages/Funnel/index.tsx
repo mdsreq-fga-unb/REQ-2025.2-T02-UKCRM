@@ -1,5 +1,6 @@
 import { AppShell } from "@/components/layout/AppShell";
 import ActionBar from "./components/ActionBar";
+import { AssignLeadDialog } from "./components/AssignLeadDialog";
 import { CreateFunnelDialog } from "./components/CreateFunnelDialog";
 import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
 import { EditLeadDialog } from "./components/EditLeadDialog";
@@ -15,6 +16,7 @@ function Funnel() {
     deleteDialog,
     editLeadDialog,
     viewLeadDialog,
+    assignLeadDialog,
   } = useFunnel(defaultCols, initialLeads);
 
   return (
@@ -45,6 +47,7 @@ function Funnel() {
       <DeleteFunnelDialog {...deleteDialog} />
       <EditLeadDialog {...editLeadDialog} />
       <EditLeadDialog {...viewLeadDialog} />
+      <AssignLeadDialog {...assignLeadDialog} />
     </AppShell>
   );
 }

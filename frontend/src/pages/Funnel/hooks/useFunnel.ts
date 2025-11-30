@@ -13,6 +13,7 @@ import {
   type ApiFunnel,
   createStage as apiCreateStage,
 } from "../api/funnels.api";
+
 import { queryKeys } from "./queryKeys";
 import { createLead as apiCreateLead } from "../api/leads.api";
 import type { EditLeadFormValues } from "../components/EditLeadDialog";
@@ -50,6 +51,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [viewingLead, setViewingLead] = useState<Lead | null>(null);
+  const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortCriteria, setSortCriteria] = useState<string | null>(null);
@@ -173,6 +175,22 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     () => getColumnsWithSubtitles(columns, leads),
     [columns, leads],
   );
+
+  const allowedMemberIds = useMemo(() => {
+    if (!selectedFunnelId || !funnelsData) return undefined;
+
+    const funnel = (funnelsData as ApiFunnel[]).find(
+      (f) => f.id.toString() === selectedFunnelId,
+    );
+    if (!funnel) return undefined;
+
+    const memberIds = new Set<number>();
+    funnel.teams.forEach((team) => {
+      team.members.forEach((m) => memberIds.add(m));
+    });
+
+    return Array.from(memberIds);
+  }, [selectedFunnelId, funnelsData]);
 
   // EFEITOS
 
@@ -312,6 +330,22 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         isPending: false,
         readOnly: true,
       },
+      assignLeadDialog: {
+        open: !!assigningLead,
+        lead: assigningLead,
+        allowedMemberIds,
+        onOpenChange: (isOpen: boolean) => !isOpen && setAssigningLead(null),
+        onSubmit: (memberId: number) => {
+          if (assigningLead) {
+            editLead({
+              id: extractId(assigningLead.id),
+              account: memberId,
+            });
+            setAssigningLead(null);
+          }
+        },
+        isPending: isEditingLead,
+      },
       actionBar: {
         onCreateFunnelClick: () => setIsCreateOpen(true),
         onDeleteFunnelClick: () => {
@@ -339,6 +373,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onAddColumn: handleAddColumn,
         onLeadEdit: setEditingLead,
         onLeadView: setViewingLead,
+        onLeadAssign: setAssigningLead,
         isLoading: isLoadingFunnelDetails || isCreatingLead || isCreatingStage,
       },
     }),
@@ -350,6 +385,8 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       funnelToDelete,
       editingLead,
       viewingLead,
+      assigningLead,
+      allowedMemberIds,
       isEditingLead,
       selectedFunnelId,
       selectedFunnelName,
