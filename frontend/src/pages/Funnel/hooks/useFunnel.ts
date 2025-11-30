@@ -111,7 +111,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         await Promise.all(leadPromises);
 
         await queryClient.invalidateQueries({
-          queryKey: queryKeys.funnels.detail(newFunnel.id),
+          queryKey: queryKeys.funnels.detail(newFunnel.id.toString()),
         });
       } catch (error) {
         console.error("Erro ao popular dados iniciais:", error);
