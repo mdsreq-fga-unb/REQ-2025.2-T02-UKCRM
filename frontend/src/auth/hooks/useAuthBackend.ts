@@ -1,9 +1,12 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { User, LoginCredentials } from "../types/auth.types";
 import { loginApi, logoutApi, getCurrentUserApi } from "../api/auth.api";
 import { apiToUser } from "../utils/authTransformers";
+import { PROFILE_QUERY_KEY } from "@/pages/Profile/hooks/useProfile";
 
 export function useAuthBackend() {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -13,6 +16,9 @@ export function useAuthBackend() {
     setError(null);
 
     try {
+      // Clear any cached profile data from previous user
+      queryClient.removeQueries({ queryKey: PROFILE_QUERY_KEY });
+
       const response = await loginApi({
         email: credentials.email,
         password: credentials.password,
@@ -33,7 +39,7 @@ export function useAuthBackend() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [queryClient]);
 
   const logout = useCallback(async () => {
     setIsLoading(true);
@@ -43,6 +49,9 @@ export function useAuthBackend() {
       await logoutApi();
       setUser(null);
       localStorage.removeItem("authToken");
+
+      // Clear all cached data including profile
+      queryClient.clear();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Erro ao fazer logout";
@@ -51,7 +60,7 @@ export function useAuthBackend() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [queryClient]);
 
   const isAuthenticated = useMemo(() => user !== null, [user]);
 

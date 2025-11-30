@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, User, Mail, Shield, Building2, Users, Calendar } from "lucide-react";
+import { Save, User, Mail, Shield, Building2, Users, Calendar, Camera } from "lucide-react";
 import { useProfile, useUpdateProfile } from "./hooks/useProfile";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -38,6 +38,10 @@ const Profile = () => {
     }
   }, [profile]);
 
+  const handlePhotoChange = () => {
+    alert("Funcionalidade de alteração de foto será implementada em breve!");
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -54,6 +58,10 @@ const Profile = () => {
     }
 
     if (formData.password && formData.password.length > 0) {
+      if (formData.password.length < 8) {
+        alert("A senha deve ter no mínimo 8 caracteres");
+        return;
+      }
       payload.password = formData.password;
     }
 
@@ -62,6 +70,16 @@ const Profile = () => {
         onSuccess: () => {
           setFormData((prev) => ({ ...prev, password: "" }));
           setShowPasswordField(false);
+
+          // Show success message
+          if (payload.password) {
+            alert("Senha alterada com sucesso! Você será redirecionado para fazer login novamente.");
+          } else {
+            alert("Perfil atualizado com sucesso!");
+          }
+        },
+        onError: (error) => {
+          alert(error instanceof Error ? error.message : "Erro ao atualizar perfil");
         },
       });
     }
@@ -151,12 +169,26 @@ const Profile = () => {
                 <div className="flex flex-col md:flex-row gap-8">
                   {/* Avatar */}
                   <div className="flex flex-col items-center space-y-4">
-                    <Avatar className="h-32 w-32 border-4 border-muted">
-                      <AvatarImage src="" alt={profile.nome} />
-                      <AvatarFallback className="text-4xl bg-primary text-primary-foreground">
-                        {getInitials(profile.nome)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="relative">
+                      <Avatar className="h-32 w-32 border-4 border-muted">
+                        <AvatarImage src="" alt={profile.nome} />
+                        <AvatarFallback className="text-4xl bg-primary text-primary-foreground">
+                          {getInitials(profile.nome)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="absolute bottom-0 right-0 h-10 w-10 rounded-full p-0 shadow-lg"
+                        onClick={handlePhotoChange}
+                        type="button"
+                      >
+                        <Camera className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Clique no ícone para alterar foto
+                    </p>
                   </div>
 
                   {/* Form */}

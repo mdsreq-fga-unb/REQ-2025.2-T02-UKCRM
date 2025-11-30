@@ -3,7 +3,7 @@ import { fetchProfile, updateProfile } from "../api/profile.api";
 import { transformApiProfile, transformUpdateProfilePayload } from "../utils/profileTransformers";
 import type { UpdateProfilePayload } from "../types/profile.types";
 
-const PROFILE_QUERY_KEY = ["profile"];
+export const PROFILE_QUERY_KEY = ["profile"];
 
 export function useProfile() {
   return useQuery({
@@ -23,11 +23,22 @@ export function useUpdateProfile() {
     mutationFn: async (payload: UpdateProfilePayload) => {
       const apiPayload = transformUpdateProfilePayload(payload);
       const apiProfile = await updateProfile(apiPayload);
-      return transformApiProfile(apiProfile);
+      return { profile: transformApiProfile(apiProfile), hasPasswordChange: !!payload.password };
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(PROFILE_QUERY_KEY, data);
-      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      // Update the profile data immediately
+      queryClient.setQueryData(PROFILE_QUERY_KEY, data.profile);
+
+      // Invalidate auth queries to refetch user data with updated name
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
+
+      // If password was changed, user needs to re-login
+      if (data.hasPasswordChange) {
+        // Clear all queries and force logout
+        queryClient.clear();
+        localStorage.removeItem("authToken");
+        window.location.href = "/login";
+      }
     },
   });
 }

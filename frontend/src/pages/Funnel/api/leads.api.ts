@@ -79,3 +79,6 @@ export const updateLead = (payload: ApiLeadUpdatePayload) => {
     body: data,
   });
 };
+
+export const deleteLead = (id: number) =>
+  apiClient<void>(`/api/leads/${id}/`, { method: "DELETE" });

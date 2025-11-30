@@ -33,10 +33,24 @@ export function AppSidebar() {
     return hasPageAccess(user.role, item.pageKey);
   });
 
+  const ROLE_LABELS: Record<string, string> = {
+    'SDR': 'SDR',
+    'Closer': 'Closer',
+    'Sales Coordinator': 'Coordenador de Vendas',
+    'Sales Manager': 'Gerente de Vendas',
+    'Owner': 'Proprietário',
+    'Admin': 'Administrador',
+  };
+
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-[280px] flex-col border-r border-sidebar-border bg-sidebar">
       <div className="border-b border-sidebar-border p-4">
-        <UserProfileCard />
+        {user && (
+          <UserProfileCard
+            nome={user.nome}
+            cargo={ROLE_LABELS[user.role] || user.role}
+          />
+        )}
       </div>
 
       <nav className="flex-1 space-y-1 p-4">

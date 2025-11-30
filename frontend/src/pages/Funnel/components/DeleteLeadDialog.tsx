@@ -11,28 +11,33 @@ import type { Lead } from "../types/kanban.types";
 
 interface DeleteLeadDialogProps {
   lead: Lead | null;
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
-  onDelete: (leadId: number | string) => void;
+  onDelete: (leadId: number) => void;
+  isPending?: boolean;
 }
 
 export function DeleteLeadDialog({
   lead,
-  isOpen,
+  open,
   onClose,
   onDelete,
+  isPending = false,
 }: DeleteLeadDialogProps) {
   const handleDelete = () => {
     if (lead) {
-      onDelete(lead.id);
-      onClose();
+      // Extract numeric ID from string format "lead-123"
+      const leadId = typeof lead.id === 'string'
+        ? parseInt(lead.id.replace('lead-', ''), 10)
+        : lead.id;
+      onDelete(leadId);
     }
   };
 
   if (!lead) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Confirmar Exclusão</DialogTitle>
@@ -49,11 +54,11 @@ export function DeleteLeadDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isPending}>
             Cancelar
           </Button>
-          <Button variant="destructive" onClick={handleDelete}>
-            Excluir Lead
+          <Button variant="destructive" onClick={handleDelete} disabled={isPending}>
+            {isPending ? "Excluindo..." : "Excluir Lead"}
           </Button>
         </DialogFooter>
       </DialogContent>

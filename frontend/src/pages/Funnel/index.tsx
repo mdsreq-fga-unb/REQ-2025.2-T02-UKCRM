@@ -3,6 +3,7 @@ import ActionBar from "./components/ActionBar";
 import { AssignLeadDialog } from "./components/AssignLeadDialog";
 import { CreateFunnelDialog } from "./components/CreateFunnelDialog";
 import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
+import { DeleteLeadDialog } from "./components/DeleteLeadDialog";
 import { EditLeadDialog } from "./components/EditLeadDialog";
 import { KanbanBoard } from "./components/KanbanBoard";
 import { defaultCols, initialLeads } from "./data/defaultKanbanData";
@@ -17,6 +18,7 @@ function Funnel() {
     editLeadDialog,
     viewLeadDialog,
     assignLeadDialog,
+    deleteLeadDialog,
   } = useFunnel(defaultCols, initialLeads);
 
   return (
@@ -48,6 +50,7 @@ function Funnel() {
       <EditLeadDialog {...editLeadDialog} />
       <EditLeadDialog {...viewLeadDialog} />
       <AssignLeadDialog {...assignLeadDialog} />
+      <DeleteLeadDialog {...deleteLeadDialog} />
     </AppShell>
   );
 }

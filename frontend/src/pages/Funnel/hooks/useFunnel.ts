@@ -34,7 +34,7 @@ import {
   useMoveStage,
 } from "./useFunnels";
 
-import { useCreateLead, useEditLeadDetails, useMoveLead } from "./useLeads";
+import { useCreateLead, useDeleteLead, useEditLeadDetails, useMoveLead } from "./useLeads";
 
 import {
   extractId,
@@ -52,6 +52,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [viewingLead, setViewingLead] = useState<Lead | null>(null);
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
+  const [deletingLead, setDeletingLead] = useState<Lead | null>(null);
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortCriteria, setSortCriteria] = useState<string | null>(null);
@@ -143,6 +144,11 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   );
 
   const { mutate: editLead, isPending: isEditingLead } = useEditLeadDetails(
+    selectedFunnelId,
+    setLeads,
+  );
+
+  const { mutate: deleteLead, isPending: isDeletingLead } = useDeleteLead(
     selectedFunnelId,
     setLeads,
   );
@@ -289,6 +295,14 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     }
   }, [selectedFunnelId, createStage, columns.length]);
 
+  const handleDeleteLead = useCallback(
+    (leadId: number) => {
+      deleteLead(leadId);
+      setDeletingLead(null);
+    },
+    [deleteLead],
+  );
+
   // RETORNO
   return useMemo(
     () => ({
@@ -346,6 +360,13 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         },
         isPending: isEditingLead,
       },
+      deleteLeadDialog: {
+        open: !!deletingLead,
+        lead: deletingLead,
+        onClose: () => setDeletingLead(null),
+        onDelete: handleDeleteLead,
+        isPending: isDeletingLead,
+      },
       actionBar: {
         onCreateFunnelClick: () => setIsCreateOpen(true),
         onDeleteFunnelClick: () => {
@@ -374,6 +395,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onLeadEdit: setEditingLead,
         onLeadView: setViewingLead,
         onLeadAssign: setAssigningLead,
+        onLeadDelete: setDeletingLead,
         isLoading: isLoadingFunnelDetails || isCreatingLead || isCreatingStage,
       },
     }),
@@ -386,8 +408,10 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       editingLead,
       viewingLead,
       assigningLead,
+      deletingLead,
       allowedMemberIds,
       isEditingLead,
+      isDeletingLead,
       selectedFunnelId,
       selectedFunnelName,
       filterTerm,
@@ -401,6 +425,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       createFunnel,
       deleteFunnel,
       editLead,
+      handleDeleteLead,
       getLeadsForColumn,
       handleColumnsChange,
       handleColumnDrop,

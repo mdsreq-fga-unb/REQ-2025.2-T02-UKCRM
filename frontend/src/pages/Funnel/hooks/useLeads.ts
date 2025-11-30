@@ -183,3 +183,40 @@ function reorderLeadsLocally(
   targetColumnLeads.splice(targetOrder, 0, updatedLead);
   return [...otherColumnLeads, ...targetColumnLeads];
 }
+
+export const useDeleteLead = (
+  funnelId: string | null,
+  setLeads: React.Dispatch<React.SetStateAction<Lead[]>>,
+) => {
+  const queryClient = useQueryClient();
+  const detailKey = queryKeys.funnels.detail(funnelId);
+
+  return useMutation({
+    mutationFn: leadApi.deleteLead,
+
+    onMutate: async (leadId: number) => {
+      await queryClient.cancelQueries({ queryKey: detailKey });
+
+      const leadIdStr = `lead-${leadId}`;
+      let previousLeads: Lead[] = [];
+
+      setLeads((currentLeads) => {
+        previousLeads = currentLeads;
+        return currentLeads.filter((l) => l.id !== leadIdStr);
+      });
+
+      return { previousLeads };
+    },
+
+    onError: (err, _, context) => {
+      console.error("Erro ao deletar lead:", err);
+      if (context?.previousLeads) {
+        setLeads(context.previousLeads);
+      }
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: detailKey });
+    },
+  });
+};

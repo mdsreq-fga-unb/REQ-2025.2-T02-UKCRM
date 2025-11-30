@@ -204,5 +204,39 @@ def update_profile_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-    # Return updated profile
-    return profile_view(request)
+    # Return updated profile - build response directly instead of calling profile_view
+    if user.is_staff:
+        return Response({
+            'id': user.id,
+            'email': user.email,
+            'nome': user.first_name or user.username,
+            'role': 'Admin',
+            'organization': None,
+            'teams': [],
+            'joined_at': user.date_joined.isoformat(),
+        }, status=status.HTTP_200_OK)
+
+    try:
+        employee = user.employee_profile
+
+        # Get teams the employee is part of
+        teams = SalesTeam.objects.filter(members=employee)
+        teams_data = [{'id': team.id, 'name': team.name} for team in teams]
+
+        return Response({
+            'id': employee.id,
+            'email': user.email,
+            'nome': user.first_name,
+            'role': employee.role,
+            'organization': {
+                'id': employee.organization.id,
+                'name': employee.organization.name,
+            },
+            'teams': teams_data,
+            'joined_at': user.date_joined.isoformat(),
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {'error': 'User is not an employee'},
+            status=status.HTTP_403_FORBIDDEN
+        )
