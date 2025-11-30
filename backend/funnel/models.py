@@ -47,7 +47,7 @@ class Lead(OrderedModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
     phone = models.CharField(max_length=20, blank=True, default="")
     earning = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     stage = models.ForeignKey(Stage, related_name="leads", on_delete=models.CASCADE)

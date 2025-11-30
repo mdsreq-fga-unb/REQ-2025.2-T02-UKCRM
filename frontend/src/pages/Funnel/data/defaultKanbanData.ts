@@ -40,7 +40,7 @@ export const initialLeads: Lead[] = [
   {
     id: "lead-1",
     columnId: "col-1",
-    name: "Empresa Alpha",
+    name: "Empresa Alpha [Exemplo]",
     earning: 15000,
     content: "contato@alpha.com | (11) 98888-1111",
     temperature: "Frio",
@@ -50,7 +50,7 @@ export const initialLeads: Lead[] = [
   {
     id: "lead-2",
     columnId: "col-1",
-    name: "Companhia Beta",
+    name: "Companhia Beta [Exemplo]",
     earning: 8000,
     content: "financeiro@beta.com | (21) 97777-2222",
     temperature: "Morno",
@@ -62,7 +62,7 @@ export const initialLeads: Lead[] = [
   {
     id: "lead-3",
     columnId: "col-2",
-    name: "Soluções Gama",
+    name: "Soluções Gama [Exemplo]",
     earning: 35000,
     content: "diretoria@gama.com | (41) 96666-3333",
     temperature: "Quente",
@@ -74,7 +74,7 @@ export const initialLeads: Lead[] = [
   {
     id: "lead-4",
     columnId: "col-3",
-    name: "Holding Delta",
+    name: "Holding Delta [Exemplo]",
     earning: 120000,
     content: "compras@delta.com | (51) 95555-4444",
     temperature: "Quente",
@@ -86,7 +86,7 @@ export const initialLeads: Lead[] = [
   {
     id: "lead-5",
     columnId: "col-4",
-    name: "Serviços Epsilon",
+    name: "Serviços Epsilon [Exemplo]",
     earning: 22000,
     content: "ceo@epsilon.com | (61) 94444-5555",
     temperature: "Morno",

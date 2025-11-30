@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import {
@@ -8,7 +9,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { ApiFunnel } from "../api/funnels.api";
+import {
+  type ApiFunnel,
+  createStage as apiCreateStage,
+} from "../api/funnels.api";
+import { queryKeys } from "./queryKeys";
+import { createLead as apiCreateLead } from "../api/leads.api";
 import { type FunnelFormValues } from "../schemas/funnel.schema";
 import type { LeadFormValues } from "../schemas/lead.schema";
 import type {
@@ -37,6 +43,7 @@ import {
 } from "../utils/funnelTransformers";
 
 export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
+  const queryClient = useQueryClient();
   const [columns, setColumns] = useState<Column[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -57,7 +64,59 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   // ESCRITA - FUNIS
 
   const { mutate: createFunnel, isPending: isCreatingFunnel } = useCreateFunnel(
-    (newFunnel) => {
+    async (newFunnel) => {
+      try {
+        // 1. Criar etapas padrão
+        const stagePromises = initialCols.map((col, index) =>
+          apiCreateStage({
+            name: col.title,
+            funnel: newFunnel.id,
+            order: index,
+          }),
+        );
+
+        const createdStages = await Promise.all(stagePromises);
+
+        // Mapa de ID temporário para ID real
+        const colIdMap: Record<string, number> = {};
+        initialCols.forEach((col, index) => {
+          if (createdStages[index]) {
+            colIdMap[col.id] = createdStages[index].id;
+          }
+        });
+
+        // 2. Criar leads padrão
+        const leadsPerColumn: Record<number, number> = {};
+        const leadPromises = initialLeads.map((lead) => {
+          const stageId = colIdMap[lead.columnId];
+          if (!stageId) return Promise.resolve(null);
+
+          const currentOrder = leadsPerColumn[stageId] || 0;
+          leadsPerColumn[stageId] = currentOrder + 1;
+
+          const [emailPart, phonePart] = lead.content.split("|");
+
+          return apiCreateLead({
+            name: lead.name,
+            stage: stageId,
+            order: currentOrder,
+            email: emailPart?.trim() || null,
+            phone: phonePart?.trim() || "",
+            earning: lead.earning,
+            temperature: lead.temperature,
+            content: lead.content,
+          });
+        });
+
+        await Promise.all(leadPromises);
+
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.funnels.detail(newFunnel.id.toString()),
+        });
+      } catch (error) {
+        console.error("Erro ao popular dados iniciais:", error);
+      }
+
       setIsCreateOpen(false);
       setSelectedFunnelId(newFunnel.id.toString());
     },
@@ -117,9 +176,22 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   // EFEITOS
 
   useEffect(() => {
+    if (funnelsList.length > 0) {
+      const currentExists = funnelsList.some(
+        (f) => f.value === selectedFunnelId,
+      );
+      if (!selectedFunnelId || !currentExists) {
+        setSelectedFunnelId(funnelsList[0].value);
+      }
+    } else if (funnelsList.length === 0 && selectedFunnelId) {
+      setSelectedFunnelId(null);
+    }
+  }, [funnelsList, selectedFunnelId]);
+
+  useEffect(() => {
     if (!funnelDetailsData) {
-      setColumns(initialCols);
-      setLeads(initialLeads);
+      setColumns([]);
+      setLeads([]);
       return;
     }
     const mapped = mapApiDetailsToKanban(funnelDetailsData);
