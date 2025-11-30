@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { usePermissions } from "@/auth/hooks/usePermissions";
 import { DndContext, DragOverlay, type UniqueIdentifier } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { PlusIcon } from "lucide-react";
@@ -24,6 +25,7 @@ export type KanbanBoardProps = {
   onAddLead: (columnId: ColumnId) => void;
   onAddColumn: () => void;
   onLeadEdit: (lead: Lead) => void;
+  onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
 };
 
 export function KanbanBoard({
@@ -36,7 +38,9 @@ export function KanbanBoard({
   onAddLead,
   onAddColumn,
   onLeadEdit,
+  onEditColumnName,
 }: KanbanBoardProps) {
+  const { hasPermission } = usePermissions();
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
   const { activeColumn, activeLead, sensors, onDragStart, onDragEnd } =
@@ -47,6 +51,9 @@ export function KanbanBoard({
       onColumnDrop,
       onLeadDrop,
     });
+
+  // Permission checks
+  const canCreateStep = hasPermission("funnel-step:create");
 
   return (
     <DndContext
@@ -63,16 +70,19 @@ export function KanbanBoard({
               leads={getFilteredAndSortedLeads(col.id)}
               onAddLead={onAddLead}
               onLeadEdit={onLeadEdit}
+              onEditColumnName={onEditColumnName}
             />
           ))}
         </SortableContext>
-        <Button
-          variant="outline"
-          className="h-full w-[350px] max-w-full shrink-0 snap-center flex items-center justify-center"
-          onClick={onAddColumn}
-        >
-          <PlusIcon /> Adicionar Etapa
-        </Button>
+        {canCreateStep && (
+          <Button
+            variant="outline"
+            className="h-full w-[350px] max-w-full shrink-0 snap-center flex items-center justify-center"
+            onClick={onAddColumn}
+          >
+            <PlusIcon /> Adicionar Etapa
+          </Button>
+        )}
       </BoardContainer>
 
       {"document" in window &&
@@ -85,6 +95,7 @@ export function KanbanBoard({
                 leads={getFilteredAndSortedLeads(activeColumn.id)}
                 onAddLead={onAddLead}
                 onLeadEdit={onLeadEdit}
+                onEditColumnName={onEditColumnName}
               />
             )}
             {activeLead && <LeadCard lead={activeLead} isOverlay />}
