@@ -1,12 +1,27 @@
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, User, Mail, Shield, Building2, Users, Calendar, Camera } from "lucide-react";
+import {
+  Save,
+  User,
+  Mail,
+  Shield,
+  Building2,
+  Users,
+  Calendar,
+  Camera,
+} from "lucide-react";
 import { useProfile, useUpdateProfile } from "./hooks/useProfile";
+import {
+  profileSchema,
+  type ProfileFormValues,
+} from "./schemas/profile.schema";
 
 const ROLE_LABELS: Record<string, string> = {
   owner: "Proprietário",
@@ -20,66 +35,68 @@ const ROLE_LABELS: Record<string, string> = {
 const Profile = () => {
   const { data: profile, isLoading: isLoadingProfile } = useProfile();
   const updateProfileMutation = useUpdateProfile();
-
-  const [formData, setFormData] = useState({
-    nome: "",
-    password: "",
-  });
-
   const [showPasswordField, setShowPasswordField] = useState(false);
 
-  // Update form data when profile loads
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      nome: "",
+      password: "",
+    },
+  });
+
+  // Atualizar formulário quando o perfil carregar
   useEffect(() => {
     if (profile) {
-      setFormData((prev) => ({
-        ...prev,
+      reset({
         nome: profile.nome,
-      }));
+        password: "",
+      });
     }
-  }, [profile]);
+  }, [profile, reset]);
 
   const handlePhotoChange = () => {
     alert("Funcionalidade de alteração de foto será implementada em breve!");
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSave = () => {
+  const onSubmit = (data: ProfileFormValues) => {
     const payload: { nome?: string; password?: string } = {};
 
-    if (formData.nome !== profile?.nome) {
-      payload.nome = formData.nome;
+    if (data.nome !== profile?.nome) {
+      payload.nome = data.nome;
     }
 
-    if (formData.password && formData.password.length > 0) {
-      if (formData.password.length < 8) {
-        alert("A senha deve ter no mínimo 8 caracteres");
-        return;
-      }
-      payload.password = formData.password;
+    if (data.password && data.password.length > 0) {
+      payload.password = data.password;
     }
 
     if (Object.keys(payload).length > 0) {
       updateProfileMutation.mutate(payload, {
         onSuccess: () => {
-          setFormData((prev) => ({ ...prev, password: "" }));
+          reset({
+            nome: data.nome,
+            password: "",
+          });
           setShowPasswordField(false);
 
-          // Show success message
+          // Mostrar mensagem de sucesso
           if (payload.password) {
-            alert("Senha alterada com sucesso! Você será redirecionado para fazer login novamente.");
+            alert(
+              "Senha alterada com sucesso! Você será redirecionado para fazer login novamente.",
+            );
           } else {
             alert("Perfil atualizado com sucesso!");
           }
         },
         onError: (error) => {
-          alert(error instanceof Error ? error.message : "Erro ao atualizar perfil");
+          alert(
+            error instanceof Error ? error.message : "Erro ao atualizar perfil",
+          );
         },
       });
     }
@@ -105,10 +122,7 @@ const Profile = () => {
   if (isLoadingProfile) {
     return (
       <AppShell
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Meu Perfil" },
-        ]}
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Meu Perfil" }]}
       >
         <div className="flex items-center justify-center h-64">
           <p className="text-muted-foreground">Carregando perfil...</p>
@@ -120,10 +134,7 @@ const Profile = () => {
   if (!profile) {
     return (
       <AppShell
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Meu Perfil" },
-        ]}
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Meu Perfil" }]}
       >
         <div className="flex items-center justify-center h-64">
           <p className="text-muted-foreground">Erro ao carregar perfil</p>
@@ -134,190 +145,202 @@ const Profile = () => {
 
   return (
     <AppShell
-      breadcrumbs={[
-        { label: "Home", href: "/" },
-        { label: "Meu Perfil" },
-      ]}
+      breadcrumbs={[{ label: "Home", href: "/" }, { label: "Meu Perfil" }]}
     >
       <div className="space-y-6 animate-fade-in">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-foreground">
-              Meu Perfil
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Gerencie suas informações pessoais
-            </p>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">
+                Meu Perfil
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Gerencie suas informações pessoais
+              </p>
+            </div>
+            <Button type="submit" disabled={updateProfileMutation.isPending}>
+              <Save className="mr-2 h-4 w-4" />
+              {updateProfileMutation.isPending
+                ? "Salvando..."
+                : "Salvar Alterações"}
+            </Button>
           </div>
-          <Button
-            onClick={handleSave}
-            disabled={updateProfileMutation.isPending}
-          >
-            <Save className="mr-2 h-4 w-4" />
-            {updateProfileMutation.isPending ? "Salvando..." : "Salvar Alterações"}
-          </Button>
-        </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* Main Profile Card */}
-          <div className="md:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Informações Pessoais</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col md:flex-row gap-8">
-                  {/* Avatar */}
-                  <div className="flex flex-col items-center space-y-4">
-                    <div className="relative">
-                      <Avatar className="h-32 w-32 border-4 border-muted">
-                        <AvatarImage src="" alt={profile.nome} />
-                        <AvatarFallback className="text-4xl bg-primary text-primary-foreground">
-                          {getInitials(profile.nome)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="absolute bottom-0 right-0 h-10 w-10 rounded-full p-0 shadow-lg"
-                        onClick={handlePhotoChange}
-                        type="button"
-                      >
-                        <Camera className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Clique no ícone para alterar foto
-                    </p>
-                  </div>
-
-                  {/* Form */}
-                  <div className="flex-1 space-y-6">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Nome Completo</label>
+          <div className="grid gap-6 md:grid-cols-3 mt-6">
+            {/* Cartão Principal do Perfil */}
+            <div className="md:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Informações Pessoais</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col md:flex-row gap-8">
+                    {/* Avatar */}
+                    <div className="flex flex-col items-center space-y-4">
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                          name="nome"
-                          value={formData.nome || profile.nome}
-                          onChange={handleChange}
-                          className="pl-9"
-                        />
+                        <Avatar className="h-32 w-32 border-4 border-muted">
+                          <AvatarImage src="" alt={profile.nome} />
+                          <AvatarFallback className="text-4xl bg-primary text-primary-foreground">
+                            {getInitials(profile.nome)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="absolute bottom-0 right-0 h-10 w-10 rounded-full p-0 shadow-lg"
+                          onClick={handlePhotoChange}
+                          type="button"
+                        >
+                          <Camera className="h-4 w-4" />
+                        </Button>
                       </div>
+                      <p className="text-xs text-muted-foreground">
+                        Clique no ícone para alterar foto
+                      </p>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">E-mail</label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                          disabled
-                          value={profile.email}
-                          className="pl-9 bg-muted/50"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Cargo</label>
-                      <div className="relative">
-                        <Shield className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                          disabled
-                          value={ROLE_LABELS[profile.role] || profile.role}
-                          className="pl-9 bg-muted/50"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium">Senha</label>
-                        {!showPasswordField && (
-                          <Button
-                            variant="link"
-                            size="sm"
-                            onClick={() => setShowPasswordField(true)}
-                            className="h-auto p-0"
-                          >
-                            Alterar senha
-                          </Button>
+                    {/* Formulário */}
+                    <div className="flex-1 space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          Nome Completo
+                        </label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                          <Input
+                            placeholder="Nome Completo"
+                            className="pl-9"
+                            {...register("nome")}
+                          />
+                        </div>
+                        {errors.nome && (
+                          <p className="text-sm text-red-500">
+                            {errors.nome.message}
+                          </p>
                         )}
                       </div>
-                      {showPasswordField && (
-                        <Input
-                          type="password"
-                          name="password"
-                          value={formData.password}
-                          onChange={handleChange}
-                          placeholder="Nova senha (mínimo 8 caracteres)"
-                        />
-                      )}
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">E-mail</label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                          <Input
+                            disabled
+                            value={profile.email}
+                            className="pl-9 bg-muted/50"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Cargo</label>
+                        <div className="relative">
+                          <Shield className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                          <Input
+                            disabled
+                            value={ROLE_LABELS[profile.role] || profile.role}
+                            className="pl-9 bg-muted/50"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm font-medium">Senha</label>
+                          {!showPasswordField && (
+                            <Button
+                              variant="link"
+                              size="sm"
+                              type="button"
+                              onClick={() => setShowPasswordField(true)}
+                              className="h-auto p-0"
+                            >
+                              Alterar senha
+                            </Button>
+                          )}
+                        </div>
+                        {showPasswordField && (
+                          <>
+                            <Input
+                              type="password"
+                              placeholder="Nova senha (mínimo 8 caracteres)"
+                              {...register("password")}
+                            />
+                            {errors.password && (
+                              <p className="text-sm text-red-500">
+                                {errors.password.message}
+                              </p>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </div>
 
-          {/* Sidebar Cards */}
-          <div className="space-y-6">
-            {/* Organization Card */}
-            {profile.organization && (
+            {/* Cartões da Barra Lateral */}
+            <div className="space-y-6">
+              {/* Cartão da Organização */}
+              {profile.organization && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <Building2 className="h-5 w-5" />
+                      Organização
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="font-medium">{profile.organization.name}</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Cartão dos Times */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Building2 className="h-5 w-5" />
-                    Organização
+                    <Users className="h-5 w-5" />
+                    Times
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="font-medium">{profile.organization.name}</p>
+                  {profile.teams.length > 0 ? (
+                    <div className="space-y-2">
+                      {profile.teams.map((team) => (
+                        <Badge
+                          key={team.id}
+                          variant="secondary"
+                          className="mr-2"
+                        >
+                          {team.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Você não faz parte de nenhum time
+                    </p>
+                  )}
                 </CardContent>
               </Card>
-            )}
 
-            {/* Teams Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Users className="h-5 w-5" />
-                  Times
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {profile.teams.length > 0 ? (
-                  <div className="space-y-2">
-                    {profile.teams.map((team) => (
-                      <Badge key={team.id} variant="secondary" className="mr-2">
-                        {team.name}
-                      </Badge>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Você não faz parte de nenhum time
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Joined Date Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Calendar className="h-5 w-5" />
-                  Membro desde
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="font-medium">
-                  {formatDate(profile.joinedAt)}
-                </p>
-              </CardContent>
-            </Card>
+              {/* Cartão da Data de Entrada */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Calendar className="h-5 w-5" />
+                    Membro desde
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="font-medium">{formatDate(profile.joinedAt)}</p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </AppShell>
   );

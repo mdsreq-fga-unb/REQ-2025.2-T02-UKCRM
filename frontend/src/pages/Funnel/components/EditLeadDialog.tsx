@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
@@ -17,13 +19,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Imports de tipos - ajuste os caminhos conforme sua estrutura real
 import type { Lead, Campaign, ContactOrigin } from "../types/kanban.types";
-// Se TemperatureVariant não existir, defina localmente ou importe
-type TemperatureVariant = "Frio" | "Morno" | "Quente" | "Neutro";
+import {
+  leadFormSchema,
+  type LeadFormValues,
+  CAMPAIGNS,
+  CONTACT_ORIGINS,
+  TEMPERATURES,
+} from "../schemas/lead.schema";
 
-// Interfaces adaptadas para o código atual
+// TemperatureVariant is exported from schemas/lead.schema implicitly via TEMPERATURES const if needed,
+// but here we use the type from kanban.types or infer from schema.
+type TemperatureVariant = (typeof TEMPERATURES)[number];
+
 export interface EditLeadFormValues {
   name: string;
   phone: string;
@@ -47,34 +55,6 @@ interface EditLeadDialogProps {
   isPending?: boolean;
   readOnly?: boolean;
 }
-
-const CAMPAIGNS: Campaign[] = [
-  "Summer Sale 2025",
-  "Black Friday 2024",
-  "Product Launch",
-  "Retargeting",
-  "LinkedIn Ads",
-  "Google Ads",
-  "Organic",
-  "None",
-];
-
-const CONTACT_ORIGINS: ContactOrigin[] = [
-  "Website",
-  "Social Media",
-  "Referral",
-  "Cold Call",
-  "Email Campaign",
-  "Event",
-  "Other",
-];
-
-const TEMPERATURES: TemperatureVariant[] = [
-  "Frio",
-  "Morno",
-  "Quente",
-  "Neutro",
-];
 
 const INTEREST_OPTIONS = [
   "Technology",
@@ -104,26 +84,37 @@ export function EditLeadDialog({
 }: EditLeadDialogProps) {
   const [interestInput, setInterestInput] = useState("");
 
-  // Estado inicial do formulário
-  const [formData, setFormData] = useState({
-    name: "",
-    cpf: "",
-    email: "",
-    phone: "",
-    career: "",
-    income: "",
-    interests: [] as string[],
-    campaign: "None" as Campaign,
-    contactOrigin: "Other" as ContactOrigin,
-    temperature: "Morno" as TemperatureVariant,
-    earning: "",
-    content: "",
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<LeadFormValues>({
+    resolver: zodResolver(leadFormSchema),
+    defaultValues: {
+      name: "",
+      cpf: "",
+      email: "",
+      phone: "",
+      career: "",
+      income: "",
+      interests: [],
+      campaign: "None",
+      contactOrigin: "Other",
+      temperature: "Morno",
+      earning: "",
+      content: "",
+    },
   });
 
-  // Popula o formulário quando o modal abre ou o lead muda
+  const currentInterests = watch("interests");
+
   useEffect(() => {
     if (lead && open) {
-      setFormData({
+      reset({
         name: lead.name || "",
         cpf: lead.cpf || "",
         email: lead.email || "",
@@ -135,50 +126,47 @@ export function EditLeadDialog({
         contactOrigin: lead.contactOrigin || "Other",
         temperature: (lead.temperature as TemperatureVariant) || "Morno",
         earning: lead.earning?.toString() || "",
-        content: lead.content || "", // Observações
+        content: lead.content || "",
       });
     } else if (!open) {
-      // Opcional: Limpar formulário ao fechar
       setInterestInput("");
     }
-  }, [lead, open]);
+  }, [lead, open, reset]);
 
   const handleAddInterest = () => {
     if (
       interestInput.trim() &&
-      !formData.interests.includes(interestInput.trim())
+      !currentInterests.includes(interestInput.trim())
     ) {
-      setFormData((prev) => ({
-        ...prev,
-        interests: [...prev.interests, interestInput.trim()],
-      }));
+      setValue("interests", [...currentInterests, interestInput.trim()]);
       setInterestInput("");
     }
   };
 
   const handleRemoveInterest = (interest: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      interests: prev.interests.filter((i) => i !== interest),
-    }));
+    setValue(
+      "interests",
+      currentInterests.filter((i) => i !== interest),
+    );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const formattedValues = {
-      ...formData,
-      // Converte strings numéricas para números reais
-      income: formData.income ? parseFloat(formData.income) : 0,
-      earning: formData.earning ? parseFloat(formData.earning) : 0,
-      // Garante campos nulos se vazios
-      cpf: formData.cpf || null,
-      email: formData.email || null,
-      career: formData.career || null,
+  const onFormSubmit = (data: LeadFormValues) => {
+    const formattedValues: EditLeadFormValues = {
+      name: data.name,
+      phone: data.phone || "",
+      interests: data.interests,
+      campaign: data.campaign as Campaign,
+      contactOrigin: data.contactOrigin as ContactOrigin,
+      temperature: data.temperature as TemperatureVariant,
+      content: data.content || "",
+      income: data.income ? parseFloat(data.income) : 0,
+      earning: data.earning ? parseFloat(data.earning) : 0,
+      cpf: data.cpf || null,
+      email: data.email || null,
+      career: data.career || null,
     };
 
     onSubmit(formattedValues);
-    // Nota: Não fechamos o modal aqui (onOpenChange(false)) pois geralmente esperamos a Promise do isPending resolver no pai
   };
 
   return (
@@ -191,62 +179,60 @@ export function EditLeadDialog({
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
             {/* Informações Pessoais */}
             <section className="space-y-4">
               <h3 className="text-sm font-semibold border-b pb-1">
                 Informações Pessoais
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="name">
                     Nome <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
+                    {...register("name")}
                     required
                     disabled={readOnly}
                   />
+                  {errors.name && (
+                    <p className="text-sm text-red-500">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="cpf">CPF</Label>
                   <Input
                     id="cpf"
-                    value={formData.cpf}
-                    onChange={(e) =>
-                      setFormData({ ...formData, cpf: e.target.value })
-                    }
                     placeholder="000.000.000-00"
+                    {...register("cpf")}
                     disabled={readOnly}
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="phone">Telefone</Label>
                   <Input
                     id="phone"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
                     placeholder="(00) 00000-0000"
+                    {...register("phone")}
                     disabled={readOnly}
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
+                    {...register("email")}
                     disabled={readOnly}
                   />
+                  {errors.email && (
+                    <p className="text-sm text-red-500">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </section>
@@ -257,28 +243,27 @@ export function EditLeadDialog({
                 Informações Profissionais
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="career">Carreira</Label>
                   <Input
                     id="career"
-                    value={formData.career}
-                    onChange={(e) =>
-                      setFormData({ ...formData, career: e.target.value })
-                    }
+                    {...register("career")}
                     disabled={readOnly}
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="income">Renda (R$)</Label>
                   <Input
                     id="income"
                     type="number"
-                    value={formData.income}
-                    onChange={(e) =>
-                      setFormData({ ...formData, income: e.target.value })
-                    }
+                    {...register("income")}
                     disabled={readOnly}
                   />
+                  {errors.income && (
+                    <p className="text-sm text-red-500">
+                      {errors.income.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </section>
@@ -315,9 +300,9 @@ export function EditLeadDialog({
                 </Button>
               </div>
 
-              {formData.interests.length > 0 && (
+              {currentInterests.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.interests.map((interest) => (
+                  {currentInterests.map((interest) => (
                     <div
                       key={interest}
                       className="bg-secondary text-secondary-foreground px-3 py-1 rounded-md text-sm flex items-center gap-2"
@@ -344,54 +329,59 @@ export function EditLeadDialog({
                 Detalhes da Venda
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="campaign">Campanha</Label>
-                  <Select
-                    value={formData.campaign}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, campaign: value as Campaign })
-                    }
-                    disabled={readOnly}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CAMPAIGNS.map((c) => (
-                        <SelectItem key={c} value={c}>
-                          {c}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    control={control}
+                    name="campaign"
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        disabled={readOnly}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CAMPAIGNS.map((c) => (
+                            <SelectItem key={c} value={c}>
+                              {c}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
 
-                <div>
-                  <Label htmlFor="origin">Origem</Label>
-                  <Select
-                    value={formData.contactOrigin}
-                    onValueChange={(value) =>
-                      setFormData({
-                        ...formData,
-                        contactOrigin: value as ContactOrigin,
-                      })
-                    }
-                    disabled={readOnly}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CONTACT_ORIGINS.map((o) => (
-                        <SelectItem key={o} value={o}>
-                          {o}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="contactOrigin">Origem</Label>
+                  <Controller
+                    control={control}
+                    name="contactOrigin"
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        disabled={readOnly}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CONTACT_ORIGINS.map((o) => (
+                            <SelectItem key={o} value={o}>
+                              {o}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
 
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="earning">
                     Valor Potencial (R$){" "}
                     <span className="text-destructive">*</span>
@@ -399,53 +389,53 @@ export function EditLeadDialog({
                   <Input
                     id="earning"
                     type="number"
-                    value={formData.earning}
-                    onChange={(e) =>
-                      setFormData({ ...formData, earning: e.target.value })
-                    }
+                    {...register("earning")}
                     required
                     disabled={readOnly}
                   />
+                  {errors.earning && (
+                    <p className="text-sm text-red-500">
+                      {errors.earning.message}
+                    </p>
+                  )}
                 </div>
 
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="temperature">Temperatura</Label>
-                  <Select
-                    value={formData.temperature}
-                    onValueChange={(value) =>
-                      setFormData({
-                        ...formData,
-                        temperature: value as TemperatureVariant,
-                      })
-                    }
-                    disabled={readOnly}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TEMPERATURES.map((t) => (
-                        <SelectItem key={t} value={t}>
-                          {t}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    control={control}
+                    name="temperature"
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        disabled={readOnly}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {TEMPERATURES.map((t) => (
+                            <SelectItem key={t} value={t}>
+                              {t}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
               </div>
             </section>
 
             {/* Observações */}
             <section className="space-y-4">
-              <Label htmlFor="obs" className="text-sm font-semibold">
+              <Label htmlFor="content" className="text-sm font-semibold">
                 Observações
               </Label>
               <Textarea
-                id="obs"
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData({ ...formData, content: e.target.value })
-                }
+                id="content"
+                {...register("content")}
                 placeholder="Notas sobre o lead..."
                 rows={3}
                 disabled={readOnly}

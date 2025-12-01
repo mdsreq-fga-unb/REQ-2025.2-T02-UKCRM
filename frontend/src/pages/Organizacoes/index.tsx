@@ -16,6 +16,7 @@ import { useOrganizacoesData } from "./hooks/useOrganizacoesData";
 import { fetchOrganizationDetails } from "./api/organizations.api";
 import { fetchMembers } from "@/pages/Membros/api/members.api";
 import type { Organization } from "./types/organizations.types";
+import { CreateOrganizationFormValues } from "@/components/modals/schemas/organization.schema";
 import CreateButton from "@/components/CreateButton";
 import SelectButton from "@/components/SelectButton";
 
@@ -36,16 +37,6 @@ interface OrganizationDetails {
   ownerName: string;
   ownerEmail: string;
   members: OrganizationMember[];
-}
-
-interface CreateOrganizationFormData {
-  nome: string;
-  logo?: File;
-  proprietario: {
-    nome: string;
-    email: string;
-    senha: string;
-  };
 }
 
 const columns: Column<Organization>[] = [
@@ -200,14 +191,14 @@ const Organizacoes = () => {
   };
 
   const handleCreateOrganization = async (
-    formData: CreateOrganizationFormData,
+    formData: CreateOrganizationFormValues,
   ) => {
     try {
       await handleCreate({
         name: formData.nome,
-        owner: formData.proprietario.nome,
-        owner_email_input: formData.proprietario.email,
-        owner_password: formData.proprietario.senha,
+        owner: formData.ownerName,
+        owner_email_input: formData.ownerEmail,
+        owner_password: formData.ownerPassword,
       });
       setIsCreateOpen(false);
     } catch (error) {

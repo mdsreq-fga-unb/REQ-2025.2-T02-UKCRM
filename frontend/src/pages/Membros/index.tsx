@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
-import { Button } from "@/components/ui/button";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import { useAuthContext } from "@/auth/context/AuthContext";
@@ -12,26 +11,15 @@ import {
   useUpdateMember,
   useDeleteMember,
 } from "./hooks/useMembers";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { PasswordInput } from "@/components/ui/password-input";
 import { DeleteMemberModal } from "@/components/modals/DeleteMemberModal";
-import { Send } from "lucide-react";
+import { CreateMemberModal } from "@/components/modals/CreateMemberModal";
+import { EditMemberModal } from "@/components/modals/EditMemberModal";
 import CreateButton from "@/components/CreateButton";
 import SelectButton from "@/components/SelectButton";
+import type {
+  CreateMemberFormValues,
+  EditMemberFormValues,
+} from "@/components/modals/schemas/member.schema";
 
 interface Member {
   id: number;
@@ -83,39 +71,15 @@ const Membros = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    hierarchy: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [editFormData, setEditFormData] = useState({
-    name: "",
-    password: "",
-    confirmPassword: "",
-  });
 
   // Backend integration
   const { data: apiMembersData } = useMembers();
   const { mutate: createMemberMutation } = useCreateMember(() => {
     setIsCreateOpen(false);
-    setFormData({
-      name: "",
-      email: "",
-      hierarchy: "",
-      password: "",
-      confirmPassword: "",
-    });
   });
   const { mutate: updateMemberMutation } = useUpdateMember(() => {
     setIsEditOpen(false);
     setSelectedMember(null);
-    setEditFormData({
-      name: "",
-      password: "",
-      confirmPassword: "",
-    });
   });
   const { mutate: deleteMemberMutation } = useDeleteMember(() => {
     setIsDeleteOpen(false);
@@ -181,17 +145,49 @@ const Membros = () => {
 
   const handleEdit = (member: Member) => {
     setSelectedMember(member);
-    setEditFormData({
-      name: member.nome,
-      password: "",
-      confirmPassword: "",
-    });
     setIsEditOpen(true);
   };
 
   const handleDelete = (member: Member) => {
     setSelectedMember(member);
     setIsDeleteOpen(true);
+  };
+
+  const handleCreateMember = (data: CreateMemberFormValues) => {
+    if (!user?.organization_id) {
+      alert("Erro: organização não encontrada");
+      return;
+    }
+    const role = hierarchyToRoleMap[data.hierarchy];
+    if (!role) {
+      alert("Erro: hierarquia inválida");
+      return;
+    }
+    const payload = {
+      name: data.name,
+      email: data.email,
+      role: role,
+      organization_id: user.organization_id,
+      password: data.password,
+    };
+    createMemberMutation(payload);
+  };
+
+  const handleEditMember = (data: EditMemberFormValues) => {
+    if (!selectedMember) return;
+
+    const payload: { name: string; password?: string } = {
+      name: data.name,
+    };
+
+    if (data.password) {
+      payload.password = data.password;
+    }
+
+    updateMemberMutation({
+      id: selectedMember.id,
+      payload,
+    });
   };
 
   // Get available members from API data for reallocation
@@ -259,237 +255,19 @@ const Membros = () => {
         </div>
       </div>
 
-      {/* Create Member Modal */}
-      <Dialog
+      <CreateMemberModal
         open={isCreateOpen}
-        onOpenChange={(open: boolean) => {
-          setIsCreateOpen(open);
-          if (!open) {
-            setFormData({
-              name: "",
-              email: "",
-              hierarchy: "",
-              password: "",
-              confirmPassword: "",
-            });
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center text-lg font-semibold">
-              Novo Membro
-            </DialogTitle>
-          </DialogHeader>
+        onOpenChange={setIsCreateOpen}
+        onSave={handleCreateMember}
+      />
 
-          <div className="space-y-4 py-4">
-            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
-              Dados do Membro
-            </Label>
-            <Input
-              placeholder="Nome Completo"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-            />
-            <Select
-              value={formData.hierarchy}
-              onValueChange={(value: string) =>
-                setFormData({ ...formData, hierarchy: value })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Nível de Hierarquia" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover z-50">
-                {hierarchyOptions.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Input
-              type="email"
-              placeholder="E-mail"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-            />
-            <PasswordInput
-              placeholder="Senha"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-            />
-            <Input
-              type="password"
-              placeholder="Confirmar Senha"
-              value={formData.confirmPassword}
-              onChange={(e) =>
-                setFormData({ ...formData, confirmPassword: e.target.value })
-              }
-            />
-          </div>
-
-          <DialogFooter>
-            <Button variant="secondary" onClick={() => setIsCreateOpen(false)}>
-              Cancelar
-            </Button>
-            <Button
-              variant="invite"
-              onClick={() => {
-                if (formData.password !== formData.confirmPassword) {
-                  alert("As senhas não coincidem");
-                  return;
-                }
-                if (!user?.organization_id) {
-                  alert("Erro: organização não encontrada");
-                  return;
-                }
-                const role = hierarchyToRoleMap[formData.hierarchy];
-                if (!role) {
-                  alert("Erro: hierarquia inválida");
-                  return;
-                }
-                const payload = {
-                  name: formData.name,
-                  email: formData.email,
-                  role: role,
-                  organization_id: user.organization_id,
-                  password: formData.password,
-                };
-                console.log("Sending payload:", payload);
-                createMemberMutation(payload);
-              }}
-            >
-              <Send className="h-4 w-4" />
-              Convidar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Member Modal */}
-      <Dialog
+      <EditMemberModal
         open={isEditOpen}
-        onOpenChange={(open: boolean) => {
-          setIsEditOpen(open);
-          if (!open) {
-            setEditFormData({ name: "", password: "", confirmPassword: "" });
-            setSelectedMember(null);
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center text-lg font-semibold">
-              Editar Membro
-            </DialogTitle>
-          </DialogHeader>
+        onOpenChange={setIsEditOpen}
+        member={selectedMember}
+        onSave={handleEditMember}
+      />
 
-          <div className="space-y-4 py-4">
-            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
-              Dados do Membro
-            </Label>
-            <Input
-              placeholder="Nome Completo"
-              value={editFormData.name}
-              onChange={(e) =>
-                setEditFormData({ ...editFormData, name: e.target.value })
-              }
-            />
-            <Input
-              type="email"
-              placeholder="E-mail"
-              value={selectedMember?.email || ""}
-              disabled
-              className="bg-muted cursor-not-allowed"
-            />
-            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
-              Alterar Senha (Opcional)
-            </Label>
-            <PasswordInput
-              placeholder="Nova Senha"
-              value={editFormData.password}
-              onChange={(e) =>
-                setEditFormData({ ...editFormData, password: e.target.value })
-              }
-            />
-            <Input
-              type="password"
-              placeholder="Confirmar Nova Senha"
-              value={editFormData.confirmPassword}
-              onChange={(e) =>
-                setEditFormData({
-                  ...editFormData,
-                  confirmPassword: e.target.value,
-                })
-              }
-            />
-          </div>
-
-          <DialogFooter>
-            <Button variant="secondary" onClick={() => setIsEditOpen(false)}>
-              Cancelar
-            </Button>
-            <Button
-              onClick={() => {
-                if (!selectedMember) return;
-
-                // Validate passwords if user is trying to change password
-                if (editFormData.password || editFormData.confirmPassword) {
-                  if (editFormData.password !== editFormData.confirmPassword) {
-                    alert("As senhas não coincidem");
-                    return;
-                  }
-                  if (editFormData.password.length < 8) {
-                    alert("A senha deve ter pelo menos 8 caracteres");
-                    return;
-                  }
-                  if (!/[A-Z]/.test(editFormData.password)) {
-                    alert("A senha deve conter letras maiúsculas");
-                    return;
-                  }
-                  if (!/[a-z]/.test(editFormData.password)) {
-                    alert("A senha deve conter letras minúsculas");
-                    return;
-                  }
-                  if (!/\d/.test(editFormData.password)) {
-                    alert("A senha deve conter números");
-                    return;
-                  }
-                  if (!/[!@#$%^&*(),.?":{}|<>]/.test(editFormData.password)) {
-                    alert("A senha deve conter símbolos");
-                    return;
-                  }
-                }
-
-                const payload: { name: string; password?: string } = {
-                  name: editFormData.name,
-                };
-
-                // Only include password if it's being changed
-                if (editFormData.password) {
-                  payload.password = editFormData.password;
-                }
-
-                updateMemberMutation({
-                  id: selectedMember.id,
-                  payload,
-                });
-              }}
-            >
-              Salvar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Member Modal */}
       <DeleteMemberModal
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}

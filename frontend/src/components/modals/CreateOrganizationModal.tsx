@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
@@ -13,21 +15,15 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Upload } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CreateButton from "@/components/CreateButton";
+import {
+  createOrganizationSchema,
+  type CreateOrganizationFormValues,
+} from "./schemas/organization.schema";
 
 interface CreateOrganizationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave?: (data: OrganizationFormData) => void;
-}
-
-interface OrganizationFormData {
-  nome: string;
-  logo?: File;
-  proprietario: {
-    nome: string;
-    email: string;
-    senha: string;
-  };
+  onSave?: (data: CreateOrganizationFormValues) => void;
 }
 
 export function CreateOrganizationModal({
@@ -36,21 +32,31 @@ export function CreateOrganizationModal({
   onSave,
 }: CreateOrganizationModalProps) {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [formData, setFormData] = useState<OrganizationFormData>({
-    nome: "",
-    proprietario: { nome: "", email: "", senha: "" },
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<CreateOrganizationFormValues>({
+    resolver: zodResolver(createOrganizationSchema),
+    defaultValues: {
+      nome: "",
+      ownerName: "",
+      ownerEmail: "",
+      ownerPassword: "",
+      ownerPasswordConfirm: "",
+    },
   });
 
   // Limpar formulário quando o modal fechar
   useEffect(() => {
     if (!open) {
-      setFormData({
-        nome: "",
-        proprietario: { nome: "", email: "", senha: "" },
-      });
+      reset();
       setLogoPreview(null);
     }
-  }, [open]);
+  }, [open, reset]);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -60,12 +66,12 @@ export function CreateOrganizationModal({
         setLogoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      setFormData((prev) => ({ ...prev, logo: file }));
+      setValue("logo", file);
     }
   };
 
-  const handleSave = () => {
-    onSave?.(formData);
+  const onSubmit = (data: CreateOrganizationFormValues) => {
+    onSave?.(data);
     onOpenChange(false);
   };
 
@@ -78,21 +84,20 @@ export function CreateOrganizationModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
-          {/* Organization Data Section */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
+          {/* Seção de Dados da Organização */}
           <div className="space-y-4">
             <Label className="text-muted-foreground text-xs uppercase tracking-wide">
               Dados da Organização
             </Label>
-            <Input
-              placeholder="Nome da Organização"
-              value={formData.nome}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, nome: e.target.value }))
-              }
-            />
+            <div className="space-y-2">
+              <Input placeholder="Nome da Organização" {...register("nome")} />
+              {errors.nome && (
+                <p className="text-sm text-red-500">{errors.nome.message}</p>
+              )}
+            </div>
 
-            {/* Logo Upload */}
+            {/* Upload de Logo */}
             <div className="flex flex-col items-center gap-2">
               <div className="flex items-center gap-3">
                 <Avatar className="h-12 w-12">
@@ -123,51 +128,67 @@ export function CreateOrganizationModal({
             </div>
           </div>
 
-          {/* Owner Data Section */}
+          {/* Seção de Dados do Proprietário */}
           <div className="space-y-4">
             <Label className="text-muted-foreground text-xs uppercase tracking-wide">
               Dados do Proprietário
             </Label>
-            <Input
-              placeholder="Nome Completo"
-              value={formData.proprietario.nome}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  proprietario: { ...prev.proprietario, nome: e.target.value },
-                }))
-              }
-            />
-            <Input
-              type="email"
-              placeholder="E-mail"
-              value={formData.proprietario.email}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  proprietario: { ...prev.proprietario, email: e.target.value },
-                }))
-              }
-            />
-            <PasswordInput
-              placeholder="Senha"
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  proprietario: { ...prev.proprietario, senha: e.target.value },
-                }))
-              }
-            />
-            <Input type="password" placeholder="Confirmar Senha" />
+            <div className="space-y-2">
+              <Input placeholder="Nome Completo" {...register("ownerName")} />
+              {errors.ownerName && (
+                <p className="text-sm text-red-500">
+                  {errors.ownerName.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="email"
+                placeholder="E-mail"
+                {...register("ownerEmail")}
+              />
+              {errors.ownerEmail && (
+                <p className="text-sm text-red-500">
+                  {errors.ownerEmail.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <PasswordInput
+                placeholder="Senha"
+                {...register("ownerPassword")}
+              />
+              {errors.ownerPassword && (
+                <p className="text-sm text-red-500">
+                  {errors.ownerPassword.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="password"
+                placeholder="Confirmar Senha"
+                {...register("ownerPasswordConfirm")}
+              />
+              {errors.ownerPasswordConfirm && (
+                <p className="text-sm text-red-500">
+                  {errors.ownerPasswordConfirm.message}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
 
-        <DialogFooter>
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>
-            Cancelar
-          </Button>
-          <CreateButton label="Salvar" onClick={handleSave} />
-        </DialogFooter>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancelar
+            </Button>
+            <CreateButton label="Salvar" />
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

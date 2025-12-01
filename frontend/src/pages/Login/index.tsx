@@ -1,5 +1,7 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,45 +10,42 @@ import { useAuthContext } from "@/auth/context/AuthContext";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { PublicFooter } from "@/components/layout/PublicFooter";
+import { loginSchema, type LoginFormValues } from "./schemas/login.schema";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login, isLoading, error } = useAuthContext();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [localError, setLocalError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLocalError(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    if (!email || !password) {
-      setLocalError("Por favor, preencha todos os campos");
-      return;
-    }
-
+  const onSubmit = async (data: LoginFormValues) => {
     try {
-      await login({ email, password });
+      await login(data);
       navigate("/");
     } catch (err) {
-      // Error is already handled by the auth hook
       console.error("Login failed:", err);
     }
   };
-
-  const displayError = localError || error;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-primary/5 via-background to-secondary/10">
       <PublicHeader showBackButton />
 
-      {/* Login Form */}
       <main className="container mx-auto flex min-h-[calc(100vh-5rem)] items-center justify-center px-6 py-12">
         <div className="w-full max-w-md animate-fade-in">
           <div className="rounded-lg border bg-card p-8 shadow-lg">
-            {/* Logo and Title */}
+            {/* Logo e Título */}
             <div className="mb-8 text-center">
               <div className="mb-4 flex justify-center">
                 <img
@@ -63,27 +62,28 @@ const Login = () => {
               </p>
             </div>
 
-            {/* Error Alert */}
-            {displayError && (
+            {/* Alerta de Erro */}
+            {error && (
               <div className="mb-6">
-                <AlertBanner message={displayError} />
+                <AlertBanner message={error} />
               </div>
             )}
 
-            {/* Login Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Formulário de Login */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
                   autoComplete="email"
-                  required
+                  {...register("email")}
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -93,12 +93,10 @@ const Login = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
                     autoComplete="current-password"
-                    required
                     className="pr-10"
+                    {...register("password")}
                   />
                   <button
                     type="button"
@@ -116,6 +114,11 @@ const Login = () => {
                     )}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
 
               <Button
@@ -137,8 +140,7 @@ const Login = () => {
           </div>
         </div>
       </main>
-      {/* Footer */}
-      <PublicFooter/>
+      <PublicFooter />
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
@@ -17,44 +19,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type {
-  Lead,
-  Campaign,
-  ContactOrigin,
-  ColumnId,
-} from "../types/kanban.types";
-import type { TemperatureVariant } from "@/lib/temperature";
+import type { Lead, ColumnId } from "../types/kanban.types";
+import {
+  leadFormSchema,
+  type LeadFormValues,
+  CAMPAIGNS,
+  CONTACT_ORIGINS,
+  TEMPERATURES,
+} from "../schemas/lead.schema";
 
 interface LeadFormDialogProps {
-  lead: Lead | null; // null for create, Lead for edit
+  lead: Lead | null;
   isOpen: boolean;
   onClose: () => void;
   onSave: (leadData: Partial<Lead>) => void;
-  columnId?: ColumnId; // For creating new leads
+  columnId?: ColumnId;
 }
-
-const CAMPAIGNS: Campaign[] = [
-  "Summer Sale 2025",
-  "Black Friday 2024",
-  "Product Launch",
-  "Retargeting",
-  "LinkedIn Ads",
-  "Google Ads",
-  "Organic",
-  "None",
-];
-
-const CONTACT_ORIGINS: ContactOrigin[] = [
-  "Website",
-  "Social Media",
-  "Referral",
-  "Cold Call",
-  "Email Campaign",
-  "Event",
-  "Other",
-];
-
-const TEMPERATURES: TemperatureVariant[] = ["Frio", "Morno", "Quente"];
 
 const INTEREST_OPTIONS = [
   "Technology",
@@ -82,96 +62,103 @@ export function LeadFormDialog({
   columnId,
 }: LeadFormDialogProps) {
   const isEditMode = lead !== null;
-
-  const [formData, setFormData] = useState({
-    name: "",
-    cpf: "",
-    email: "",
-    phone: "",
-    career: "",
-    income: "",
-    interests: [] as string[],
-    campaign: "None" as Campaign,
-    contactOrigin: "Other" as ContactOrigin,
-    temperature: "Morno" as TemperatureVariant,
-    earning: "",
-    content: "",
-  });
-
   const [interestInput, setInterestInput] = useState("");
 
-  // Initialize form data when lead changes
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<LeadFormValues>({
+    resolver: zodResolver(leadFormSchema),
+    defaultValues: {
+      name: "",
+      cpf: "",
+      email: "",
+      phone: "",
+      career: "",
+      income: "",
+      interests: [],
+      campaign: "None",
+      contactOrigin: "Other",
+      temperature: "Morno",
+      earning: "",
+      content: "",
+    },
+  });
+
+  const currentInterests = watch("interests");
+
   useEffect(() => {
-    if (lead) {
-      setFormData({
-        name: lead.name || "",
-        cpf: lead.cpf || "",
-        email: lead.email || "",
-        phone: lead.phone || "",
-        career: lead.career || "",
-        income: lead.income?.toString() || "",
-        interests: lead.interests || [],
-        campaign: lead.campaign || "None",
-        contactOrigin: lead.contactOrigin || "Other",
-        temperature: lead.temperature || "Morno",
-        earning: lead.earning?.toString() || "",
-        content: lead.content || "",
-      });
-    } else {
-      // Reset for new lead
-      setFormData({
-        name: "",
-        cpf: "",
-        email: "",
-        phone: "",
-        career: "",
-        income: "",
-        interests: [],
-        campaign: "None",
-        contactOrigin: "Other",
-        temperature: "Morno",
-        earning: "",
-        content: "",
-      });
+    if (isOpen) {
+      if (lead) {
+        reset({
+          name: lead.name || "",
+          cpf: lead.cpf || "",
+          email: lead.email || "",
+          phone: lead.phone || "",
+          career: lead.career || "",
+          income: lead.income?.toString() || "",
+          interests: lead.interests || [],
+          campaign: lead.campaign || "None",
+          contactOrigin: lead.contactOrigin || "Other",
+          temperature: lead.temperature || "Morno",
+          earning: lead.earning?.toString() || "",
+          content: lead.content || "",
+        });
+      } else {
+        reset({
+          name: "",
+          cpf: "",
+          email: "",
+          phone: "",
+          career: "",
+          income: "",
+          interests: [],
+          campaign: "None",
+          contactOrigin: "Other",
+          temperature: "Morno",
+          earning: "",
+          content: "",
+        });
+      }
     }
-  }, [lead, isOpen]);
+  }, [lead, isOpen, reset]);
 
   const handleAddInterest = () => {
     if (
       interestInput.trim() &&
-      !formData.interests.includes(interestInput.trim())
+      !currentInterests.includes(interestInput.trim())
     ) {
-      setFormData({
-        ...formData,
-        interests: [...formData.interests, interestInput.trim()],
-      });
+      setValue("interests", [...currentInterests, interestInput.trim()]);
       setInterestInput("");
     }
   };
 
   const handleRemoveInterest = (interest: string) => {
-    setFormData({
-      ...formData,
-      interests: formData.interests.filter((i) => i !== interest),
-    });
+    setValue(
+      "interests",
+      currentInterests.filter((i) => i !== interest),
+    );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = (data: LeadFormValues) => {
     const leadData: Partial<Lead> = {
-      name: formData.name,
-      cpf: formData.cpf || null,
-      email: formData.email || null,
-      phone: formData.phone,
-      career: formData.career || null,
-      income: formData.income ? parseFloat(formData.income) : null,
-      interests: formData.interests,
-      campaign: formData.campaign,
-      contactOrigin: formData.contactOrigin,
-      temperature: formData.temperature,
-      earning: parseFloat(formData.earning) || 0,
-      content: formData.content,
+      name: data.name,
+      cpf: data.cpf || null,
+      email: data.email || null,
+      phone: data.phone,
+      career: data.career || null,
+      income: data.income ? parseFloat(data.income) : null,
+      interests: data.interests,
+      campaign: data.campaign,
+      contactOrigin: data.contactOrigin,
+      temperature: data.temperature,
+      earning: parseFloat(data.earning) || 0,
+      content: data.content,
     };
 
     if (!isEditMode && columnId) {
@@ -191,89 +178,67 @@ export function LeadFormDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Personal Information */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Informações Pessoais */}
           <section className="space-y-4">
             <h3 className="text-sm font-semibold">Informações Pessoais</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="name">
                   Nome <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
-                />
+                <Input id="name" {...register("name")} />
+                {errors.name && (
+                  <p className="text-sm text-red-500">{errors.name.message}</p>
+                )}
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="cpf">CPF</Label>
                 <Input
                   id="cpf"
-                  value={formData.cpf}
-                  onChange={(e) =>
-                    setFormData({ ...formData, cpf: e.target.value })
-                  }
                   placeholder="000.000.000-00"
+                  {...register("cpf")}
                 />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="phone">Telefone</Label>
                 <Input
                   id="phone"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
                   placeholder="(00) 00000-0000"
+                  {...register("phone")}
                 />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                />
+                <Input id="email" type="email" {...register("email")} />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                )}
               </div>
             </div>
           </section>
 
-          {/* Professional Information */}
+          {/* Informações Profissionais */}
           <section className="space-y-4">
             <h3 className="text-sm font-semibold">Informações Profissionais</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="career">Carreira</Label>
-                <Input
-                  id="career"
-                  value={formData.career}
-                  onChange={(e) =>
-                    setFormData({ ...formData, career: e.target.value })
-                  }
-                />
+                <Input id="career" {...register("career")} />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="income">Renda (R$)</Label>
-                <Input
-                  id="income"
-                  type="number"
-                  value={formData.income}
-                  onChange={(e) =>
-                    setFormData({ ...formData, income: e.target.value })
-                  }
-                />
+                <Input id="income" type="number" {...register("income")} />
+                {errors.income && (
+                  <p className="text-sm text-red-500">
+                    {errors.income.message}
+                  </p>
+                )}
               </div>
             </div>
           </section>
 
-          {/* Interests */}
+          {/* Interesses */}
           <section className="space-y-4">
             <h3 className="text-sm font-semibold">Interesses</h3>
             <div className="flex gap-2">
@@ -293,9 +258,9 @@ export function LeadFormDialog({
                 Adicionar
               </Button>
             </div>
-            {formData.interests.length > 0 && (
+            {currentInterests.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {formData.interests.map((interest) => (
+                {currentInterests.map((interest) => (
                   <div
                     key={interest}
                     className="bg-secondary text-secondary-foreground px-3 py-1 rounded-md text-sm flex items-center gap-2"
@@ -314,61 +279,60 @@ export function LeadFormDialog({
             )}
           </section>
 
-          {/* Marketing Information */}
+          {/* Origem do Lead */}
           <section className="space-y-4">
             <h3 className="text-sm font-semibold">Origem do Lead</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="campaign">Campanha</Label>
-                <Select
-                  value={formData.campaign}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, campaign: value as Campaign })
-                  }
-                >
-                  <SelectTrigger id="campaign">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CAMPAIGNS.map((campaign) => (
-                      <SelectItem key={campaign} value={campaign}>
-                        {campaign}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Controller
+                  control={control}
+                  name="campaign"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger id="campaign">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CAMPAIGNS.map((campaign) => (
+                          <SelectItem key={campaign} value={campaign}>
+                            {campaign}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="contactOrigin">Origem do Contato</Label>
-                <Select
-                  value={formData.contactOrigin}
-                  onValueChange={(value) =>
-                    setFormData({
-                      ...formData,
-                      contactOrigin: value as ContactOrigin,
-                    })
-                  }
-                >
-                  <SelectTrigger id="contactOrigin">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CONTACT_ORIGINS.map((origin) => (
-                      <SelectItem key={origin} value={origin}>
-                        {origin}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Controller
+                  control={control}
+                  name="contactOrigin"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger id="contactOrigin">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CONTACT_ORIGINS.map((origin) => (
+                          <SelectItem key={origin} value={origin}>
+                            {origin}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
             </div>
           </section>
 
-          {/* Sales Information */}
+          {/* Informações de Venda */}
           <section className="space-y-4">
             <h3 className="text-sm font-semibold">Informações de Venda</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="earning">
                   Valor Potencial (R$){" "}
                   <span className="text-destructive">*</span>
@@ -376,49 +340,46 @@ export function LeadFormDialog({
                 <Input
                   id="earning"
                   type="number"
-                  value={formData.earning}
-                  onChange={(e) =>
-                    setFormData({ ...formData, earning: e.target.value })
-                  }
+                  {...register("earning")}
                   required
                 />
+                {errors.earning && (
+                  <p className="text-sm text-red-500">
+                    {errors.earning.message}
+                  </p>
+                )}
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="temperature">Temperatura</Label>
-                <Select
-                  value={formData.temperature}
-                  onValueChange={(value) =>
-                    setFormData({
-                      ...formData,
-                      temperature: value as TemperatureVariant,
-                    })
-                  }
-                >
-                  <SelectTrigger id="temperature">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TEMPERATURES.map((temp) => (
-                      <SelectItem key={temp} value={temp}>
-                        {temp}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Controller
+                  control={control}
+                  name="temperature"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger id="temperature">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TEMPERATURES.map((temp) => (
+                          <SelectItem key={temp} value={temp}>
+                            {temp}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
             </div>
           </section>
 
-          {/* Observations */}
+          {/* Observações */}
           <section className="space-y-4">
             <h3 className="text-sm font-semibold">Observações</h3>
             <Textarea
-              value={formData.content}
-              onChange={(e) =>
-                setFormData({ ...formData, content: e.target.value })
-              }
               placeholder="Notas sobre o lead..."
               rows={3}
+              {...register("content")}
             />
           </section>
 

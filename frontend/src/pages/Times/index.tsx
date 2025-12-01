@@ -16,6 +16,10 @@ import {
 import { useMembers } from "@/pages/Membros/hooks/useMembers";
 import CreateButton from "@/components/CreateButton";
 import SelectButton from "@/components/SelectButton";
+import type {
+  CreateTeamFormValues,
+  EditTeamFormValues,
+} from "@/components/modals/schemas/team.schema";
 
 interface Team {
   id: number;
@@ -235,12 +239,10 @@ const Times = () => {
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
         availableMembers={availableMembers}
-        onSave={(name, members) => {
+        onSave={(formData: CreateTeamFormValues) => {
           createTeamMutation({
-            name,
-            member_ids: members.map((m) =>
-              parseInt(typeof m === "string" ? m : m.id),
-            ),
+            name: formData.name,
+            member_ids: formData.memberIds.map((id) => parseInt(id)),
           });
         }}
       />
@@ -254,15 +256,13 @@ const Times = () => {
         availableMembers={availableMembers.filter(
           (m: { id: string }) => !selectedTeamMembers.includes(parseInt(m.id)),
         )}
-        onSave={(name, members) => {
+        onSave={(formData: EditTeamFormValues) => {
           if (selectedTeam) {
             updateTeamMutation({
               id: selectedTeam.id,
               payload: {
-                name,
-                member_ids: members.map((m) =>
-                  parseInt(typeof m === "string" ? m : m.id),
-                ),
+                name: formData.name,
+                member_ids: formData.memberIds.map((id) => parseInt(id)),
               },
             });
           }
