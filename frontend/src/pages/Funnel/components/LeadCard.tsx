@@ -24,6 +24,8 @@ import {
   Trash2,
   UserPlus,
   CheckCircle,
+  Mail,
+  Phone,
 } from "lucide-react";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import type { Lead, LeadDragData } from "../types/kanban.types";
@@ -116,77 +118,102 @@ export function LeadCard({
             variant={"ghost"}
             {...attributes}
             {...listeners}
-            className="p-1 text-muted-foreground -ml-2 mb-0 h-auto cursor-grab"
+            className="p-0 w-6 h-auto text-muted-foreground -ml-2 cursor-grab"
           >
             <span className="sr-only">Move lead</span>
-            <GripVertical />
+            <GripVertical className="w-4 h-4" />
           </Button>
-          <span className="mb-0">{lead.name}</span>
+          <span
+            className="mb-0 font-medium truncate max-w-40"
+            title={lead.name}
+          >
+            {lead.name}
+          </span>
           <InactivityBadge days={daysSince(lead.updatedAt)} />
           <TemperatureBadge variant={lead.temperature} className="ml-auto">
             {lead.temperature}
           </TemperatureBadge>
 
-          {/* Actions Menu */}
-          {!isOverlay && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost" className="ml-1 h-6 w-6">
-                  <MoreVertical className="h-4 w-4" />
-                  <span className="sr-only">Ações</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onViewDetails?.(lead)}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  Ver Detalhes
+          {/* Actions Menu - Agora exibido mesmo no overlay (drag) */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" variant="ghost" className="ml-1 h-6 w-6">
+                <MoreVertical className="h-4 w-4" />
+                <span className="sr-only">Ações</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onViewDetails?.(lead)}>
+                <Eye className="mr-2 h-4 w-4" />
+                Ver Detalhes
+              </DropdownMenuItem>
+
+              {canEdit && (
+                <DropdownMenuItem onClick={() => onEditClick?.(lead)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Editar
                 </DropdownMenuItem>
+              )}
 
-                {canEdit && (
-                  <DropdownMenuItem onClick={() => onEditClick?.(lead)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Editar
-                  </DropdownMenuItem>
-                )}
+              {canAssign && (
+                <DropdownMenuItem onClick={() => onAssign?.(lead)}>
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Atribuir
+                </DropdownMenuItem>
+              )}
 
-                {canAssign && (
-                  <DropdownMenuItem onClick={() => onAssign?.(lead)}>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Atribuir
-                  </DropdownMenuItem>
-                )}
-
-                {canMarkGainLoss &&
-                  lead.status !== "Gained" &&
-                  lead.status !== "Lost" && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => onMarkGainLoss?.(lead)}>
-                        <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
-                        Marcar Ganho/Perda
-                      </DropdownMenuItem>
-                    </>
-                  )}
-
-                {canDelete && (
+              {canMarkGainLoss &&
+                lead.status !== "Gained" &&
+                lead.status !== "Lost" && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => onDelete?.(lead)}
-                      className="text-destructive"
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Excluir
+                    <DropdownMenuItem onClick={() => onMarkGainLoss?.(lead)}>
+                      <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                      Marcar Ganho/Perda
                     </DropdownMenuItem>
                   </>
                 )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+
+              {canDelete && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => onDelete?.(lead)}
+                    className="text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Excluir
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardHeader>
-      <CardContent className="px-3 py-2 text-left whitespace-pre-wrap text-muted-foreground">
-        {lead.email || lead.phone || lead.content}
+      <CardContent className="px-3 py-2 text-left text-muted-foreground">
+        {/* Mostra Email e Telefone se disponíveis, em vez de um ou outro */}
+        <div className="flex flex-col gap-1 text-xs">
+          {lead.email && (
+            <div
+              className="flex items-center gap-2 overflow-hidden"
+              title={lead.email}
+            >
+              <Mail className="h-3 w-3 shrink-0" />
+              <span className="truncate">{lead.email}</span>
+            </div>
+          )}
+          {lead.phone && (
+            <div className="flex items-center gap-2" title={lead.phone}>
+              <Phone className="h-3 w-3 shrink-0" />
+              <span>{lead.phone}</span>
+            </div>
+          )}
+          {/* Fallback para conteúdo/obs se não houver contato */}
+          {!lead.email && !lead.phone && lead.content && (
+            <span className="line-clamp-2">{lead.content}</span>
+          )}
+        </div>
+
         <div className="flex justify-between items-center w-full mt-2">
           <Button
             size="icon"
@@ -202,7 +229,7 @@ export function LeadCard({
               </AvatarFallback>
             </Avatar>
           </Button>
-          <span>
+          <span className="text-sm font-semibold">
             {new Intl.NumberFormat("pt-BR", {
               style: "currency",
               currency: "BRL",
