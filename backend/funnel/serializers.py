@@ -144,6 +144,7 @@ class StageSerializer(OrderedModelSerializer, serializers.ModelSerializer):
     class Meta:
         model = Stage
         fields = "__all__"
+        read_only_fields = ['order']
 
 
 class FunnelSerializer(serializers.ModelSerializer):
@@ -182,6 +183,31 @@ class FunnelSerializer(serializers.ModelSerializer):
                 self.fields['team_ids'].queryset = queryset
                 if hasattr(self.fields['team_ids'], 'child_relation'):
                     self.fields['team_ids'].child_relation.queryset = queryset
+
+    def to_representation(self, instance):
+        """Filter stages based on user role and visibility permissions"""
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+
+        if request and hasattr(request.user, 'employee_profile'):
+            employee = request.user.employee_profile
+
+            # Filter stages based on role
+            if employee.role == 'sdr':
+                # SDRs only see stages visible to them
+                representation['stages'] = [
+                    stage for stage in representation['stages']
+                    if stage.get('visible_to_sdr', True)
+                ]
+            elif employee.role == 'closer':
+                # Closers only see stages visible to them
+                representation['stages'] = [
+                    stage for stage in representation['stages']
+                    if stage.get('visible_to_closer', True)
+                ]
+            # Owners, managers, and coordinators see all stages (no filtering needed)
+
+        return representation
 
     class Meta:
         model = Funnel

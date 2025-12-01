@@ -20,6 +20,7 @@ import type {
   CreateTeamFormValues,
   EditTeamFormValues,
 } from "@/components/modals/schemas/team.schema";
+import { getHierarchyFromRole } from "@/constants/roles";
 
 interface Team {
   id: number;
@@ -115,7 +116,7 @@ const Times = () => {
         return {
           id: String(member.id),
           name: member.name,
-          role: member.hierarchy,
+          role: getHierarchyFromRole(member.hierarchy),
           initials,
           color,
         };

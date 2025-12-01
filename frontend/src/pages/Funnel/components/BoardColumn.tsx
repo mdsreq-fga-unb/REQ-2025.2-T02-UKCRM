@@ -7,7 +7,7 @@ import { useDndContext, type UniqueIdentifier } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
-import { GripHorizontal, PencilIcon, PlusIcon, Check, X } from "lucide-react";
+import { GripHorizontal, PencilIcon, PlusIcon, Check, X, Settings } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import type { ApiMember } from "@/pages/Membros/api/members.api";
 import type { Column, ColumnDragData, Lead } from "../types/kanban.types";
@@ -27,6 +27,7 @@ interface BoardColumnProps {
   onLeadDelete: (lead: Lead) => void;
   onMarkGainLoss: (lead: Lead) => void;
   onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
+  onStageSettings?: (columnId: UniqueIdentifier) => void;
 }
 
 export function BoardColumn({
@@ -41,6 +42,7 @@ export function BoardColumn({
   onLeadDelete,
   onMarkGainLoss,
   onEditColumnName,
+  onStageSettings,
 }: BoardColumnProps) {
   const { hasPermission, hasAnyPermission } = usePermissions();
   const [isEditingName, setIsEditingName] = useState(false);
@@ -53,6 +55,9 @@ export function BoardColumn({
   // Permission checks
   const canEditStepName = hasAnyPermission([
     "funnel-step:edit:assigned",
+    "funnel-step:edit:all",
+  ]);
+  const canManageStage = hasAnyPermission([
     "funnel-step:edit:all",
   ]);
   const canAddLead = hasPermission("lead:create");
@@ -163,6 +168,16 @@ export function BoardColumn({
                   onClick={() => setIsEditingName(true)}
                 >
                   <PencilIcon className="h-4 w-4" />
+                </Button>
+              )}
+              {canManageStage && onStageSettings && (
+                <Button
+                  className="text-muted-foreground h-7 w-7"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onStageSettings(column.id)}
+                >
+                  <Settings className="h-4 w-4" />
                 </Button>
               )}
             </>

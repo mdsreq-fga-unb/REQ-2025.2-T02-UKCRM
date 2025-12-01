@@ -29,10 +29,13 @@ import {
   useCreateFunnel,
   useCreateStage,
   useDeleteFunnel,
+  useDeleteStage,
   useFunnelDetails,
   useFunnelsList,
   useMoveStage,
   useUpdateFunnel,
+  useUpdateStageName,
+  useUpdateStageVisibility,
 } from "./useFunnels";
 
 import {
@@ -70,6 +73,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const [filterTerm, setFilterTerm] = useState("");
   const [sortCriteria, setSortCriteria] = useState<string | null>(null);
   const [selectedFunnelId, setSelectedFunnelId] = useState<string | null>(null);
+  const [stageSettingsId, setStageSettingsId] = useState<UniqueIdentifier | null>(null);
 
   // LEITURA
 
@@ -178,6 +182,14 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
 
   const { mutate: createStage, isPending: isCreatingStage } =
     useCreateStage(selectedFunnelId);
+
+  const { mutate: deleteStage, isPending: isDeletingStage } =
+    useDeleteStage(selectedFunnelId);
+
+  const { mutate: updateStageName } = useUpdateStageName(selectedFunnelId);
+
+  const { mutate: updateStageVisibility, isPending: isUpdatingStageVisibility } =
+    useUpdateStageVisibility(selectedFunnelId);
 
   // DADOS
 
@@ -341,6 +353,39 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     [markingGainLossLead, markGainLoss],
   );
 
+  const handleEditColumnName = useCallback(
+    (columnId: UniqueIdentifier, newName: string) => {
+      updateStageName({ id: extractId(columnId), name: newName });
+    },
+    [updateStageName],
+  );
+
+  const handleStageSettings = useCallback(
+    (columnId: UniqueIdentifier) => {
+      setStageSettingsId(columnId);
+    },
+    [],
+  );
+
+  const handleSaveStageVisibility = useCallback(
+    (stageId: number, visibility: { visible_to_sdr: boolean; visible_to_closer: boolean }) => {
+      updateStageVisibility({ id: stageId, visibility });
+    },
+    [updateStageVisibility],
+  );
+
+  const handleDeleteStage = useCallback(
+    (stageId: number) => {
+      deleteStage(stageId);
+    },
+    [deleteStage],
+  );
+
+  const currentStageSettings = useMemo(() => {
+    if (!stageSettingsId) return null;
+    return columns.find((col: Column) => col.id === stageSettingsId);
+  }, [stageSettingsId, columns]);
+
   // RETORNO
   return useMemo(
     () => ({
@@ -455,8 +500,21 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onLeadAssign: setAssigningLead,
         onLeadDelete: setDeletingLead,
         onMarkGainLoss: setMarkingGainLossLead,
+        onEditColumnName: handleEditColumnName,
+        onStageSettings: handleStageSettings,
         members: (membersData as ApiMember[]) || [],
         isLoading: isLoadingFunnelDetails || isCreatingLead || isCreatingStage,
+      },
+      stageSettingsDialog: {
+        open: !!currentStageSettings,
+        stageName: currentStageSettings?.title || "",
+        stageId: currentStageSettings ? extractId(currentStageSettings.id) : 0,
+        visibleToSdr: currentStageSettings?.visible_to_sdr ?? true,
+        visibleToCloser: currentStageSettings?.visible_to_closer ?? true,
+        onOpenChange: (isOpen: boolean) => !isOpen && setStageSettingsId(null),
+        onSaveVisibility: handleSaveStageVisibility,
+        onDelete: handleDeleteStage,
+        isPending: isUpdatingStageVisibility || isDeletingStage,
       },
     }),
     [
@@ -499,6 +557,13 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       handleLeadDrop,
       handleAddLead,
       handleAddColumn,
+      handleEditColumnName,
+      handleStageSettings,
+      currentStageSettings,
+      handleSaveStageVisibility,
+      handleDeleteStage,
+      isUpdatingStageVisibility,
+      isDeletingStage,
     ],
   );
 }

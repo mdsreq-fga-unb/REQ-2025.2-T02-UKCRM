@@ -32,6 +32,7 @@ export type KanbanBoardProps = {
   onLeadDelete: (lead: Lead) => void;
   onMarkGainLoss: (lead: Lead) => void;
   onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
+  onStageSettings?: (columnId: UniqueIdentifier) => void;
 };
 
 export function KanbanBoard({
@@ -50,6 +51,7 @@ export function KanbanBoard({
   onLeadDelete,
   onMarkGainLoss,
   onEditColumnName,
+  onStageSettings,
 }: KanbanBoardProps) {
   const { hasPermission } = usePermissions();
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
@@ -87,6 +89,7 @@ export function KanbanBoard({
               onLeadDelete={onLeadDelete}
               onMarkGainLoss={onMarkGainLoss}
               onEditColumnName={onEditColumnName}
+              onStageSettings={onStageSettings}
             />
           ))}
         </SortableContext>

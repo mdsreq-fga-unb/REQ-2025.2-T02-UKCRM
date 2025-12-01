@@ -139,3 +139,44 @@ export const useMoveStage = (funnelId: string | null) => {
     },
   });
 };
+
+export const useDeleteStage = (funnelId: string | null) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: funnelApi.deleteStage,
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.funnels.detail(funnelId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.funnels.statistics(funnelId),
+      });
+    },
+  });
+};
+
+export const useUpdateStageVisibility = (funnelId: string | null) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, visibility }: { id: number; visibility: { visible_to_sdr?: boolean; visible_to_closer?: boolean } }) =>
+      funnelApi.updateStageVisibility(id, visibility),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.funnels.detail(funnelId),
+      });
+    },
+  });
+};
+
+export const useUpdateStageName = (funnelId: string | null) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, name }: { id: number; name: string }) =>
+      funnelApi.updateStage({ id, name }),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.funnels.detail(funnelId),
+      });
+    },
+  });
+};

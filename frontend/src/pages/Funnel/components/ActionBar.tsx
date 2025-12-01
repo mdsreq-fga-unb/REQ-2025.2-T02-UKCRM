@@ -2,7 +2,6 @@
 
 import CreateButton from "@/components/CreateButton";
 import DeleteButton from "@/components/DeleteButton";
-import { DoRedo } from "@/components/DoRedo";
 import FilterButton from "@/components/FilterButton";
 import SelectButton from "@/components/SelectButton";
 import { Button } from "@/components/ui/button";
@@ -93,7 +92,6 @@ export default function ActionBar({
           <CreateButton onClick={onCreateFunnelClick} label="Criar Funil" />
         )}
       </ButtonGroup>
-      <DoRedo />
       <SelectButton
         className="w-50"
         placeholder="Ordenar por"

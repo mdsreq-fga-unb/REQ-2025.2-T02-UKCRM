@@ -14,6 +14,7 @@ import { Search } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMembers } from "../hooks/useMembers";
 import type { Lead } from "../types/kanban.types";
+import { getHierarchyFromRole } from "@/constants/roles";
 
 interface AssignLeadDialogProps {
   open: boolean;
@@ -50,7 +51,7 @@ export function AssignLeadDialog({
   const filteredMembers = members.filter(
     (m) =>
       (m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        m.role.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        getHierarchyFromRole(m.role).toLowerCase().includes(searchTerm.toLowerCase())) &&
       (!allowedMemberIds || allowedMemberIds.includes(m.id)),
   );
 
@@ -133,7 +134,7 @@ export function AssignLeadDialog({
                       <div>
                         <p className="text-sm font-medium">{member.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          {member.role}
+                          {getHierarchyFromRole(member.role)}
                         </p>
                       </div>
                     </div>

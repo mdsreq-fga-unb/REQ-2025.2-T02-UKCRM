@@ -19,6 +19,7 @@ import type { Organization } from "./types/organizations.types";
 import { CreateOrganizationFormValues } from "@/components/modals/schemas/organization.schema";
 import CreateButton from "@/components/CreateButton";
 import SelectButton from "@/components/SelectButton";
+import { getHierarchyFromRole } from "@/constants/roles";
 
 interface OrganizationMember {
   id: number;
@@ -139,7 +140,7 @@ const Organizacoes = () => {
         id: member.id,
         name: member.name,
         email: member.email,
-        role: member.hierarchy,
+        role: getHierarchyFromRole(member.hierarchy),
         initials: getInitials(member.name),
         color: getColor(member.id),
         organizationId: member.organization,

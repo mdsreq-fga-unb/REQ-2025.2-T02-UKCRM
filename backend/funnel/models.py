@@ -33,6 +33,8 @@ class Funnel(models.Model):
 class Stage(OrderedModel):
     name = models.CharField(max_length=100)
     funnel = models.ForeignKey(Funnel, related_name="stages", on_delete=models.CASCADE)
+    visible_to_sdr = models.BooleanField(default=True, verbose_name="Visível para SDR")
+    visible_to_closer = models.BooleanField(default=True, verbose_name="Visível para Closer")
 
     order_with_respect_to = "funnel"
 

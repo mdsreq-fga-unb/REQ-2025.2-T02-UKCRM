@@ -8,6 +8,8 @@ export interface Column {
   title: string;
   subtitle_left?: string;
   subtitle_right?: string;
+  visible_to_sdr?: boolean;
+  visible_to_closer?: boolean;
 }
 
 export type ColumnId = Column["id"];

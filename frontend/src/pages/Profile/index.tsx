@@ -22,15 +22,7 @@ import {
   profileSchema,
   type ProfileFormValues,
 } from "./schemas/profile.schema";
-
-const ROLE_LABELS: Record<string, string> = {
-  owner: "Proprietário",
-  manager: "Gerente",
-  coordinator: "Coordenador",
-  sdr: "SDR",
-  closer: "Closer",
-  Admin: "Administrador",
-};
+import { getRoleLabel } from "@/constants/roles";
 
 const Profile = () => {
   const { data: profile, isLoading: isLoadingProfile } = useProfile();
@@ -238,7 +230,7 @@ const Profile = () => {
                           <Shield className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                           <Input
                             disabled
-                            value={ROLE_LABELS[profile.role] || profile.role}
+                            value={getRoleLabel(profile.role)}
                             className="pl-9 bg-muted/50"
                           />
                         </div>

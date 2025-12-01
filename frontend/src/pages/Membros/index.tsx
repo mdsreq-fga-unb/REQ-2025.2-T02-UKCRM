@@ -20,6 +20,7 @@ import type {
   CreateMemberFormValues,
   EditMemberFormValues,
 } from "@/components/modals/schemas/member.schema";
+import { HIERARCHY_OPTIONS, HIERARCHY_TO_ROLE_MAP, getHierarchyFromRole } from "@/constants/roles";
 
 interface Member {
   id: number;
@@ -28,14 +29,6 @@ interface Member {
   hierarquia: string;
   dataEntrada: string;
 }
-
-const hierarchyOptions = [
-  "Closer",
-  "SDR",
-  "Coordenador de Vendas",
-  "Gerente",
-  "Diretor",
-];
 
 const columns: Column<Member>[] = [
   { key: "nome", header: "Nome do Membro" },
@@ -51,15 +44,6 @@ const sortOptions = [
   { value: "data-desc", label: "Mais Recentes" },
   { value: "data-asc", label: "Mais Antigos" },
 ];
-
-// Map frontend hierarchy values to backend role values
-const hierarchyToRoleMap: Record<string, string> = {
-  Closer: "closer",
-  SDR: "sdr",
-  "Coordenador de Vendas": "coordinator",
-  Gerente: "manager",
-  Diretor: "owner",
-};
 
 const Membros = () => {
   const { hasPermission } = usePermissions();
@@ -100,7 +84,7 @@ const Membros = () => {
         id: member.id,
         nome: member.name,
         email: member.email,
-        hierarquia: member.hierarchy,
+        hierarquia: getHierarchyFromRole(member.hierarchy),
         dataEntrada: new Date(member.joined_at).toLocaleDateString("pt-BR"),
       }),
     );
@@ -119,13 +103,13 @@ const Membros = () => {
           return b.nome.localeCompare(a.nome);
         case "hierarquia-asc":
           return (
-            hierarchyOptions.indexOf(a.hierarquia) -
-            hierarchyOptions.indexOf(b.hierarquia)
+            HIERARCHY_OPTIONS.indexOf(a.hierarquia as any) -
+            HIERARCHY_OPTIONS.indexOf(b.hierarquia as any)
           );
         case "hierarquia-desc":
           return (
-            hierarchyOptions.indexOf(b.hierarquia) -
-            hierarchyOptions.indexOf(a.hierarquia)
+            HIERARCHY_OPTIONS.indexOf(b.hierarquia as any) -
+            HIERARCHY_OPTIONS.indexOf(a.hierarquia as any)
           );
         case "data-desc":
         case "data-asc": {
@@ -158,7 +142,7 @@ const Membros = () => {
       alert("Erro: organização não encontrada");
       return;
     }
-    const role = hierarchyToRoleMap[data.hierarchy];
+    const role = HIERARCHY_TO_ROLE_MAP[data.hierarchy];
     if (!role) {
       alert("Erro: hierarquia inválida");
       return;

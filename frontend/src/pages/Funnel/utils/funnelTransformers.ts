@@ -64,6 +64,8 @@ export function mapApiDetailsToKanban(data: ApiFunnelDetails): {
         title: stage.name,
         subtitle_left: "",
         subtitle_right: "",
+        visible_to_sdr: stage.visible_to_sdr,
+        visible_to_closer: stage.visible_to_closer,
       }),
     );
 

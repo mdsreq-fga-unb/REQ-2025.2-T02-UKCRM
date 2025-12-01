@@ -1,12 +1,7 @@
 import { z } from "zod";
+import { HIERARCHY_OPTIONS } from "@/constants/roles";
 
-export const hierarchyOptions = [
-  "Closer",
-  "SDR",
-  "Coordenador de Vendas",
-  "Gerente",
-  "Diretor",
-] as const;
+export const hierarchyOptions = HIERARCHY_OPTIONS;
 
 export const createMemberSchema = z
   .object({

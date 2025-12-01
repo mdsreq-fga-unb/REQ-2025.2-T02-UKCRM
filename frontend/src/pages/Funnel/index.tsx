@@ -7,6 +7,7 @@ import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
 import { DeleteLeadDialog } from "./components/DeleteLeadDialog";
 import { EditLeadDialog } from "./components/EditLeadDialog";
 import { MarkGainLossDialog } from "./components/MarkGainLossDialog";
+import { StageSettingsDialog } from "./components/StageSettingsDialog";
 import { KanbanBoard } from "./components/KanbanBoard";
 import { defaultCols, initialLeads } from "./data/defaultKanbanData";
 import { useFunnel } from "./hooks/useFunnel";
@@ -23,6 +24,7 @@ function Funnel() {
     assignLeadDialog,
     deleteLeadDialog,
     markGainLossDialog,
+    stageSettingsDialog,
   } = useFunnel(defaultCols, initialLeads);
 
   return (
@@ -57,6 +59,7 @@ function Funnel() {
       <AssignLeadDialog {...assignLeadDialog} />
       <DeleteLeadDialog {...deleteLeadDialog} />
       <MarkGainLossDialog {...markGainLossDialog} />
+      <StageSettingsDialog {...stageSettingsDialog} />
     </AppShell>
   );
 }

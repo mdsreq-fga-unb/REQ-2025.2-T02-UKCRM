@@ -10,6 +10,8 @@ export type ApiStage = {
   order: number;
   funnel: number;
   leads: ApiLead[];
+  visible_to_sdr: boolean;
+  visible_to_closer: boolean;
 };
 
 export type ApiFunnelDetails = {
@@ -33,11 +35,16 @@ export type ApiStageCreatePayload = {
   name: string;
   funnel: number;
   order: number;
+  visible_to_sdr?: boolean;
+  visible_to_closer?: boolean;
 };
 
 export type ApiStageUpdatePayload = {
   id: number;
-  order: number;
+  order?: number;
+  name?: string;
+  visible_to_sdr?: boolean;
+  visible_to_closer?: boolean;
 };
 
 // FUNILS
@@ -84,9 +91,18 @@ export const createStage = (payload: ApiStageCreatePayload) =>
   apiClient<ApiStage>("/api/stages/", { method: "POST", body: payload });
 
 export const updateStage = (payload: ApiStageUpdatePayload) => {
-  const { id, order } = payload;
+  const { id, ...rest } = payload;
   return apiClient<ApiStage>(`/api/stages/${id}/`, {
     method: "PATCH",
-    body: { order },
+    body: rest,
   });
 };
+
+export const deleteStage = (id: number) =>
+  apiClient(`/api/stages/${id}/`, { method: "DELETE" });
+
+export const updateStageVisibility = (id: number, visibility: { visible_to_sdr?: boolean; visible_to_closer?: boolean }) =>
+  apiClient<ApiStage>(`/api/stages/${id}/visibility/`, {
+    method: "PATCH",
+    body: visibility,
+  });

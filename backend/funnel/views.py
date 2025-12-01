@@ -170,21 +170,138 @@ class StageViewSet(viewsets.ModelViewSet):
     serializer_class = StageSerializer
 
     def get_queryset(self):
-        """Filter stages based on user role"""
+        """Filter stages based on user role and visibility permissions"""
         user = self.request.user
         if hasattr(user, 'employee_profile'):
             employee = user.employee_profile
-            # Owners and managers can see all stages from their organization
-            if employee.role in ['owner', 'manager']:
+
+            # Owners, managers, and coordinators can see all stages from their organization
+            if employee.role in ['owner', 'manager', 'coordinator']:
                 return Stage.objects.filter(
                     funnel__teams__organization=employee.organization
                 ).distinct()
-            # Other roles can only see stages where they're a team member
+
+            # SDRs can only see stages marked as visible to SDR
+            elif employee.role == 'sdr':
+                return Stage.objects.filter(
+                    funnel__teams__members=employee,
+                    visible_to_sdr=True
+                ).distinct()
+
+            # Closers can only see stages marked as visible to Closer
+            elif employee.role == 'closer':
+                return Stage.objects.filter(
+                    funnel__teams__members=employee,
+                    visible_to_closer=True
+                ).distinct()
+
+            # Other roles can see stages where they're a team member
             else:
                 return Stage.objects.filter(
                     funnel__teams__members=employee
                 ).distinct()
         return Stage.objects.none()
+
+    def destroy(self, request, *args, **kwargs):
+        """Delete a stage - only allowed for Manager and Owner"""
+        user = request.user
+        if not hasattr(user, 'employee_profile'):
+            return Response(
+                {'error': 'Você precisa ter um perfil de funcionário para deletar etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        employee = user.employee_profile
+        if employee.role not in ['owner', 'manager']:
+            return Response(
+                {'error': 'Apenas Proprietários e Gerentes podem deletar etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().destroy(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """Update a stage - only allowed for Manager and Owner"""
+        user = request.user
+        if not hasattr(user, 'employee_profile'):
+            return Response(
+                {'error': 'Você precisa ter um perfil de funcionário para editar etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        employee = user.employee_profile
+        if employee.role not in ['owner', 'manager']:
+            return Response(
+                {'error': 'Apenas Proprietários e Gerentes podem editar etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        """Partial update a stage - only allowed for Manager and Owner"""
+        user = request.user
+        if not hasattr(user, 'employee_profile'):
+            return Response(
+                {'error': 'Você precisa ter um perfil de funcionário para editar etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        employee = user.employee_profile
+        if employee.role not in ['owner', 'manager']:
+            return Response(
+                {'error': 'Apenas Proprietários e Gerentes podem editar etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().partial_update(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        """Create a stage - only allowed for Manager and Owner"""
+        user = request.user
+        if not hasattr(user, 'employee_profile'):
+            return Response(
+                {'error': 'Você precisa ter um perfil de funcionário para criar etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        employee = user.employee_profile
+        if employee.role not in ['owner', 'manager']:
+            return Response(
+                {'error': 'Apenas Proprietários e Gerentes podem criar etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().create(request, *args, **kwargs)
+
+    @action(detail=True, methods=['patch'], url_path='visibility')
+    def update_visibility(self, request, pk=None):
+        """Update stage visibility settings - only allowed for Manager and Owner"""
+        user = request.user
+        if not hasattr(user, 'employee_profile'):
+            return Response(
+                {'error': 'Você precisa ter um perfil de funcionário para modificar visibilidade de etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        employee = user.employee_profile
+        if employee.role not in ['owner', 'manager']:
+            return Response(
+                {'error': 'Apenas Proprietários e Gerentes podem modificar a visibilidade de etapas.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        stage = self.get_object()
+
+        # Update visibility fields if provided
+        if 'visible_to_sdr' in request.data:
+            stage.visible_to_sdr = request.data['visible_to_sdr']
+        if 'visible_to_closer' in request.data:
+            stage.visible_to_closer = request.data['visible_to_closer']
+
+        stage.save()
+        serializer = self.get_serializer(stage)
+        return Response(serializer.data)
 
 
 class LeadViewSet(viewsets.ModelViewSet):
