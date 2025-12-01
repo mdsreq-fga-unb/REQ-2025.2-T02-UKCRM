@@ -5,5 +5,7 @@ export const queryKeys = {
     list: () => [...queryKeys.funnels.all, "list"] as const,
     detail: (id: string | number | null | undefined) =>
       [...queryKeys.funnels.all, "detail", id] as const,
+    statistics: (id: string | number | null | undefined) =>
+      [...queryKeys.funnels.all, "statistics", id] as const,
   },
 };

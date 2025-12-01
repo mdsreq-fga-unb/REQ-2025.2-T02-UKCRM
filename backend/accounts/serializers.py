@@ -45,7 +45,7 @@ class InviteUserSerializer(serializers.Serializer):
         return value
 
     def validate_organization_id(self, value):
-        """Check if organization exists and user has permission to invite to it"""
+        """Check if organization exists"""
         if not Organization.objects.filter(id=value).exists():
             raise serializers.ValidationError("Organização não encontrada.")
 
@@ -78,16 +78,9 @@ class InviteUserSerializer(serializers.Serializer):
 class UpdateEmployeeSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255, required=False)
     password = serializers.CharField(write_only=True, required=False, min_length=8)
-    organization_id = serializers.IntegerField(required=False)
-
-    def validate_organization_id(self, value):
-        """Check if organization exists"""
-        if not Organization.objects.filter(id=value).exists():
-            raise serializers.ValidationError("Organização não encontrada.")
-        return value
 
     def update(self, instance, validated_data):
-        """Update employee name, password, and/or organization"""
+        """Update employee name and/or password"""
         user = instance.user
 
         # Update name if provided

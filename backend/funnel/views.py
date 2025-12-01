@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
+from django.db.models import Count, Sum, Q
 
 from .models import Funnel, Lead, SalesTeam, Stage
 from .serializers import (
@@ -98,6 +99,70 @@ class FunnelViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        """Update a funnel (PATCH or PUT)"""
+        print(f"Updating funnel with data: {request.data}", flush=True)
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_path='statistics')
+    def statistics(self, request, pk=None):
+        """Get statistics for a funnel"""
+        funnel = self.get_object()
+
+        # Get all leads in this funnel
+        leads = Lead.objects.filter(stage__funnel=funnel)
+
+        # Count total leads
+        total_leads = leads.count()
+
+        # Count stages
+        total_stages = funnel.stages.count()
+
+        # Calculate total gains (sum of gain_loss_value where status is Gained)
+        total_gains = leads.filter(status='Gained').aggregate(
+            total=Sum('gain_loss_value')
+        )['total'] or 0
+
+        # Calculate total losses (sum of gain_loss_value where status is Lost)
+        total_losses = leads.filter(status='Lost').aggregate(
+            total=Sum('gain_loss_value')
+        )['total'] or 0
+
+        # Net gain/loss
+        net_gain_loss = total_gains - total_losses
+
+        # Count leads by status
+        active_leads = leads.filter(status='Active').count()
+        gained_leads = leads.filter(status='Gained').count()
+        lost_leads = leads.filter(status='Lost').count()
+
+        # Calculate conversion rate
+        conversion_rate = (gained_leads / total_leads * 100) if total_leads > 0 else 0
+
+        # Get team count
+        team_count = funnel.teams.count()
+
+        return Response({
+            'id': funnel.id,
+            'name': funnel.name,
+            'total_leads': total_leads,
+            'active_leads': active_leads,
+            'gained_leads': gained_leads,
+            'lost_leads': lost_leads,
+            'total_stages': total_stages,
+            'total_gains': float(total_gains),
+            'total_losses': float(total_losses),
+            'net_gain_loss': float(net_gain_loss),
+            'conversion_rate': round(conversion_rate, 2),
+            'team_count': team_count,
+            'teams': [{'id': team.id, 'name': team.name} for team in funnel.teams.all()],
+        })
 
 
 class StageViewSet(viewsets.ModelViewSet):

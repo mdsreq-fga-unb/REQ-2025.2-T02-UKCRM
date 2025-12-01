@@ -41,6 +41,24 @@ export const useCreateFunnel = (onSuccess?: (data: ApiFunnel) => void) => {
   });
 };
 
+export const useUpdateFunnel = (onSuccess?: (data: ApiFunnel) => void) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, formData }: { id: number; formData: FunnelFormValues }) => {
+      return funnelApi.updateFunnel(id, {
+        name: formData.funnelName,
+        team_ids: formData.teamIds.map((id) => parseInt(id, 10)),
+      });
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.funnels.list() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.funnels.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.funnels.statistics(data.id) });
+      onSuccess?.(data);
+    },
+  });
+};
+
 export const useDeleteFunnel = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation({
