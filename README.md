@@ -1,4 +1,3 @@
-
 # REQ-2025.2-T02-UKCRM
 
 ![Contributors](https://img.shields.io/github/contributors/mdsreq-fga-unb/REQ-2025.2-T02-UKCRM)
@@ -28,7 +27,7 @@ O UKCRM foi projetado para otimizar a gestão de relacionamento com o cliente, o
     </td>
     <td align="center">
       <a href="https://www.django-rest-framework.org/" target="_blank" rel="noreferrer">
-        <img src="https://www.django-rest-framework.org/img/logo.png" alt="drf" width="40" height="40"/>
+        <img src="https://www.django-rest-framework.org/img/logo.png" alt="drf" width="40" height="40"/>    
       </a>
       <br>DRF
     </td>
@@ -114,8 +113,6 @@ O UKCRM foi projetado para otimizar a gestão de relacionamento com o cliente, o
     </tr>
   </tbody>
 </table>
-
-
 
 # 🚀 Rodando o Projeto Localmente
 
@@ -208,3 +205,20 @@ A maneira mais simples de rodar o projeto é utilizando o Docker.
     npm run dev
     ```
     A aplicação estará disponível em `http://localhost:5173`.
+
+## 🚑 Solução de Problemas (Troubleshooting)
+
+### Erro: `column <nome_da_coluna> does not exist`
+
+Este erro geralmente ocorre quando um novo campo é adicionado a um modelo Django, mas a alteração correspondente ainda não foi aplicada ao banco de dados.
+
+**Solução:**
+
+1.  **Certifique-se de que os contêineres Docker estão em execução.**
+2.  **Abra um novo terminal e aplique as migrações do banco de dados com o seguinte comando:**
+
+    ```bash
+    docker compose exec backend python manage.py migrate
+    ```
+
+Isso sincronizará o banco de dados com os modelos Django, criando as tabelas ou colunas ausentes.
