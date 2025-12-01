@@ -9,7 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Search, Check } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Search } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMembers } from "../hooks/useMembers";
 import type { Lead } from "../types/kanban.types";
@@ -103,7 +104,7 @@ export function AssignLeadDialog({
             />
           </div>
 
-          <ScrollArea className="h-[300px] rounded-md border p-2">
+          <ScrollArea className="h-[300px] rounded-md border border-border">
             {isLoading ? (
               <div className="text-center py-4 text-muted-foreground">
                 Carregando...
@@ -113,34 +114,33 @@ export function AssignLeadDialog({
                 Nenhum membro encontrado
               </div>
             ) : (
-              <div className="space-y-1">
+              <div className="p-2 space-y-1">
                 {filteredMembers.map((member) => (
                   <div
                     key={member.id}
-                    className={`flex items-center justify-between rounded-md p-2 cursor-pointer hover:bg-muted/50 transition-colors ${selectedMemberId === member.id ? "bg-muted ring-1 ring-primary" : ""}`}
+                    className="flex items-center justify-between rounded-md p-3 hover:bg-muted/50 cursor-pointer"
                     onClick={() => setSelectedMemberId(member.id)}
                   >
                     <div className="flex items-center gap-3">
-                      <Avatar className="h-8 w-8">
+                      <Avatar className="h-9 w-9">
                         <AvatarFallback
                           style={{ backgroundColor: getColor(member.name) }}
-                          className="text-white text-xs"
+                          className="text-xs font-medium text-white"
                         >
                           {getInitials(member.name)}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium leading-none">
-                          {member.name}
-                        </p>
+                        <p className="text-sm font-medium">{member.name}</p>
                         <p className="text-xs text-muted-foreground">
                           {member.role}
                         </p>
                       </div>
                     </div>
-                    {selectedMemberId === member.id && (
-                      <Check className="h-4 w-4 text-primary" />
-                    )}
+                    <Checkbox
+                      checked={selectedMemberId === member.id}
+                      onCheckedChange={() => setSelectedMemberId(member.id)}
+                    />
                   </div>
                 ))}
               </div>

@@ -136,7 +136,7 @@ A maneira mais simples de rodar o projeto é utilizando o Docker.
 
 2.  **Inicie os containers:**
     ```bash
-    docker-compose up --build
+    docker compose up --build
     ```
 
 3.  **Acesse as aplicações:**
