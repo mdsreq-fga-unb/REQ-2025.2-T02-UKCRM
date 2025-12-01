@@ -1,6 +1,8 @@
 import { type Active, type DataRef, type Over } from "@dnd-kit/core";
-import { type ColumnDragData } from "@/pages/Funnel/components/BoardColumn";
-import { type LeadDragData } from "@/pages/Funnel/components/LeadCard";
+import {
+  type ColumnDragData,
+  type LeadDragData,
+} from "@/pages/Funnel/types/kanban.types";
 
 type DraggableData = ColumnDragData | LeadDragData;
 

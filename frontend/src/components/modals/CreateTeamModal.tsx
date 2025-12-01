@@ -13,6 +13,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+import CreateButton from "@/components/CreateButton";
+
 interface Member {
   id: string;
   name: string;
@@ -41,7 +43,7 @@ export function CreateTeamModal({
     setSelectedIds((prev) =>
       prev.includes(memberId)
         ? prev.filter((id) => id !== memberId)
-        : [...prev, memberId]
+        : [...prev, memberId],
     );
   };
 
@@ -116,9 +118,11 @@ export function CreateTeamModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSave} disabled={!teamName}>
-            Salvar Time
-          </Button>
+          <CreateButton
+            label="Salvar Time"
+            onClick={handleSave}
+            disabled={!teamName}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

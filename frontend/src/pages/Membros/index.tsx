@@ -1,12 +1,17 @@
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
-import { DataTable, Column } from "@/components/ui/data-table";
+import { DataTable, type Column } from "@/components/ui/data-table";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import { useAuthContext } from "@/auth/context/AuthContext";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useMembers, useCreateMember, useUpdateMember, useDeleteMember } from "./hooks/useMembers";
+import {
+  useMembers,
+  useCreateMember,
+  useUpdateMember,
+  useDeleteMember,
+} from "./hooks/useMembers";
 import { shouldUseMock } from "@/config/features";
 import { featureFlags } from "@/config/features";
 import {
@@ -27,6 +32,7 @@ import {
 import { PasswordInput } from "@/components/ui/password-input";
 import { DeleteMemberModal } from "@/components/modals/DeleteMemberModal";
 import { Send } from "lucide-react";
+import CreateButton from "@/components/CreateButton";
 
 interface Member {
   id: number;
@@ -39,7 +45,12 @@ interface Member {
 const mockMembers: Member[] = [
   { id: 1, nome: "Ugi Nam", hierarquia: "Closer", dataEntrada: "14/10/2025" },
   { id: 2, nome: "Brenda Silva", hierarquia: "SDR", dataEntrada: "12/10/2025" },
-  { id: 3, nome: "Luis Terra", hierarquia: "Coordenador de Vendas", dataEntrada: "10/10/2025" },
+  {
+    id: 3,
+    nome: "Luis Terra",
+    hierarquia: "Coordenador de Vendas",
+    dataEntrada: "10/10/2025",
+  },
 ];
 
 const hierarchyOptions = [
@@ -58,11 +69,11 @@ const columns: Column<Member>[] = [
 
 // Map frontend hierarchy values to backend role values
 const hierarchyToRoleMap: Record<string, string> = {
-  "Closer": "closer",
-  "SDR": "sdr",
+  Closer: "closer",
+  SDR: "sdr",
   "Coordenador de Vendas": "coordinator",
-  "Gerente": "manager",
-  "Diretor": "owner",
+  Gerente: "manager",
+  Diretor: "owner",
 };
 
 const Membros = () => {
@@ -72,7 +83,9 @@ const Membros = () => {
 
   // Backend integration
   const { data: apiMembersData } = useMembers();
-  const { mutate: createMemberMutation } = useCreateMember(() => setIsCreateOpen(false));
+  const { mutate: createMemberMutation } = useCreateMember(() =>
+    setIsCreateOpen(false),
+  );
   const { mutate: updateMemberMutation } = useUpdateMember(() => {
     setIsEditOpen(false);
     setSelectedMember(null);
@@ -106,17 +119,25 @@ const Membros = () => {
       return mockMembers;
     }
     if (!apiMembersData) return [];
-    return apiMembersData.map((member: { id: number; name: string; email: string; hierarchy: string; joined_at: string }) => ({
-      id: member.id,
-      nome: member.name,
-      email: member.email,
-      hierarquia: member.hierarchy,
-      dataEntrada: new Date(member.joined_at).toLocaleDateString("pt-BR"),
-    }));
+    return apiMembersData.map(
+      (member: {
+        id: number;
+        name: string;
+        email: string;
+        hierarchy: string;
+        joined_at: string;
+      }) => ({
+        id: member.id,
+        nome: member.name,
+        email: member.email,
+        hierarquia: member.hierarchy,
+        dataEntrada: new Date(member.joined_at).toLocaleDateString("pt-BR"),
+      }),
+    );
   }, [useMockData, apiMembersData]);
 
   const filteredMembers = members.filter((member) =>
-    member.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    member.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleEdit = (member: Member) => {
@@ -154,7 +175,9 @@ const Membros = () => {
         {/* Sidebar Label */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <div className="h-4 w-4 rounded bg-primary" />
-          <span className="font-medium text-foreground">Gerenciamento de Membros</span>
+          <span className="font-medium text-foreground">
+            Gerenciamento de Membros
+          </span>
         </div>
 
         {/* Header */}
@@ -169,9 +192,10 @@ const Membros = () => {
             />
           </div>
           {canCreateMember && (
-            <Button onClick={() => setIsCreateOpen(true)}>
-              Novo Membro
-            </Button>
+            <CreateButton
+              label="Novo Membro"
+              onClick={() => setIsCreateOpen(true)}
+            />
           )}
         </div>
 
@@ -185,12 +209,21 @@ const Membros = () => {
       </div>
 
       {/* Create Member Modal */}
-      <Dialog open={isCreateOpen} onOpenChange={(open: boolean) => {
-        setIsCreateOpen(open);
-        if (!open) {
-          setFormData({ name: "", email: "", hierarchy: "", password: "", confirmPassword: "" });
-        }
-      }}>
+      <Dialog
+        open={isCreateOpen}
+        onOpenChange={(open: boolean) => {
+          setIsCreateOpen(open);
+          if (!open) {
+            setFormData({
+              name: "",
+              email: "",
+              hierarchy: "",
+              password: "",
+              confirmPassword: "",
+            });
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-center text-lg font-semibold">
@@ -205,11 +238,15 @@ const Membros = () => {
             <Input
               placeholder="Nome Completo"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
             />
             <Select
               value={formData.hierarchy}
-              onValueChange={(value: string) => setFormData({ ...formData, hierarchy: value })}
+              onValueChange={(value: string) =>
+                setFormData({ ...formData, hierarchy: value })
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Nível de Hierarquia" />
@@ -226,18 +263,24 @@ const Membros = () => {
               type="email"
               placeholder="E-mail"
               value={formData.email}
-              onChange={(e: any) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
             />
             <PasswordInput
               placeholder="Senha"
               value={formData.password}
-              onChange={(e: any) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
             <Input
               type="password"
               placeholder="Confirmar Senha"
               value={formData.confirmPassword}
-              onChange={(e: any) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
             />
           </div>
 
@@ -284,13 +327,16 @@ const Membros = () => {
       </Dialog>
 
       {/* Edit Member Modal */}
-      <Dialog open={isEditOpen} onOpenChange={(open: boolean) => {
-        setIsEditOpen(open);
-        if (!open) {
-          setEditFormData({ name: "", password: "", confirmPassword: "" });
-          setSelectedMember(null);
-        }
-      }}>
+      <Dialog
+        open={isEditOpen}
+        onOpenChange={(open: boolean) => {
+          setIsEditOpen(open);
+          if (!open) {
+            setEditFormData({ name: "", password: "", confirmPassword: "" });
+            setSelectedMember(null);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-center text-lg font-semibold">
@@ -305,7 +351,9 @@ const Membros = () => {
             <Input
               placeholder="Nome Completo"
               value={editFormData.name}
-              onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+              onChange={(e) =>
+                setEditFormData({ ...editFormData, name: e.target.value })
+              }
             />
             <Input
               type="email"
@@ -320,13 +368,20 @@ const Membros = () => {
             <PasswordInput
               placeholder="Nova Senha"
               value={editFormData.password}
-              onChange={(e: any) => setEditFormData({ ...editFormData, password: e.target.value })}
+              onChange={(e) =>
+                setEditFormData({ ...editFormData, password: e.target.value })
+              }
             />
             <Input
               type="password"
               placeholder="Confirmar Nova Senha"
               value={editFormData.confirmPassword}
-              onChange={(e: any) => setEditFormData({ ...editFormData, confirmPassword: e.target.value })}
+              onChange={(e) =>
+                setEditFormData({
+                  ...editFormData,
+                  confirmPassword: e.target.value,
+                })
+              }
             />
           </div>
 
@@ -344,7 +399,9 @@ const Membros = () => {
 
                   // Validate passwords if user is trying to change password
                   if (editFormData.password || editFormData.confirmPassword) {
-                    if (editFormData.password !== editFormData.confirmPassword) {
+                    if (
+                      editFormData.password !== editFormData.confirmPassword
+                    ) {
                       alert("As senhas não coincidem");
                       return;
                     }
@@ -370,7 +427,7 @@ const Membros = () => {
                     }
                   }
 
-                  const payload: any = {
+                  const payload: { name: string; password?: string } = {
                     name: editFormData.name,
                   };
 

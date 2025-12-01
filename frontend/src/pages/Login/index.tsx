@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ const Login = () => {
   const displayError = localError || error;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/10">
+    <div className="min-h-screen bg-linear-to-br from-primary/5 via-background to-secondary/10">
       {/* Header */}
       <header className="border-b bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
@@ -75,7 +75,7 @@ const Login = () => {
             {/* Error Alert */}
             {displayError && (
               <div className="mb-6">
-                <AlertBanner variant="error" message={displayError} />
+                <AlertBanner message={displayError} />
               </div>
             )}
 

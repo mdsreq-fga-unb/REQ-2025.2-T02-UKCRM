@@ -23,6 +23,8 @@ export type ApiOrganizationDetails = {
 export type ApiOrganizationCreatePayload = {
   name: string;
   owner: string;
+  owner_email_input: string;
+  owner_password: string;
 };
 
 export type ApiOrganizationUpdatePayload = {
@@ -40,10 +42,19 @@ export const fetchOrganizationDetails = (id: number, signal?: AbortSignal) =>
   apiClient<ApiOrganizationDetails>(`/api/organizations/${id}/`, { signal });
 
 export const createOrganization = (payload: ApiOrganizationCreatePayload) =>
-  apiClient<ApiOrganization>("/api/organizations/", { method: "POST", body: payload });
+  apiClient<ApiOrganization>("/api/organizations/", {
+    method: "POST",
+    body: payload,
+  });
 
-export const updateOrganization = (id: number, payload: ApiOrganizationUpdatePayload) =>
-  apiClient<ApiOrganization>(`/api/organizations/${id}/`, { method: "PATCH", body: payload });
+export const updateOrganization = (
+  id: number,
+  payload: ApiOrganizationUpdatePayload,
+) =>
+  apiClient<ApiOrganization>(`/api/organizations/${id}/`, {
+    method: "PATCH",
+    body: payload,
+  });
 
 export const deleteOrganization = (id: number) =>
   apiClient(`/api/organizations/${id}/`, { method: "DELETE" });

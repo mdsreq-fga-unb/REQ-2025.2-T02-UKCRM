@@ -5,13 +5,16 @@ type DeleteButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
 };
 
-export default function DeleteButton({ label, ...props }: DeleteButtonProps) {
+export default function DeleteButton({
+  label,
+  className,
+  ...props
+}: DeleteButtonProps) {
   return (
     <Button
       variant="destructive"
-      onClick={props.onClick}
-      disabled={props.disabled}
-      className="text-white"
+      className={`text-white ${className || ""}`}
+      {...props}
     >
       <XIcon /> {label}
     </Button>

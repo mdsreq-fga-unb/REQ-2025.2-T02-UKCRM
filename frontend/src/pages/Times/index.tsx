@@ -1,17 +1,22 @@
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import { AppShell } from "@/components/layout/AppShell";
-import { Button } from "@/components/ui/button";
-import { DataTable, Column } from "@/components/ui/data-table";
+import { DataTable, type Column } from "@/components/ui/data-table";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CreateTeamModal } from "@/components/modals/CreateTeamModal";
 import { EditTeamModal } from "@/components/modals/EditTeamModal";
 import { DeleteTeamModal } from "@/components/modals/DeleteTeamModal";
-import { useTeams, useCreateTeam, useUpdateTeam, useDeleteTeam } from "./hooks/useTeams";
+import {
+  useTeams,
+  useCreateTeam,
+  useUpdateTeam,
+  useDeleteTeam,
+} from "./hooks/useTeams";
 import { useMembers } from "@/pages/Membros/hooks/useMembers";
 import { shouldUseMock } from "@/config/features";
 import { featureFlags } from "@/config/features";
+import CreateButton from "@/components/CreateButton";
 
 interface Team {
   id: number;
@@ -28,10 +33,34 @@ const mockTeams: Team[] = [
 ];
 
 const mockMembers = [
-  { id: "1", name: "Ana Clara", role: "Closer", initials: "AC", color: "#059669" },
-  { id: "2", name: "Bruno Esteves", role: "SDR", initials: "BE", color: "#0891b2" },
-  { id: "3", name: "Carla Souza", role: "Closer", initials: "CS", color: "#7c3aed" },
-  { id: "4", name: "Daniel Pereira", role: "SDR", initials: "DP", color: "#dc2626" },
+  {
+    id: "1",
+    name: "Ana Clara",
+    role: "Closer",
+    initials: "AC",
+    color: "#059669",
+  },
+  {
+    id: "2",
+    name: "Bruno Esteves",
+    role: "SDR",
+    initials: "BE",
+    color: "#0891b2",
+  },
+  {
+    id: "3",
+    name: "Carla Souza",
+    role: "Closer",
+    initials: "CS",
+    color: "#7c3aed",
+  },
+  {
+    id: "4",
+    name: "Daniel Pereira",
+    role: "SDR",
+    initials: "DP",
+    color: "#dc2626",
+  },
 ];
 
 const columns: Column<Team>[] = [
@@ -45,10 +74,14 @@ const Times = () => {
   const useMockData = shouldUseMock(featureFlags.USE_MOCK_TEAMS);
 
   // Backend integration
-  const { data: apiTeamsData, isLoading } = useTeams();
+  const { data: apiTeamsData } = useTeams();
   const { data: apiMembersData } = useMembers();
-  const { mutate: createTeamMutation } = useCreateTeam(() => setIsCreateOpen(false));
-  const { mutate: updateTeamMutation } = useUpdateTeam(() => setIsEditOpen(false));
+  const { mutate: createTeamMutation } = useCreateTeam(() =>
+    setIsCreateOpen(false),
+  );
+  const { mutate: updateTeamMutation } = useUpdateTeam(() =>
+    setIsEditOpen(false),
+  );
   const { mutate: deleteTeamMutation } = useDeleteTeam(() => {
     setIsDeleteOpen(false);
     setSelectedTeam(null);
@@ -67,13 +100,21 @@ const Times = () => {
       return mockTeams;
     }
     if (!apiTeamsData) return [];
-    return apiTeamsData.map((team: { id: number; name: string; member_count: number; created_at: string; members: number[] }) => ({
-      id: team.id,
-      nome: team.name,
-      membros: team.member_count,
-      dataCriacao: new Date(team.created_at).toLocaleDateString("pt-BR"),
-      memberIds: team.members || [],
-    }));
+    return apiTeamsData.map(
+      (team: {
+        id: number;
+        name: string;
+        member_count: number;
+        created_at: string;
+        members: number[];
+      }) => ({
+        id: team.id,
+        nome: team.name,
+        membros: team.member_count,
+        dataCriacao: new Date(team.created_at).toLocaleDateString("pt-BR"),
+        memberIds: team.members || [],
+      }),
+    );
   }, [useMockData, apiTeamsData]);
 
   // Transform members data for the modal
@@ -83,37 +124,46 @@ const Times = () => {
     }
     if (!apiMembersData) return [];
 
-    return apiMembersData.map((member: { id: number; name: string; hierarchy: string }) => {
-      const initials = member.name
-        .split(' ')
-        .map(n => n[0])
-        .join('')
-        .toUpperCase()
-        .substring(0, 2);
+    return apiMembersData.map(
+      (member: { id: number; name: string; hierarchy: string }) => {
+        const initials = member.name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()
+          .substring(0, 2);
 
-      const colors = ['#059669', '#0891b2', '#7c3aed', '#dc2626', '#ea580c', '#ca8a04'];
-      const color = colors[member.id % colors.length];
+        const colors = [
+          "#059669",
+          "#0891b2",
+          "#7c3aed",
+          "#dc2626",
+          "#ea580c",
+          "#ca8a04",
+        ];
+        const color = colors[member.id % colors.length];
 
-      return {
-        id: String(member.id),
-        name: member.name,
-        role: member.hierarchy,
-        initials,
-        color,
-      };
-    });
+        return {
+          id: String(member.id),
+          name: member.name,
+          role: member.hierarchy,
+          initials,
+          color,
+        };
+      },
+    );
   }, [useMockData, apiMembersData]);
 
   const filteredTeams = teams.filter((team) =>
-    team.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    team.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleEdit = (team: Team & { memberIds?: number[] }) => {
     console.log("Editing team:", team);
     console.log("Team member IDs:", team.memberIds);
     console.log("Available members:", availableMembers);
-    const currentMembersFiltered = availableMembers.filter((m: { id: string }) =>
-      (team.memberIds || []).includes(parseInt(m.id))
+    const currentMembersFiltered = availableMembers.filter(
+      (m: { id: string }) => (team.memberIds || []).includes(parseInt(m.id)),
     );
     console.log("Current members filtered:", currentMembersFiltered);
     setSelectedTeam(team);
@@ -142,7 +192,9 @@ const Times = () => {
         {/* Sidebar Label */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <div className="h-4 w-4 rounded bg-primary" />
-          <span className="font-medium text-foreground">Gerenciamento de Times</span>
+          <span className="font-medium text-foreground">
+            Gerenciamento de Times
+          </span>
         </div>
 
         {/* Header */}
@@ -157,9 +209,10 @@ const Times = () => {
             />
           </div>
           {canCreateTeam && (
-            <Button onClick={() => setIsCreateOpen(true)}>
-              Novo Time
-            </Button>
+            <CreateButton
+              label="Novo Time"
+              onClick={() => setIsCreateOpen(true)}
+            />
           )}
         </div>
 
@@ -184,7 +237,9 @@ const Times = () => {
           } else {
             createTeamMutation({
               name,
-              member_ids: members.map((m) => parseInt(typeof m === 'string' ? m : m.id)),
+              member_ids: members.map((m) =>
+                parseInt(typeof m === "string" ? m : m.id),
+              ),
             });
           }
         }}
@@ -193,8 +248,12 @@ const Times = () => {
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
         teamName={selectedTeam?.nome || ""}
-        currentMembers={availableMembers.filter((m: { id: string }) => selectedTeamMembers.includes(parseInt(m.id)))}
-        availableMembers={availableMembers.filter((m: { id: string }) => !selectedTeamMembers.includes(parseInt(m.id)))}
+        currentMembers={availableMembers.filter((m: { id: string }) =>
+          selectedTeamMembers.includes(parseInt(m.id)),
+        )}
+        availableMembers={availableMembers.filter(
+          (m: { id: string }) => !selectedTeamMembers.includes(parseInt(m.id)),
+        )}
         onSave={(name, members) => {
           if (useMockData) {
             console.log("Edit team:", name, members);
@@ -204,7 +263,9 @@ const Times = () => {
               id: selectedTeam.id,
               payload: {
                 name,
-                member_ids: members.map((m) => parseInt(typeof m === 'string' ? m : m.id)),
+                member_ids: members.map((m) =>
+                  parseInt(typeof m === "string" ? m : m.id),
+                ),
               },
             });
           }

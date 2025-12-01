@@ -6,6 +6,7 @@ import * as z from "zod";
 
 import FilterButton from "@/components/FilterButton";
 import { Button } from "@/components/ui/button";
+import CreateButton from "@/components/CreateButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -66,7 +67,7 @@ export function CreateFunnelDialog({
   const { data: apiTeamsData, isLoading: isLoadingApiTeams } = useSalesTeams();
 
   // Use mock or real data based on flag
-  const teamsData = useMockData ? mockTeams : (apiTeamsData || []);
+  const teamsData = useMockData ? mockTeams : apiTeamsData || [];
   const isLoadingTeams = useMockData ? false : isLoadingApiTeams;
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -233,9 +234,11 @@ export function CreateFunnelDialog({
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isPending || isLoadingTeams}>
-                {isPending ? "Salvando..." : "Salvar"}
-              </Button>
+              <CreateButton
+                label={isPending ? "Salvando..." : "Salvar"}
+                type="submit"
+                disabled={isPending || isLoadingTeams}
+              />
             </DialogFooter>
           </form>
         </Form>

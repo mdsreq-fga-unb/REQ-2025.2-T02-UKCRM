@@ -1,18 +1,51 @@
 import { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
-import { DataTable, Column } from "@/components/ui/data-table";
+import { DataTable, type Column } from "@/components/ui/data-table";
 import { AlertBanner } from "@/components/ui/alert-banner";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import { Plus, RefreshCw, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CreateOrganizationModal } from "@/components/modals/CreateOrganizationModal";
 import { DeleteOrganizationModal } from "@/components/modals/DeleteOrganizationModal";
-import { EditOrganizationModal, type EditOrganizationFormData } from "@/components/modals/EditOrganizationModal";
+import {
+  EditOrganizationModal,
+  type EditOrganizationFormData,
+} from "@/components/modals/EditOrganizationModal";
 import { useOrganizacoesData } from "./hooks/useOrganizacoesData";
 import { fetchOrganizationDetails } from "./api/organizations.api";
 import { fetchMembers } from "@/pages/Membros/api/members.api";
 import type { Organization } from "./types/organizations.types";
+import CreateButton from "@/components/CreateButton";
+
+interface OrganizationMember {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  initials: string;
+  color: string;
+  organizationId?: number;
+}
+
+interface OrganizationDetails {
+  id: number;
+  name: string;
+  logo?: string;
+  ownerName: string;
+  ownerEmail: string;
+  members: OrganizationMember[];
+}
+
+interface CreateOrganizationFormData {
+  nome: string;
+  logo?: File;
+  proprietario: {
+    nome: string;
+    email: string;
+    senha: string;
+  };
+}
 
 const columns: Column<Organization>[] = [
   { key: "id", header: "ID" },
@@ -24,18 +57,27 @@ const columns: Column<Organization>[] = [
 
 const Organizacoes = () => {
   const { hasPermission } = usePermissions();
-  const { organizations, isLoading, handleCreate, handleUpdate, handleDelete, handleRefresh } = useOrganizacoesData();
+  const {
+    organizations,
+    isLoading,
+    handleCreate,
+    handleUpdate,
+    handleDelete,
+    handleRefresh,
+  } = useOrganizacoesData();
   const [showAlert, setShowAlert] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [editOrgData, setEditOrgData] = useState<any>(null);
-  const [allMembers, setAllMembers] = useState<any[]>([]);
+  const [editOrgData, setEditOrgData] = useState<OrganizationDetails | null>(
+    null,
+  );
+  const [allMembers, setAllMembers] = useState<OrganizationMember[]>([]);
 
   const filteredOrganizations = organizations.filter((org) =>
-    org.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    org.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleEdit = async (item: Organization) => {
@@ -58,7 +100,14 @@ const Organizacoes = () => {
 
       // Helper function to generate color
       const getColor = (id: number) => {
-        const colors = ["#8B5CF6", "#EC4899", "#10B981", "#F59E0B", "#3B82F6", "#EF4444"];
+        const colors = [
+          "#8B5CF6",
+          "#EC4899",
+          "#10B981",
+          "#F59E0B",
+          "#3B82F6",
+          "#EF4444",
+        ];
         return colors[id % colors.length];
       };
 
@@ -75,10 +124,10 @@ const Organizacoes = () => {
 
       // Separate organization members from available members
       const organizationMembers = transformedMembers.filter(
-        (member) => member.organizationId === item.id
+        (member) => member.organizationId === item.id,
       );
       const availableMembers = transformedMembers.filter(
-        (member) => member.organizationId !== item.id
+        (member) => member.organizationId !== item.id,
       );
 
       setAllMembers(availableMembers);
@@ -118,7 +167,9 @@ const Organizacoes = () => {
     }
   };
 
-  const handleCreateOrganization = async (formData: any) => {
+  const handleCreateOrganization = async (
+    formData: CreateOrganizationFormData,
+  ) => {
     try {
       await handleCreate({
         name: formData.nome,
@@ -135,7 +186,11 @@ const Organizacoes = () => {
 
   const handleEditOrganization = async (formData: EditOrganizationFormData) => {
     try {
-      const updatePayload: any = {
+      const updatePayload: {
+        name: string;
+        owner_name_input: string;
+        owner_password?: string;
+      } = {
         name: formData.name,
         owner_name_input: formData.ownerName,
       };
@@ -193,13 +248,15 @@ const Organizacoes = () => {
               onClick={handleRefresh}
               disabled={isLoading}
             >
-              <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
+              />
             </Button>
             {canCreateOrg && (
-              <Button onClick={() => setIsCreateOpen(true)}>
-                <Plus className="h-4 w-4" />
-                Criar Organização
-              </Button>
+              <CreateButton
+                label="Criar Organização"
+                onClick={() => setIsCreateOpen(true)}
+              />
             )}
           </div>
         </div>

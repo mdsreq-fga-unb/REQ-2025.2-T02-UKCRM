@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X } from "lucide-react";
+import { } from "lucide-react";
+import DeleteButton from "@/components/DeleteButton";
 
 interface DeleteOrganizationModalProps {
   open: boolean;
@@ -47,11 +48,11 @@ export function DeleteOrganizationModal({
         <div className="space-y-4 py-4 text-center">
           <p className="text-lg font-semibold text-destructive">Aviso!</p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Ao excluir a organização, todos os membros (incluindo o proprietário)
-            terão o seu acesso ao sistema revogado e todos os dados relacionados à
-            essa organização serão apagados <strong>PERMANENTEMENTE</strong> do Banco de
-            Dados. Para confirmar a exclusão, digite o nome da organização abaixo
-            ({organizationName}).
+            Ao excluir a organização, todos os membros (incluindo o
+            proprietário) terão o seu acesso ao sistema revogado e todos os
+            dados relacionados à essa organização serão apagados{" "}
+            <strong>PERMANENTEMENTE</strong> do Banco de Dados. Para confirmar a
+            exclusão, digite o nome da organização abaixo ({organizationName}).
           </p>
 
           <Input
@@ -66,14 +67,11 @@ export function DeleteOrganizationModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button
-            variant="destructive"
+          <DeleteButton
+            label="Excluir"
             onClick={handleConfirm}
             disabled={!isConfirmEnabled}
-          >
-            <X className="h-4 w-4" />
-            Excluir
-          </Button>
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

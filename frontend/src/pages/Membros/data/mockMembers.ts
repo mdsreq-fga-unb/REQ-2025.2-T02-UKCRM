@@ -8,6 +8,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "Closer",
     joined_at: "2025-10-14T10:00:00Z",
     updated_at: "2025-10-14T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 2,
@@ -16,6 +18,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "SDR",
     joined_at: "2025-10-12T10:00:00Z",
     updated_at: "2025-10-12T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 3,
@@ -24,6 +28,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "Coordenador de Vendas",
     joined_at: "2025-10-10T10:00:00Z",
     updated_at: "2025-10-10T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 4,
@@ -32,6 +38,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "Closer",
     joined_at: "2025-10-08T10:00:00Z",
     updated_at: "2025-10-08T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 5,
@@ -40,6 +48,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "SDR",
     joined_at: "2025-10-05T10:00:00Z",
     updated_at: "2025-10-05T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 6,
@@ -48,6 +58,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "Closer",
     joined_at: "2025-10-01T10:00:00Z",
     updated_at: "2025-10-01T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 7,
@@ -56,6 +68,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "SDR",
     joined_at: "2025-09-28T10:00:00Z",
     updated_at: "2025-09-28T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 8,
@@ -64,6 +78,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "Gerente",
     joined_at: "2025-09-25T10:00:00Z",
     updated_at: "2025-09-25T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 9,
@@ -72,6 +88,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "SDR",
     joined_at: "2025-09-20T10:00:00Z",
     updated_at: "2025-09-20T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
   {
     id: 10,
@@ -80,6 +98,8 @@ export const mockMembersList: ApiMember[] = [
     hierarchy: "Diretor",
     joined_at: "2025-09-15T10:00:00Z",
     updated_at: "2025-09-15T10:00:00Z",
+    organization: 1,
+    organization_name: "Mock Org",
   },
 ];
 
@@ -91,4 +111,4 @@ export const HIERARCHY_OPTIONS = [
   "Diretor",
 ] as const;
 
-export type HierarchyLevel = typeof HIERARCHY_OPTIONS[number];
+export type HierarchyLevel = (typeof HIERARCHY_OPTIONS)[number];

@@ -3,43 +3,56 @@
  * This is a reference implementation showing all available operations
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+
 import { useLeadsMock } from "../hooks/useLeadsMock";
+
 import { usePermissions } from "@/auth/hooks/usePermissions";
+
 import type { Lead, LeadCreatePayload } from "../types/lead.types";
 
 export function LeadsExample() {
   const {
-    leads,
     isLoading,
+
     error,
+
     getLeads,
+
     getLead,
+
     createLead,
+
     updateLead,
+
     deleteLead,
+
     assignLead,
+
     setLeadGainLoss,
   } = useLeadsMock();
 
   const { hasPermission } = usePermissions();
 
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+
   const [activeLeads, setActiveLeads] = useState<Lead[]>([]);
 
-  // Load active leads on mount
-  useEffect(() => {
-    loadActiveLeads();
-  }, []);
-
-  const loadActiveLeads = async () => {
+  const loadActiveLeads = useCallback(async () => {
     try {
       const leads = await getLeads({ status: ["Active"] });
+
       setActiveLeads(leads);
     } catch (err) {
       console.error("Failed to load leads:", err);
     }
-  };
+  }, [getLeads]);
+
+  // Load active leads on mount
+
+  useEffect(() => {
+    loadActiveLeads();
+  }, [loadActiveLeads]);
 
   // Example 1: View a specific lead
   const handleViewLead = async (leadId: number) => {
@@ -70,7 +83,7 @@ export function LeadsExample() {
         campaign: "LinkedIn Ads",
         contactOrigin: "Social Media",
         temperature: "Morno",
-        assignedTo: null,
+        assignedTo: undefined,
         earning: 20000,
         stage: 1,
         order: 1,
@@ -134,7 +147,9 @@ export function LeadsExample() {
   // Example 5: Assign a lead to a team member (Sales Manager)
   const handleAssignLead = async (leadId: number, memberId: number) => {
     if (!hasPermission("lead:assign")) {
-      alert("You don't have permission to assign leads (requires Sales Manager or Owner)");
+      alert(
+        "You don't have permission to assign leads (requires Sales Manager or Owner)",
+      );
       return;
     }
 
@@ -152,7 +167,9 @@ export function LeadsExample() {
   // Example 6: Mark a lead as Gained (Closer)
   const handleMarkAsGained = async (leadId: number) => {
     if (!hasPermission("lead:status:change")) {
-      alert("You don't have permission to change lead status (requires Closer or higher)");
+      alert(
+        "You don't have permission to change lead status (requires Closer or higher)",
+      );
       return;
     }
 
@@ -175,7 +192,9 @@ export function LeadsExample() {
   // Example 7: Mark a lead as Lost (Closer)
   const handleMarkAsLost = async (leadId: number) => {
     if (!hasPermission("lead:status:change")) {
-      alert("You don't have permission to change lead status (requires Closer or higher)");
+      alert(
+        "You don't have permission to change lead status (requires Closer or higher)",
+      );
       return;
     }
 
@@ -209,9 +228,7 @@ export function LeadsExample() {
 
       {/* Action Buttons */}
       <div className="actions">
-        <button onClick={handleCreateLead}>
-          Create New Lead (SDR)
-        </button>
+        <button onClick={handleCreateLead}>Create New Lead (SDR)</button>
       </div>
 
       {/* Leads List */}
@@ -232,9 +249,7 @@ export function LeadsExample() {
               </button>
 
               {hasPermission("lead:edit") && (
-                <button onClick={() => handleUpdateLead(lead.id)}>
-                  Edit
-                </button>
+                <button onClick={() => handleUpdateLead(lead.id)}>Edit</button>
               )}
 
               {hasPermission("lead:delete") && (
@@ -269,29 +284,73 @@ export function LeadsExample() {
         <div className="lead-details">
           <h2>Lead Details</h2>
           <div className="details-grid">
-            <div><strong>ID:</strong> {selectedLead.id}</div>
-            <div><strong>Name:</strong> {selectedLead.name}</div>
-            <div><strong>CPF:</strong> {selectedLead.cpf || "N/A"}</div>
-            <div><strong>Email:</strong> {selectedLead.email || "N/A"}</div>
-            <div><strong>Phone:</strong> {selectedLead.phone}</div>
-            <div><strong>Career:</strong> {selectedLead.career || "N/A"}</div>
-            <div><strong>Income:</strong> R$ {selectedLead.income?.toLocaleString("pt-BR") || "N/A"}</div>
-            <div><strong>Interests:</strong> {selectedLead.interests.join(", ")}</div>
-            <div><strong>Campaign:</strong> {selectedLead.campaign}</div>
-            <div><strong>Contact Origin:</strong> {selectedLead.contactOrigin}</div>
-            <div><strong>Temperature:</strong> {selectedLead.temperature}</div>
-            <div><strong>Status:</strong> {selectedLead.status}</div>
-            <div><strong>Assigned To:</strong> {selectedLead.assignedTo || "Unassigned"}</div>
-            <div><strong>Earning:</strong> R$ {selectedLead.earning.toLocaleString("pt-BR")}</div>
+            <div>
+              <strong>ID:</strong> {selectedLead.id}
+            </div>
+            <div>
+              <strong>Name:</strong> {selectedLead.name}
+            </div>
+            <div>
+              <strong>CPF:</strong> {selectedLead.cpf || "N/A"}
+            </div>
+            <div>
+              <strong>Email:</strong> {selectedLead.email || "N/A"}
+            </div>
+            <div>
+              <strong>Phone:</strong> {selectedLead.phone}
+            </div>
+            <div>
+              <strong>Career:</strong> {selectedLead.career || "N/A"}
+            </div>
+            <div>
+              <strong>Income:</strong> R${" "}
+              {selectedLead.income?.toLocaleString("pt-BR") || "N/A"}
+            </div>
+            <div>
+              <strong>Interests:</strong> {selectedLead.interests.join(", ")}
+            </div>
+            <div>
+              <strong>Campaign:</strong> {selectedLead.campaign}
+            </div>
+            <div>
+              <strong>Contact Origin:</strong> {selectedLead.contactOrigin}
+            </div>
+            <div>
+              <strong>Temperature:</strong> {selectedLead.temperature}
+            </div>
+            <div>
+              <strong>Status:</strong> {selectedLead.status}
+            </div>
+            <div>
+              <strong>Assigned To:</strong>{" "}
+              {selectedLead.assignedTo || "Unassigned"}
+            </div>
+            <div>
+              <strong>Earning:</strong> R${" "}
+              {selectedLead.earning.toLocaleString("pt-BR")}
+            </div>
             {selectedLead.gainLossValue !== null && (
               <>
-                <div><strong>Gain/Loss Value:</strong> R$ {selectedLead.gainLossValue.toLocaleString("pt-BR")}</div>
-                <div><strong>Reason:</strong> {selectedLead.gainLossReason}</div>
+                <div>
+                  <strong>Gain/Loss Value:</strong> R${" "}
+                  {selectedLead.gainLossValue.toLocaleString("pt-BR")}
+                </div>
+                <div>
+                  <strong>Reason:</strong> {selectedLead.gainLossReason}
+                </div>
               </>
             )}
-            <div><strong>Created At:</strong> {new Date(selectedLead.createdAt).toLocaleString("pt-BR")}</div>
-            <div><strong>Updated At:</strong> {new Date(selectedLead.updatedAt).toLocaleString("pt-BR")}</div>
-            <div><strong>Created By:</strong> Member #{selectedLead.createdBy}</div>
+            <div>
+              <strong>Created At:</strong>{" "}
+              {new Date(selectedLead.createdAt).toLocaleString("pt-BR")}
+            </div>
+            <div>
+              <strong>Updated At:</strong>{" "}
+              {new Date(selectedLead.updatedAt).toLocaleString("pt-BR")}
+            </div>
+            <div>
+              <strong>Created By:</strong> Member #{selectedLead.createdBy}
+            </div>
           </div>
 
           <button onClick={() => setSelectedLead(null)}>Close Details</button>

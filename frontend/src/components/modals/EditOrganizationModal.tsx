@@ -53,7 +53,7 @@ export function EditOrganizationModal({
   open,
   onOpenChange,
   organization,
-  availableMembers = [],
+  
   onSave,
 }: EditOrganizationModalProps) {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);

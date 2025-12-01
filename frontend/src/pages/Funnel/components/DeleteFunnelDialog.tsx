@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import DeleteButton from "@/components/DeleteButton";
 import {
   Dialog,
   DialogContent,
@@ -123,13 +124,11 @@ export function DeleteFunnelDialog({
               >
                 Cancelar
               </Button>
-              <Button
+              <DeleteButton
                 type="submit"
-                variant="destructive"
+                label={isPending ? "Excluindo..." : "Excluir"}
                 disabled={!form.formState.isValid || isPending}
-              >
-                {isPending ? "Excluindo..." : "Excluir"}
-              </Button>
+              />
             </DialogFooter>
           </form>
         </Form>

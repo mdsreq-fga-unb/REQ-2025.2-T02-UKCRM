@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { Lead, LeadStatus } from "../types/kanban.types";
+import type { Lead } from "../types/kanban.types";
 
 interface GainLossDialogProps {
   lead: Lead | null;

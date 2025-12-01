@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
+import DeleteButton from "@/components/DeleteButton";
 
 interface DeleteTeamModalProps {
   open: boolean;
@@ -57,9 +58,7 @@ export function DeleteTeamModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button variant="destructive" onClick={handleConfirm}>
-            Sim, Excluir
-          </Button>
+          <DeleteButton label="Sim, Excluir" onClick={handleConfirm} />
         </DialogFooter>
       </DialogContent>
     </Dialog>

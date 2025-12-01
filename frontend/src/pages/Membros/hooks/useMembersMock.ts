@@ -1,5 +1,9 @@
 import { useState, useCallback, useMemo } from "react";
-import type { ApiMember, ApiMemberCreatePayload, ApiMemberDeletePayload } from "../api/members.api";
+import type {
+  ApiMember,
+  ApiMemberCreatePayload,
+  ApiMemberDeletePayload,
+} from "../api/members.api";
 import { mockMembersList } from "../data/mockMembers";
 
 export function useMembersMock() {
@@ -16,9 +20,11 @@ export function useMembersMock() {
           id: Math.max(...members.map((m) => m.id), 0) + 1,
           name: data.name,
           email: data.email,
-          hierarchy: data.hierarchy,
+          hierarchy: data.role,
           joined_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
+          organization: 1,
+          organization_name: "Mock Org",
         };
 
         setMembers((prev) => [...prev, newMember]);
@@ -27,7 +33,7 @@ export function useMembersMock() {
 
       return Promise.resolve();
     },
-    [members]
+    [members],
   );
 
   const handleUpdate = useCallback((id: number, data: Partial<ApiMember>) => {
@@ -42,8 +48,8 @@ export function useMembersMock() {
                 ...data,
                 updated_at: new Date().toISOString(),
               }
-            : member
-        )
+            : member,
+        ),
       );
       setIsLoading(false);
     }, 300);
@@ -51,21 +57,26 @@ export function useMembersMock() {
     return Promise.resolve();
   }, []);
 
-  const handleDelete = useCallback((id: number, payload?: ApiMemberDeletePayload) => {
-    setIsLoading(true);
+  const handleDelete = useCallback(
+    (id: number, payload?: ApiMemberDeletePayload) => {
+      setIsLoading(true);
 
-    setTimeout(() => {
-      if (payload?.action === "reallocate" && payload.target_member_id) {
-        // TODO: Implement reallocation logic when backend is ready
-        console.log(`Reallocating tasks from member ${id} to ${payload.target_member_id}`);
-      }
+      setTimeout(() => {
+        if (payload?.action === "reallocate" && payload.target_member_id) {
+          // TODO: Implement reallocation logic when backend is ready
+          console.log(
+            `Reallocating tasks from member ${id} to ${payload.target_member_id}`,
+          );
+        }
 
-      setMembers((prev) => prev.filter((member) => member.id !== id));
-      setIsLoading(false);
-    }, 300);
+        setMembers((prev) => prev.filter((member) => member.id !== id));
+        setIsLoading(false);
+      }, 300);
 
-    return Promise.resolve();
-  }, []);
+      return Promise.resolve();
+    },
+    [],
+  );
 
   const handleRefresh = useCallback(() => {
     setIsLoading(true);
@@ -85,6 +96,13 @@ export function useMembersMock() {
       handleDelete,
       handleRefresh,
     }),
-    [members, isLoading, handleCreate, handleUpdate, handleDelete, handleRefresh]
+    [
+      members,
+      isLoading,
+      handleCreate,
+      handleUpdate,
+      handleDelete,
+      handleRefresh,
+    ],
   );
 }

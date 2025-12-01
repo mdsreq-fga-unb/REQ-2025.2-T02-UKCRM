@@ -16,7 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
+import DeleteButton from "@/components/DeleteButton";
 
 interface Member {
   id: string;
@@ -34,7 +35,7 @@ interface DeleteMemberModalProps {
 export function DeleteMemberModal({
   open,
   onOpenChange,
-  memberName,
+
   availableMembers,
   onConfirm,
 }: DeleteMemberModalProps) {
@@ -80,11 +81,14 @@ export function DeleteMemberModal({
 
           {/* Warning Text */}
           <div className="text-center">
-            <p className="text-lg font-semibold text-destructive mb-2">Aviso!</p>
+            <p className="text-lg font-semibold text-destructive mb-2">
+              Aviso!
+            </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              A exclusão de um membro é uma ação <strong>IRREVERSÍVEL</strong> que requer uma
-              decisão sobre o destino dos dados de negócios associados a ele,
-              principalmente os leads sob sua responsabilidade.
+              A exclusão de um membro é uma ação <strong>IRREVERSÍVEL</strong>{" "}
+              que requer uma decisão sobre o destino dos dados de negócios
+              associados a ele, principalmente os leads sob sua
+              responsabilidade.
             </p>
           </div>
 
@@ -107,7 +111,7 @@ export function DeleteMemberModal({
                   onValueChange={setTargetMember}
                   disabled={selectedAction !== "reallocate"}
                 >
-                  <SelectTrigger className="w-[160px] h-8">
+                  <SelectTrigger className="w-40 h-8">
                     <SelectValue placeholder="Selecionar..." />
                   </SelectTrigger>
                   <SelectContent className="bg-popover z-50">
@@ -143,14 +147,11 @@ export function DeleteMemberModal({
           <Button variant="outline" onClick={handleClose}>
             Cancelar
           </Button>
-          <Button
-            variant="destructive"
+          <DeleteButton
+            label="Excluir"
             onClick={handleConfirm}
             disabled={!isConfirmEnabled}
-          >
-            <X className="h-4 w-4" />
-            Excluir
-          </Button>
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -7,6 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import DeleteButton from "@/components/DeleteButton";
 import type { Lead } from "../types/kanban.types";
 
 interface DeleteLeadDialogProps {
@@ -27,9 +28,10 @@ export function DeleteLeadDialog({
   const handleDelete = () => {
     if (lead) {
       // Extract numeric ID from string format "lead-123"
-      const leadId = typeof lead.id === 'string'
-        ? parseInt(lead.id.replace('lead-', ''), 10)
-        : lead.id;
+      const leadId =
+        typeof lead.id === "string"
+          ? parseInt(lead.id.replace("lead-", ""), 10)
+          : lead.id;
       onDelete(leadId);
     }
   };
@@ -57,9 +59,12 @@ export function DeleteLeadDialog({
           <Button variant="outline" onClick={onClose} disabled={isPending}>
             Cancelar
           </Button>
-          <Button variant="destructive" onClick={handleDelete} disabled={isPending}>
-            {isPending ? "Excluindo..." : "Excluir Lead"}
-          </Button>
+
+          <DeleteButton
+            label={isPending ? "Excluindo..." : "Excluir Lead"}
+            onClick={handleDelete}
+            disabled={isPending}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

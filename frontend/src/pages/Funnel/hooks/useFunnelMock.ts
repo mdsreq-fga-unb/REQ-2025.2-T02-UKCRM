@@ -17,7 +17,6 @@ import type {
 } from "../types/kanban.types";
 
 import {
-  extractId,
   getColumnsWithSubtitles,
   getFilteredAndSortedLeads,
 } from "../utils/funnelTransformers";
@@ -37,7 +36,9 @@ type FunnelData = {
 
 export function useFunnelMock(initialCols: Column[], initialLeads: Lead[]) {
   // Store data per funnel ID
-  const [funnelDataMap, setFunnelDataMap] = useState<Record<string, FunnelData>>({});
+  const [funnelDataMap, setFunnelDataMap] = useState<
+    Record<string, FunnelData>
+  >({});
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -50,24 +51,33 @@ export function useFunnelMock(initialCols: Column[], initialLeads: Lead[]) {
 
   // Get current funnel's data or return defaults
   const currentFunnelData = selectedFunnelId
-    ? funnelDataMap[selectedFunnelId] || { columns: initialCols, leads: initialLeads }
+    ? funnelDataMap[selectedFunnelId] || {
+        columns: initialCols,
+        leads: initialLeads,
+      }
     : { columns: initialCols, leads: initialLeads };
 
   const columns = currentFunnelData.columns;
   const leads = currentFunnelData.leads;
 
   // Helper function to update current funnel's data
-  const updateFunnelData = useCallback((updater: (prev: FunnelData) => FunnelData) => {
-    if (!selectedFunnelId) return;
+  const updateFunnelData = useCallback(
+    (updater: (prev: FunnelData) => FunnelData) => {
+      if (!selectedFunnelId) return;
 
-    setFunnelDataMap((prev) => {
-      const currentData = prev[selectedFunnelId] || { columns: initialCols, leads: initialLeads };
-      return {
-        ...prev,
-        [selectedFunnelId]: updater(currentData),
-      };
-    });
-  }, [selectedFunnelId, initialCols, initialLeads]);
+      setFunnelDataMap((prev) => {
+        const currentData = prev[selectedFunnelId] || {
+          columns: initialCols,
+          leads: initialLeads,
+        };
+        return {
+          ...prev,
+          [selectedFunnelId]: updater(currentData),
+        };
+      });
+    },
+    [selectedFunnelId, initialCols, initialLeads],
+  );
 
   // DADOS
 
@@ -113,12 +123,7 @@ export function useFunnelMock(initialCols: Column[], initialLeads: Lead[]) {
 
       updateFunnelData((prev) => ({
         ...prev,
-        leads: reorderLeadsLocally(
-          prev.leads,
-          leadId,
-          newColumnId,
-          newOrder,
-        ),
+        leads: reorderLeadsLocally(prev.leads, leadId, newColumnId, newOrder),
       }));
     },
     [updateFunnelData],
@@ -141,7 +146,8 @@ export function useFunnelMock(initialCols: Column[], initialLeads: Lead[]) {
   const handleColumnsChange = useCallback<Dispatch<SetStateAction<Column[]>>>(
     (updater) => {
       updateFunnelData((prev) => {
-        const newColumns = typeof updater === "function" ? updater(prev.columns) : updater;
+        const newColumns =
+          typeof updater === "function" ? updater(prev.columns) : updater;
         return { ...prev, columns: newColumns };
       });
     },
@@ -188,31 +194,30 @@ export function useFunnelMock(initialCols: Column[], initialLeads: Lead[]) {
       updateFunnelData((prev) => ({
         ...prev,
         columns: prev.columns.map((col) =>
-          col.id === columnId ? { ...col, title: newName } : col
+          col.id === columnId ? { ...col, title: newName } : col,
         ),
       }));
     },
-    [updateFunnelData]
+    [updateFunnelData],
   );
 
-  const handleCreateFunnel = useCallback(
-    (vals: FunnelFormValues) => {
-      const newFunnel = {
-        id: Date.now(),
-        name: vals.funnelName,
-        teams: vals.teamIds.map((id) => parseInt(id, 10)),
-      };
+  const handleCreateFunnel = useCallback((vals: FunnelFormValues) => {
+    const newFunnel = {
+      id: Date.now(),
+      name: vals.funnelName,
+      teams: vals.teamIds.map((id) => parseInt(id, 10)),
+    };
 
-      setFunnels((prev) => [...prev, newFunnel]);
-      setSelectedFunnelId(newFunnel.id.toString());
-      setIsCreateOpen(false);
-    },
-    [],
-  );
+    setFunnels((prev) => [...prev, newFunnel]);
+    setSelectedFunnelId(newFunnel.id.toString());
+    setIsCreateOpen(false);
+  }, []);
 
   const handleDeleteFunnel = useCallback(() => {
     if (selectedFunnelId) {
-      setFunnels((prev) => prev.filter((f) => f.id.toString() !== selectedFunnelId));
+      setFunnels((prev) =>
+        prev.filter((f) => f.id.toString() !== selectedFunnelId),
+      );
 
       // Clean up funnel data
       setFunnelDataMap((prev) => {
@@ -301,8 +306,12 @@ function reorderLeadsLocally(
   targetColumnId: string | UniqueIdentifier,
   targetOrder: number,
 ): Lead[] {
-  const leadId = typeof movedLeadId === 'string' ? movedLeadId : movedLeadId.toString();
-  const columnId = typeof targetColumnId === 'string' ? targetColumnId : targetColumnId.toString();
+  const leadId =
+    typeof movedLeadId === "string" ? movedLeadId : movedLeadId.toString();
+  const columnId =
+    typeof targetColumnId === "string"
+      ? targetColumnId
+      : targetColumnId.toString();
 
   const leadToMove = oldLeads.find((l) => l.id === leadId);
   if (!leadToMove) return oldLeads;
