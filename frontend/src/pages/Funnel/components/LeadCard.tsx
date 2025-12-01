@@ -28,10 +28,12 @@ import {
   Phone,
 } from "lucide-react";
 import { usePermissions } from "@/auth/hooks/usePermissions";
+import type { ApiMember } from "@/pages/Membros/api/members.api";
 import type { Lead, LeadDragData } from "../types/kanban.types";
 
 interface LeadCardProps {
   lead: Lead;
+  members?: ApiMember[];
   isOverlay?: boolean;
   onEditClick?: (lead: Lead) => void;
   onViewDetails?: (lead: Lead) => void;
@@ -45,6 +47,7 @@ export type LeadType = "Lead";
 
 export function LeadCard({
   lead,
+  members,
   isOverlay,
   onViewDetails,
   onEditClick,
@@ -53,6 +56,8 @@ export function LeadCard({
   onMarkGainLoss,
 }: LeadCardProps) {
   const { hasPermission } = usePermissions();
+
+  const assignedMember = members?.find((m) => m.id === lead.assignedTo);
 
   const {
     setNodeRef,
@@ -218,14 +223,26 @@ export function LeadCard({
           <Button
             size="icon"
             variant="ghost"
-            title="Membro atribuído"
+            title={
+              assignedMember
+                ? `Atribuído a: ${assignedMember.name}`
+                : "Atribuir membro"
+            }
             className="h-6 w-6"
             onClick={() => onAssign?.(lead)}
           >
             <Avatar className="size-5">
-              <AvatarImage src="https://github.com/Carlos-UCH.png" />
-              <AvatarFallback>
-                <UserIcon />
+              <AvatarFallback className="text-[9px]">
+                {assignedMember ? (
+                  assignedMember.name
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()
+                ) : (
+                  <UserIcon className="h-3 w-3" />
+                )}
               </AvatarFallback>
             </Avatar>
           </Button>

@@ -9,6 +9,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripHorizontal, PencilIcon, PlusIcon, Check, X } from "lucide-react";
 import React, { useMemo, useState } from "react";
+import type { ApiMember } from "@/pages/Membros/api/members.api";
 import type { Column, ColumnDragData, Lead } from "../types/kanban.types";
 import { LeadCard } from "./LeadCard";
 
@@ -17,6 +18,7 @@ export type ColumnType = "Column";
 interface BoardColumnProps {
   column: Column;
   leads: Lead[];
+  members?: ApiMember[];
   isOverlay?: boolean;
   onAddLead: (columnId: UniqueIdentifier) => void;
   onLeadEdit: (lead: Lead) => void;
@@ -30,6 +32,7 @@ interface BoardColumnProps {
 export function BoardColumn({
   column,
   leads,
+  members,
   isOverlay,
   onAddLead,
   onLeadEdit,
@@ -186,6 +189,7 @@ export function BoardColumn({
               <LeadCard
                 key={lead.id}
                 lead={lead}
+                members={members}
                 onEditClick={onLeadEdit}
                 onViewDetails={onLeadView}
                 onAssign={onLeadAssign}

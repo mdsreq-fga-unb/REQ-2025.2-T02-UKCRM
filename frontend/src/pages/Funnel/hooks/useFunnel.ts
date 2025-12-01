@@ -35,7 +35,15 @@ import {
   useUpdateFunnel,
 } from "./useFunnels";
 
-import { useCreateLead, useDeleteLead, useEditLeadDetails, useMarkLeadGainLoss, useMoveLead } from "./useLeads";
+import {
+  useCreateLead,
+  useDeleteLead,
+  useEditLeadDetails,
+  useMarkLeadGainLoss,
+  useMoveLead,
+} from "./useLeads";
+import { useMembers } from "../../Membros/hooks/useMembers";
+import type { ApiMember } from "../../Membros/api/members.api";
 
 import {
   extractId,
@@ -55,7 +63,9 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const [viewingLead, setViewingLead] = useState<Lead | null>(null);
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [deletingLead, setDeletingLead] = useState<Lead | null>(null);
-  const [markingGainLossLead, setMarkingGainLossLead] = useState<Lead | null>(null);
+  const [markingGainLossLead, setMarkingGainLossLead] = useState<Lead | null>(
+    null,
+  );
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortCriteria, setSortCriteria] = useState<string | null>(null);
@@ -64,6 +74,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   // LEITURA
 
   const { data: funnelsData, isLoading: isLoadingFunnels } = useFunnelsList();
+  const { data: membersData } = useMembers();
 
   const { data: funnelDetailsData, isLoading: isLoadingFunnelDetails } =
     useFunnelDetails(selectedFunnelId);
@@ -162,10 +173,8 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     setLeads,
   );
 
-  const { mutate: markGainLoss, isPending: isMarkingGainLoss } = useMarkLeadGainLoss(
-    selectedFunnelId,
-    setLeads,
-  );
+  const { mutate: markGainLoss, isPending: isMarkingGainLoss } =
+    useMarkLeadGainLoss(selectedFunnelId, setLeads);
 
   const { mutate: createStage, isPending: isCreatingStage } =
     useCreateStage(selectedFunnelId);
@@ -410,7 +419,8 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       markGainLossDialog: {
         open: !!markingGainLossLead,
         lead: markingGainLossLead,
-        onOpenChange: (isOpen: boolean) => !isOpen && setMarkingGainLossLead(null),
+        onOpenChange: (isOpen: boolean) =>
+          !isOpen && setMarkingGainLossLead(null),
         onSubmit: handleMarkGainLoss,
         isPending: isMarkingGainLoss,
       },
@@ -445,6 +455,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onLeadAssign: setAssigningLead,
         onLeadDelete: setDeletingLead,
         onMarkGainLoss: setMarkingGainLossLead,
+        members: (membersData as ApiMember[]) || [],
         isLoading: isLoadingFunnelDetails || isCreatingLead || isCreatingStage,
       },
     }),
@@ -475,6 +486,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       isCreatingStage,
       columnsWithSubtitles,
       leads,
+      membersData,
       createFunnel,
       updateFunnel,
       deleteFunnel,

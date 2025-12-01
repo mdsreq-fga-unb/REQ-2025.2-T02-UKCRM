@@ -11,6 +11,7 @@ import type {
   Lead,
   LeadDropEvent,
 } from "../types/kanban.types";
+import type { ApiMember } from "../../Membros/api/members.api";
 import { useKanbanDrag } from "./../hooks/useKanbanDrag";
 import { BoardColumn, BoardContainer } from "./BoardColumn";
 import { LeadCard } from "./LeadCard";
@@ -18,6 +19,7 @@ import { LeadCard } from "./LeadCard";
 export type KanbanBoardProps = {
   columns: Column[];
   leads: Lead[];
+  members: ApiMember[];
   getFilteredAndSortedLeads: (columnId: ColumnId) => Lead[];
   onColumnsChange: Dispatch<SetStateAction<Column[]>>;
   onColumnDrop: (columnId: UniqueIdentifier, newOrder: number) => void;
@@ -35,6 +37,7 @@ export type KanbanBoardProps = {
 export function KanbanBoard({
   columns,
   leads,
+  members,
   getFilteredAndSortedLeads,
   onColumnsChange,
   onColumnDrop,
@@ -76,6 +79,7 @@ export function KanbanBoard({
               key={col.id}
               column={col}
               leads={getFilteredAndSortedLeads(col.id)}
+              members={members}
               onAddLead={onAddLead}
               onLeadEdit={onLeadEdit}
               onLeadView={onLeadView}
@@ -105,6 +109,7 @@ export function KanbanBoard({
                 isOverlay
                 column={activeColumn}
                 leads={getFilteredAndSortedLeads(activeColumn.id)}
+                members={members}
                 onAddLead={onAddLead}
                 onLeadEdit={onLeadEdit}
                 onLeadView={onLeadView}
@@ -114,7 +119,9 @@ export function KanbanBoard({
                 onEditColumnName={onEditColumnName}
               />
             )}
-            {activeLead && <LeadCard lead={activeLead} isOverlay />}
+            {activeLead && (
+              <LeadCard lead={activeLead} members={members} isOverlay />
+            )}
           </DragOverlay>,
           document.body,
         )}
