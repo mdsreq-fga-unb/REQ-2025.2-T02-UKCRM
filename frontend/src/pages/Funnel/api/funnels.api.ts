@@ -51,8 +51,32 @@ export const fetchFunnelDetails = (id: number, signal?: AbortSignal) =>
 export const createFunnel = (payload: ApiFunnelCreatePayload) =>
   apiClient<ApiFunnel>("/api/funnels/", { method: "POST", body: payload });
 
+export const updateFunnel = (id: number, payload: Partial<ApiFunnelCreatePayload>) =>
+  apiClient<ApiFunnel>(`/api/funnels/${id}/`, { method: "PATCH", body: payload });
+
 export const deleteFunnel = (id: number) =>
   apiClient(`/api/funnels/${id}/`, { method: "DELETE" });
+
+// STATISTICS
+
+export type ApiFunnelStatistics = {
+  id: number;
+  name: string;
+  total_leads: number;
+  active_leads: number;
+  gained_leads: number;
+  lost_leads: number;
+  total_stages: number;
+  total_gains: number;
+  total_losses: number;
+  net_gain_loss: number;
+  conversion_rate: number;
+  team_count: number;
+  teams: Array<{ id: number; name: string }>;
+};
+
+export const fetchFunnelStatistics = (id: number, signal?: AbortSignal) =>
+  apiClient<ApiFunnelStatistics>(`/api/funnels/${id}/statistics/`, { signal });
 
 // ETAPAS
 

@@ -19,6 +19,7 @@ type FunnelItem = {
 type ActionBarProps = {
   funnels: FunnelItem[];
   onCreateFunnelClick: () => void;
+  onEditFunnelClick: () => void;
   onDeleteFunnelClick: () => void;
   filterTerm: string;
   onFilterChange: (value: string) => void;
@@ -31,6 +32,7 @@ type ActionBarProps = {
 export default function ActionBar({
   funnels,
   onCreateFunnelClick,
+  onEditFunnelClick,
   onDeleteFunnelClick,
   filterTerm,
   onFilterChange,
@@ -47,7 +49,7 @@ export default function ActionBar({
 
   const handleEditClick = () => {
     if (selectedFunnelId) {
-      onCreateFunnelClick(); // TODO: Distinguir Criar de Editar
+      onEditFunnelClick();
     }
   };
 

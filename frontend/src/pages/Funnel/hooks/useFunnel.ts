@@ -32,6 +32,7 @@ import {
   useFunnelDetails,
   useFunnelsList,
   useMoveStage,
+  useUpdateFunnel,
 } from "./useFunnels";
 
 import { useCreateLead, useDeleteLead, useEditLeadDetails, useMarkLeadGainLoss, useMoveLead } from "./useLeads";
@@ -48,6 +49,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const [columns, setColumns] = useState<Column[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [viewingLead, setViewingLead] = useState<Lead | null>(null);
@@ -124,6 +126,12 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
 
       setIsCreateOpen(false);
       setSelectedFunnelId(newFunnel.id.toString());
+    },
+  );
+
+  const { mutate: updateFunnel, isPending: isUpdatingFunnel } = useUpdateFunnel(
+    () => {
+      setIsEditOpen(false);
     },
   );
 
@@ -333,6 +341,17 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onSubmit: (vals: FunnelFormValues) => createFunnel(vals),
         isPending: isCreatingFunnel,
       },
+      editDialog: {
+        open: isEditOpen,
+        funnelId: selectedFunnelId,
+        onOpenChange: setIsEditOpen,
+        onSubmit: (vals: FunnelFormValues) => {
+          if (selectedFunnelId) {
+            updateFunnel({ id: Number(selectedFunnelId), formData: vals });
+          }
+        },
+        isPending: isUpdatingFunnel,
+      },
       deleteDialog: {
         open: isDeleteOpen,
         onOpenChange: setIsDeleteOpen,
@@ -397,6 +416,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       },
       actionBar: {
         onCreateFunnelClick: () => setIsCreateOpen(true),
+        onEditFunnelClick: () => setIsEditOpen(true),
         onDeleteFunnelClick: () => {
           if (selectedFunnelId) {
             setFunnelToDelete(selectedFunnelName);
@@ -431,6 +451,8 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     [
       isCreateOpen,
       isCreatingFunnel,
+      isEditOpen,
+      isUpdatingFunnel,
       isDeleteOpen,
       isDeletingFunnel,
       funnelToDelete,
@@ -454,6 +476,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       columnsWithSubtitles,
       leads,
       createFunnel,
+      updateFunnel,
       deleteFunnel,
       editLead,
       handleDeleteLead,

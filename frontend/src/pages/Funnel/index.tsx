@@ -2,6 +2,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import ActionBar from "./components/ActionBar";
 import { AssignLeadDialog } from "./components/AssignLeadDialog";
 import { CreateFunnelDialog } from "./components/CreateFunnelDialog";
+import { EditFunnelDialog } from "./components/EditFunnelDialog";
 import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
 import { DeleteLeadDialog } from "./components/DeleteLeadDialog";
 import { EditLeadDialog } from "./components/EditLeadDialog";
@@ -15,6 +16,7 @@ function Funnel() {
     actionBar,
     kanban,
     createDialog,
+    editDialog,
     deleteDialog,
     editLeadDialog,
     viewLeadDialog,
@@ -48,6 +50,7 @@ function Funnel() {
 
       {/* Modals */}
       <CreateFunnelDialog {...createDialog} />
+      <EditFunnelDialog {...editDialog} />
       <DeleteFunnelDialog {...deleteDialog} />
       <EditLeadDialog {...editLeadDialog} />
       <EditLeadDialog {...viewLeadDialog} />
