@@ -21,7 +21,7 @@ export const CONTACT_ORIGINS = [
   "Other",
 ] as const;
 
-export const TEMPERATURES = ["Frio", "Morno", "Quente"] as const;
+export const TEMPERATURES = ["Neutro", "Frio", "Morno", "Quente"] as const;
 
 export const leadFormSchema = z.object({
   name: z.string().min(1, "O nome é obrigatório"),
