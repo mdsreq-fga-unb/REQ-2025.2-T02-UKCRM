@@ -62,7 +62,7 @@ export default function ActionBar({
         <SelectButton
           placeholder="Funils de Venda"
           label="Funils de Venda"
-          icon={<TagIcon />}
+          icon={<TagIcon className="h-4 w-4" />}
           items={funnels}
           value={selectedFunnelId}
           onValueChange={onFunnelSelect}
@@ -75,7 +75,7 @@ export default function ActionBar({
             size={"icon"}
             variant={"outline"}
           >
-            <PencilIcon />
+            <PencilIcon className="h-4 w-4" />
           </Button>
         )}
       </ButtonGroup>
@@ -96,7 +96,7 @@ export default function ActionBar({
         className="w-50"
         placeholder="Ordenar por"
         label="Ordenar por"
-        icon={<ChartNoAxesCombinedIcon />}
+        icon={<ChartNoAxesCombinedIcon className="h-4 w-4" />}
         items={sortOptionsList}
         onValueChange={onSortChange}
       />

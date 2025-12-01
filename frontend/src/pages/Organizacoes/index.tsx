@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { AlertBanner } from "@/components/ui/alert-banner";
 import { usePermissions } from "@/auth/hooks/usePermissions";
-import { Plus, RefreshCw, Search } from "lucide-react";
+import { RefreshCw, Search, ChartNoAxesCombinedIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CreateOrganizationModal } from "@/components/modals/CreateOrganizationModal";
 import { DeleteOrganizationModal } from "@/components/modals/DeleteOrganizationModal";
@@ -17,6 +17,7 @@ import { fetchOrganizationDetails } from "./api/organizations.api";
 import { fetchMembers } from "@/pages/Membros/api/members.api";
 import type { Organization } from "./types/organizations.types";
 import CreateButton from "@/components/CreateButton";
+import SelectButton from "@/components/SelectButton";
 
 interface OrganizationMember {
   id: number;
@@ -55,6 +56,13 @@ const columns: Column<Organization>[] = [
   { key: "proprietario", header: "Proprietário" },
 ];
 
+const sortOptions = [
+  { value: "nome-asc", label: "Nome (A-Z)" },
+  { value: "nome-desc", label: "Nome (Z-A)" },
+  { value: "data-desc", label: "Mais Recentes" },
+  { value: "data-asc", label: "Mais Antigos" },
+];
+
 const Organizacoes = () => {
   const { hasPermission } = usePermissions();
   const {
@@ -71,14 +79,38 @@ const Organizacoes = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOption, setSortOption] = useState("nome-asc");
   const [editOrgData, setEditOrgData] = useState<OrganizationDetails | null>(
     null,
   );
   const [allMembers, setAllMembers] = useState<OrganizationMember[]>([]);
 
-  const filteredOrganizations = organizations.filter((org) =>
-    org.nome.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredOrganizations = useMemo(() => {
+    let filtered = organizations.filter((org) =>
+      org.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+
+    return filtered.sort((a, b) => {
+      switch (sortOption) {
+        case "nome-asc":
+          return a.nome.localeCompare(b.nome);
+        case "nome-desc":
+          return b.nome.localeCompare(a.nome);
+        case "data-desc":
+        case "data-asc": {
+          const parseDate = (dateStr: string) => {
+            const [day, month, year] = dateStr.split("/").map(Number);
+            return new Date(year, month - 1, day).getTime();
+          };
+          const dateA = parseDate(a.dataCriacao);
+          const dateB = parseDate(b.dataCriacao);
+          return sortOption === "data-desc" ? dateB - dateA : dateA - dateB;
+        }
+        default:
+          return 0;
+      }
+    });
+  }, [organizations, searchTerm, sortOption]);
 
   const handleEdit = async (item: Organization) => {
     try {
@@ -222,6 +254,7 @@ const Organizacoes = () => {
         { label: "Organizações", href: "/organizacoes" },
         { label: "Gestão de Organizações" },
       ]}
+      className="p-0"
     >
       {showAlert && (
         <AlertBanner
@@ -230,18 +263,10 @@ const Organizacoes = () => {
         />
       )}
 
-      <div className="space-y-6 animate-fade-in">
-        {/* Page Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-foreground">
-              Gestão de Organizações
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Gerencie todas as organizações do sistema
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
+      <div className="h-full flex flex-col divide-y">
+        {/* Header */}
+        <header className="flex justify-between w-full flex-row p-2">
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="icon"
@@ -259,12 +284,17 @@ const Organizacoes = () => {
               />
             )}
           </div>
-        </div>
-
-        {/* Table Section */}
-        <div className="rounded-lg bg-card p-6 shadow-sm border border-border">
-          <div className="mb-4 flex items-center gap-4">
-            <div className="relative flex-1 max-w-xs">
+          <div className="flex items-center gap-2">
+            <SelectButton
+              className="w-50"
+              placeholder="Ordenar por"
+              label="Ordenar por"
+              icon={<ChartNoAxesCombinedIcon className="h-4 w-4" />}
+              items={sortOptions}
+              value={sortOption}
+              onValueChange={setSortOption}
+            />
+            <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Escreva algo..."
@@ -274,27 +304,16 @@ const Organizacoes = () => {
               />
             </div>
           </div>
+        </header>
 
+        {/* Table Section */}
+        <div className="flex-1 p-2 animate-fade-in">
           <DataTable
             columns={columns}
             data={filteredOrganizations}
             onEdit={canEditOrg ? handleEdit : undefined}
             onDelete={canDeleteOrg ? onDeleteClick : undefined}
           />
-
-          {/* Create Organization Button */}
-          {canCreateOrg && (
-            <div className="mt-4 flex justify-center">
-              <Button
-                variant="outline"
-                onClick={() => setIsCreateOpen(true)}
-                className="text-primary border-primary hover:bg-primary/10"
-              >
-                <Plus className="h-4 w-4" />
-                Criar Organização
-              </Button>
-            </div>
-          )}
         </div>
       </div>
 

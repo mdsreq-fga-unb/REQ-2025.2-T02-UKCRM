@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import { useAuthContext } from "@/auth/context/AuthContext";
-import { Search } from "lucide-react";
+import { Search, ChartNoAxesCombinedIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   useMembers,
@@ -31,6 +31,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { DeleteMemberModal } from "@/components/modals/DeleteMemberModal";
 import { Send } from "lucide-react";
 import CreateButton from "@/components/CreateButton";
+import SelectButton from "@/components/SelectButton";
 
 interface Member {
   id: number;
@@ -52,6 +53,15 @@ const columns: Column<Member>[] = [
   { key: "nome", header: "Nome do Membro" },
   { key: "hierarquia", header: "Nível de Hierarquia" },
   { key: "dataEntrada", header: "Data de Entrada" },
+];
+
+const sortOptions = [
+  { value: "nome-asc", label: "Nome (A-Z)" },
+  { value: "nome-desc", label: "Nome (Z-A)" },
+  { value: "hierarquia-asc", label: "Hierarquia (Menor-Maior)" },
+  { value: "hierarquia-desc", label: "Hierarquia (Maior-Menor)" },
+  { value: "data-desc", label: "Mais Recentes" },
+  { value: "data-asc", label: "Mais Antigos" },
 ];
 
 // Map frontend hierarchy values to backend role values
@@ -82,6 +92,7 @@ const Membros = () => {
   });
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOption, setSortOption] = useState("nome-asc");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -119,9 +130,42 @@ const Membros = () => {
     );
   }, [apiMembersData]);
 
-  const filteredMembers = members.filter((member) =>
-    member.nome.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredMembers = useMemo(() => {
+    let filtered = members.filter((member) =>
+      member.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+
+    return filtered.sort((a, b) => {
+      switch (sortOption) {
+        case "nome-asc":
+          return a.nome.localeCompare(b.nome);
+        case "nome-desc":
+          return b.nome.localeCompare(a.nome);
+        case "hierarquia-asc":
+          return (
+            hierarchyOptions.indexOf(a.hierarquia) -
+            hierarchyOptions.indexOf(b.hierarquia)
+          );
+        case "hierarquia-desc":
+          return (
+            hierarchyOptions.indexOf(b.hierarquia) -
+            hierarchyOptions.indexOf(a.hierarquia)
+          );
+        case "data-desc":
+        case "data-asc": {
+          const parseDate = (dateStr: string) => {
+            const [day, month, year] = dateStr.split("/").map(Number);
+            return new Date(year, month - 1, day).getTime();
+          };
+          const dateA = parseDate(a.dataEntrada);
+          const dateB = parseDate(b.dataEntrada);
+          return sortOption === "data-desc" ? dateB - dateA : dateA - dateB;
+        }
+        default:
+          return 0;
+      }
+    });
+  }, [members, searchTerm, sortOption]);
 
   const handleEdit = (member: Member) => {
     setSelectedMember(member);
@@ -157,42 +201,50 @@ const Membros = () => {
         { label: "Organizações", href: "/" },
         { label: "Gerenciamento de Membros" },
       ]}
+      className="p-0"
     >
-      <div className="space-y-6 animate-fade-in">
-        {/* Sidebar Label */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <div className="h-4 w-4 rounded bg-primary" />
-          <span className="font-medium text-foreground">
-            Gerenciamento de Membros
-          </span>
-        </div>
-
+      <div className="h-full flex flex-col divide-y">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Pesquisar por membro..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
-            />
+        <header className="flex justify-between w-full flex-row p-2">
+          <div className="flex items-center gap-2">
+            {canCreateMember && (
+              <CreateButton
+                label="Novo Membro"
+                onClick={() => setIsCreateOpen(true)}
+              />
+            )}
           </div>
-          {canCreateMember && (
-            <CreateButton
-              label="Novo Membro"
-              onClick={() => setIsCreateOpen(true)}
+          <div className="flex items-center gap-2">
+            <SelectButton
+              className="w-50"
+              placeholder="Ordenar por"
+              label="Ordenar por"
+              icon={<ChartNoAxesCombinedIcon className="h-4 w-4" />}
+              items={sortOptions}
+              value={sortOption}
+              onValueChange={setSortOption}
             />
-          )}
-        </div>
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar por membro..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+        </header>
 
         {/* Table */}
-        <DataTable
-          columns={columns}
-          data={filteredMembers}
-          onEdit={canEditMember ? handleEdit : undefined}
-          onDelete={canDeleteMember ? handleDelete : undefined}
-        />
+        <div className="flex-1 p-2 animate-fade-in">
+          <DataTable
+            columns={columns}
+            data={filteredMembers}
+            onEdit={canEditMember ? handleEdit : undefined}
+            onDelete={canDeleteMember ? handleDelete : undefined}
+          />
+        </div>
       </div>
 
       {/* Create Member Modal */}
