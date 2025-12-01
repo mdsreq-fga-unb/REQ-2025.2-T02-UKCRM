@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
 
 from .models import Funnel, Lead, SalesTeam, Stage
 from .serializers import (
@@ -153,3 +154,40 @@ class LeadViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(detail=True, methods=['post'], url_path='mark_gain_loss')
+    def mark_gain_loss(self, request, pk=None):
+        """Mark a lead as gained or lost"""
+        lead = self.get_object()
+
+        # Validate required fields
+        lead_status = request.data.get('status')
+        gain_loss_value = request.data.get('gain_loss_value')
+        gain_loss_reason = request.data.get('gain_loss_reason', '')
+
+        if not lead_status:
+            return Response(
+                {'error': 'Status is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if lead_status not in ['Gained', 'Lost']:
+            return Response(
+                {'error': 'Status must be either "Gained" or "Lost"'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if gain_loss_value is None:
+            return Response(
+                {'error': 'gain_loss_value is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Update the lead
+        lead.status = lead_status
+        lead.gain_loss_value = gain_loss_value
+        lead.gain_loss_reason = gain_loss_reason
+        lead.save()
+
+        serializer = self.get_serializer(lead)
+        return Response(serializer.data)

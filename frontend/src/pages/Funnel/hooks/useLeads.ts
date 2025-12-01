@@ -220,3 +220,39 @@ export const useDeleteLead = (
     },
   });
 };
+
+export const useMarkLeadGainLoss = (
+  funnelId: string | null,
+  setLeads: React.Dispatch<React.SetStateAction<Lead[]>>,
+) => {
+  const queryClient = useQueryClient();
+  const detailKey = queryKeys.funnels.detail(funnelId);
+
+  return useMutation({
+    mutationFn: leadApi.markLeadGainLoss,
+
+    onSuccess: (updatedApiLead: leadApi.ApiLead) => {
+      setLeads((prev) =>
+        prev.map((l) => {
+          if (l.id === `lead-${updatedApiLead.id}`) {
+            return {
+              ...l,
+              status: (updatedApiLead.status || "Active") as "Active" | "Gained" | "Lost",
+              gainLossValue: updatedApiLead.gain_loss_value
+                ? Number(updatedApiLead.gain_loss_value)
+                : null,
+              gainLossReason: updatedApiLead.gain_loss_reason || null,
+              updatedAt: new Date(),
+            };
+          }
+          return l;
+        }),
+      );
+      queryClient.invalidateQueries({ queryKey: detailKey });
+    },
+
+    onError: (err: unknown) => {
+      console.error("Erro ao marcar ganho/perda:", err);
+    },
+  });
+};

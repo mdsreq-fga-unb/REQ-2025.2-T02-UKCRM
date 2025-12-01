@@ -111,6 +111,29 @@ class Lead(OrderedModel):
         default=TemperatureChoices.NEUTRO,
     )
 
+    class StatusChoices(models.TextChoices):
+        ACTIVE = "Active", "Active"
+        GAINED = "Gained", "Gained"
+        LOST = "Lost", "Lost"
+
+    status = models.CharField(
+        max_length=10,
+        choices=StatusChoices.choices,
+        default=StatusChoices.ACTIVE,
+    )
+
+    gain_loss_value = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+
+    gain_loss_reason = models.TextField(
+        blank=True,
+        default="",
+    )
+
     order_with_respect_to = "stage"
 
     class Meta(OrderedModel.Meta):

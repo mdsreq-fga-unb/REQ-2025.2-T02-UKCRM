@@ -28,6 +28,7 @@ export type KanbanBoardProps = {
   onLeadView: (lead: Lead) => void;
   onLeadAssign: (lead: Lead) => void;
   onLeadDelete: (lead: Lead) => void;
+  onMarkGainLoss: (lead: Lead) => void;
   onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
 };
 
@@ -44,6 +45,7 @@ export function KanbanBoard({
   onLeadView,
   onLeadAssign,
   onLeadDelete,
+  onMarkGainLoss,
   onEditColumnName,
 }: KanbanBoardProps) {
   const { hasPermission } = usePermissions();
@@ -79,6 +81,7 @@ export function KanbanBoard({
               onLeadView={onLeadView}
               onLeadAssign={onLeadAssign}
               onLeadDelete={onLeadDelete}
+              onMarkGainLoss={onMarkGainLoss}
               onEditColumnName={onEditColumnName}
             />
           ))}
@@ -107,6 +110,7 @@ export function KanbanBoard({
                 onLeadView={onLeadView}
                 onLeadAssign={onLeadAssign}
                 onLeadDelete={onLeadDelete}
+                onMarkGainLoss={onMarkGainLoss}
                 onEditColumnName={onEditColumnName}
               />
             )}

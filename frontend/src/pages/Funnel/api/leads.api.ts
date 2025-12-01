@@ -25,6 +25,11 @@ export type ApiLead = {
   campaign?: Campaign;
   contactOrigin?: ContactOrigin;
   content: string; // Observações
+
+  // Gain/Loss fields
+  status?: "Active" | "Gained" | "Lost";
+  gain_loss_value?: string | number | null;
+  gain_loss_reason?: string | null;
 };
 
 export type ApiLeadCreatePayload = {
@@ -82,3 +87,22 @@ export const updateLead = (payload: ApiLeadUpdatePayload) => {
 
 export const deleteLead = (id: number) =>
   apiClient<void>(`/api/leads/${id}/`, { method: "DELETE" });
+
+export type ApiLeadGainLossPayload = {
+  id: number;
+  status: "Gained" | "Lost";
+  value: number;
+  reason?: string;
+};
+
+export const markLeadGainLoss = (payload: ApiLeadGainLossPayload) => {
+  const { id, status, value, reason } = payload;
+  return apiClient<ApiLead>(`/api/leads/${id}/mark_gain_loss/`, {
+    method: "POST",
+    body: {
+      status,
+      gain_loss_value: value,
+      gain_loss_reason: reason,
+    },
+  });
+};

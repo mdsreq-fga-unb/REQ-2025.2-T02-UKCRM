@@ -34,7 +34,7 @@ import {
   useMoveStage,
 } from "./useFunnels";
 
-import { useCreateLead, useDeleteLead, useEditLeadDetails, useMoveLead } from "./useLeads";
+import { useCreateLead, useDeleteLead, useEditLeadDetails, useMarkLeadGainLoss, useMoveLead } from "./useLeads";
 
 import {
   extractId,
@@ -53,6 +53,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   const [viewingLead, setViewingLead] = useState<Lead | null>(null);
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [deletingLead, setDeletingLead] = useState<Lead | null>(null);
+  const [markingGainLossLead, setMarkingGainLossLead] = useState<Lead | null>(null);
   const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortCriteria, setSortCriteria] = useState<string | null>(null);
@@ -149,6 +150,11 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   );
 
   const { mutate: deleteLead, isPending: isDeletingLead } = useDeleteLead(
+    selectedFunnelId,
+    setLeads,
+  );
+
+  const { mutate: markGainLoss, isPending: isMarkingGainLoss } = useMarkLeadGainLoss(
     selectedFunnelId,
     setLeads,
   );
@@ -303,6 +309,21 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
     [deleteLead],
   );
 
+  const handleMarkGainLoss = useCallback(
+    (status: "Gained" | "Lost", value: number, reason?: string) => {
+      if (markingGainLossLead) {
+        markGainLoss({
+          id: extractId(markingGainLossLead.id),
+          status,
+          value,
+          reason,
+        });
+        setMarkingGainLossLead(null);
+      }
+    },
+    [markingGainLossLead, markGainLoss],
+  );
+
   // RETORNO
   return useMemo(
     () => ({
@@ -367,6 +388,13 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onDelete: handleDeleteLead,
         isPending: isDeletingLead,
       },
+      markGainLossDialog: {
+        open: !!markingGainLossLead,
+        lead: markingGainLossLead,
+        onOpenChange: (isOpen: boolean) => !isOpen && setMarkingGainLossLead(null),
+        onSubmit: handleMarkGainLoss,
+        isPending: isMarkingGainLoss,
+      },
       actionBar: {
         onCreateFunnelClick: () => setIsCreateOpen(true),
         onDeleteFunnelClick: () => {
@@ -396,6 +424,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
         onLeadView: setViewingLead,
         onLeadAssign: setAssigningLead,
         onLeadDelete: setDeletingLead,
+        onMarkGainLoss: setMarkingGainLossLead,
         isLoading: isLoadingFunnelDetails || isCreatingLead || isCreatingStage,
       },
     }),
@@ -409,9 +438,11 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       viewingLead,
       assigningLead,
       deletingLead,
+      markingGainLossLead,
       allowedMemberIds,
       isEditingLead,
       isDeletingLead,
+      isMarkingGainLoss,
       selectedFunnelId,
       selectedFunnelName,
       filterTerm,
@@ -426,6 +457,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
       deleteFunnel,
       editLead,
       handleDeleteLead,
+      handleMarkGainLoss,
       getLeadsForColumn,
       handleColumnsChange,
       handleColumnDrop,

@@ -84,6 +84,17 @@ export function LeadCard({
     },
   });
 
+  // Determine border color based on lead status
+  const getBorderClass = () => {
+    if (lead.status === "Gained") {
+      return "border-2 border-green-500";
+    }
+    if (lead.status === "Lost") {
+      return "border-2 border-red-500";
+    }
+    return "";
+  };
+
   // Permission checks
   const canEdit = hasPermission("lead:edit");
   const canDelete = hasPermission("lead:delete");
@@ -94,9 +105,9 @@ export function LeadCard({
     <Card
       ref={setNodeRef}
       style={style}
-      className={variants({
+      className={`${variants({
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
-      })}
+      })} ${getBorderClass()}`}
     >
       <CardHeader className="px-3 py-2 border-b-2 border-secondary relative">
         <div className="flex flex-row items-center">

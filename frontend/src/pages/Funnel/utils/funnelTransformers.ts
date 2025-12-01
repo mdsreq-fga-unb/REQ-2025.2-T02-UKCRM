@@ -46,6 +46,9 @@ export function mapApiLeadToKanbanLead(lead: ApiLead, tempId?: string): Lead {
     campaign: lead.campaign,
     contactOrigin: lead.contactOrigin,
     assignedTo: lead.account,
+    status: lead.status || "Active",
+    gainLossValue: lead.gain_loss_value ? Number(lead.gain_loss_value) : null,
+    gainLossReason: lead.gain_loss_reason || null,
   };
 }
 
