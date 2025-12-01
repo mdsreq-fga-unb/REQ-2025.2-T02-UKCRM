@@ -26,6 +26,7 @@ import {
   CheckCircle,
   Mail,
   Phone,
+  MessageCircle,
 } from "lucide-react";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import type { ApiMember } from "@/pages/Membros/api/members.api";
@@ -107,6 +108,12 @@ export function LeadCard({
   const canDelete = hasPermission("lead:delete");
   const canAssign = hasPermission("lead:assign");
   const canMarkGainLoss = hasPermission("lead:status:change");
+
+  const openWhatsApp = (e: React.MouseEvent, phone: string) => {
+    e.stopPropagation();
+    const cleanPhone = phone.replace(/\D/g, "");
+    window.open(`https://wa.me/${cleanPhone}`, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <Card
@@ -252,15 +259,28 @@ export function LeadCard({
               currency: "BRL",
             }).format(lead.earning)}
           </span>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => onViewDetails?.(lead)}
-            title="Ver detalhes"
-            className="h-6 w-6"
-          >
-            <IdCardIcon className="size-5" />
-          </Button>
+          <div className="flex gap-1">
+            {lead.phone && (
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={(e) => openWhatsApp(e, lead.phone)}
+                title="Conversar no WhatsApp"
+                className="h-6 w-6 text-green-600 hover:text-green-700 hover:bg-green-50"
+              >
+                <MessageCircle className="size-5" />
+              </Button>
+            )}
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => onViewDetails?.(lead)}
+              title="Ver detalhes"
+              className="h-6 w-6"
+            >
+              <IdCardIcon className="size-5" />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
