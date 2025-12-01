@@ -154,7 +154,7 @@ export function CreateOrganizationModal({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <CreateButton label="Salvar" onClick={handleSave} />

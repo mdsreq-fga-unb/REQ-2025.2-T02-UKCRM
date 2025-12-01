@@ -144,7 +144,7 @@ export function DeleteMemberModal({
         </div>
 
         <DialogFooter className="justify-center gap-2">
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>
           <DeleteButton

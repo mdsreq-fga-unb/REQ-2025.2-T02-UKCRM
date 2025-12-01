@@ -14,8 +14,6 @@ import {
   useDeleteTeam,
 } from "./hooks/useTeams";
 import { useMembers } from "@/pages/Membros/hooks/useMembers";
-import { shouldUseMock } from "@/config/features";
-import { featureFlags } from "@/config/features";
 import CreateButton from "@/components/CreateButton";
 
 interface Team {
@@ -26,43 +24,6 @@ interface Team {
   memberIds?: number[];
 }
 
-const mockTeams: Team[] = [
-  { id: 1, nome: "Time Alpha", membros: 5, dataCriacao: "14/10/2025" },
-  { id: 2, nome: "Time Beta", membros: 8, dataCriacao: "12/10/2025" },
-  { id: 3, nome: "Time Gamma", membros: 3, dataCriacao: "10/10/2025" },
-];
-
-const mockMembers = [
-  {
-    id: "1",
-    name: "Ana Clara",
-    role: "Closer",
-    initials: "AC",
-    color: "#059669",
-  },
-  {
-    id: "2",
-    name: "Bruno Esteves",
-    role: "SDR",
-    initials: "BE",
-    color: "#0891b2",
-  },
-  {
-    id: "3",
-    name: "Carla Souza",
-    role: "Closer",
-    initials: "CS",
-    color: "#7c3aed",
-  },
-  {
-    id: "4",
-    name: "Daniel Pereira",
-    role: "SDR",
-    initials: "DP",
-    color: "#dc2626",
-  },
-];
-
 const columns: Column<Team>[] = [
   { key: "nome", header: "Nome do Time" },
   { key: "membros", header: "Nº de Membros" },
@@ -71,7 +32,6 @@ const columns: Column<Team>[] = [
 
 const Times = () => {
   const { hasPermission } = usePermissions();
-  const useMockData = shouldUseMock(featureFlags.USE_MOCK_TEAMS);
 
   // Backend integration
   const { data: apiTeamsData } = useTeams();
@@ -96,9 +56,6 @@ const Times = () => {
 
   // Transform API data to match component interface
   const teams = useMemo(() => {
-    if (useMockData) {
-      return mockTeams;
-    }
     if (!apiTeamsData) return [];
     return apiTeamsData.map(
       (team: {
@@ -115,13 +72,10 @@ const Times = () => {
         memberIds: team.members || [],
       }),
     );
-  }, [useMockData, apiTeamsData]);
+  }, [apiTeamsData]);
 
   // Transform members data for the modal
   const availableMembers = useMemo(() => {
-    if (useMockData) {
-      return mockMembers;
-    }
     if (!apiMembersData) return [];
 
     return apiMembersData.map(
@@ -152,7 +106,7 @@ const Times = () => {
         };
       },
     );
-  }, [useMockData, apiMembersData]);
+  }, [apiMembersData]);
 
   const filteredTeams = teams.filter((team) =>
     team.nome.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -231,17 +185,12 @@ const Times = () => {
         onOpenChange={setIsCreateOpen}
         availableMembers={availableMembers}
         onSave={(name, members) => {
-          if (useMockData) {
-            console.log("Create team:", name, members);
-            setIsCreateOpen(false);
-          } else {
-            createTeamMutation({
-              name,
-              member_ids: members.map((m) =>
-                parseInt(typeof m === "string" ? m : m.id),
-              ),
-            });
-          }
+          createTeamMutation({
+            name,
+            member_ids: members.map((m) =>
+              parseInt(typeof m === "string" ? m : m.id),
+            ),
+          });
         }}
       />
       <EditTeamModal
@@ -255,10 +204,7 @@ const Times = () => {
           (m: { id: string }) => !selectedTeamMembers.includes(parseInt(m.id)),
         )}
         onSave={(name, members) => {
-          if (useMockData) {
-            console.log("Edit team:", name, members);
-            setIsEditOpen(false);
-          } else if (selectedTeam) {
+          if (selectedTeam) {
             updateTeamMutation({
               id: selectedTeam.id,
               payload: {
@@ -276,10 +222,7 @@ const Times = () => {
         onOpenChange={setIsDeleteOpen}
         teamName={selectedTeam?.nome || ""}
         onConfirm={() => {
-          if (useMockData) {
-            console.log("Delete confirmed");
-            setIsDeleteOpen(false);
-          } else if (selectedTeam) {
+          if (selectedTeam) {
             deleteTeamMutation(selectedTeam.id);
           }
         }}

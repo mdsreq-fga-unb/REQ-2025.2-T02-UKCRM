@@ -149,11 +149,7 @@ export function AssignLeadDialog({
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isPending}
-          >
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <Button

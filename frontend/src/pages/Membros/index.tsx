@@ -12,8 +12,6 @@ import {
   useUpdateMember,
   useDeleteMember,
 } from "./hooks/useMembers";
-import { shouldUseMock } from "@/config/features";
-import { featureFlags } from "@/config/features";
 import {
   Dialog,
   DialogContent,
@@ -42,17 +40,6 @@ interface Member {
   dataEntrada: string;
 }
 
-const mockMembers: Member[] = [
-  { id: 1, nome: "Ugi Nam", hierarquia: "Closer", dataEntrada: "14/10/2025" },
-  { id: 2, nome: "Brenda Silva", hierarquia: "SDR", dataEntrada: "12/10/2025" },
-  {
-    id: 3,
-    nome: "Luis Terra",
-    hierarquia: "Coordenador de Vendas",
-    dataEntrada: "10/10/2025",
-  },
-];
-
 const hierarchyOptions = [
   "Closer",
   "SDR",
@@ -79,7 +66,6 @@ const hierarchyToRoleMap: Record<string, string> = {
 const Membros = () => {
   const { hasPermission } = usePermissions();
   const { user } = useAuthContext();
-  const useMockData = shouldUseMock(featureFlags.USE_MOCK_MEMBERS);
 
   // Backend integration
   const { data: apiMembersData } = useMembers();
@@ -115,9 +101,6 @@ const Membros = () => {
 
   // Transform API data to match component interface
   const members = useMemo(() => {
-    if (useMockData) {
-      return mockMembers;
-    }
     if (!apiMembersData) return [];
     return apiMembersData.map(
       (member: {
@@ -134,7 +117,7 @@ const Membros = () => {
         dataEntrada: new Date(member.joined_at).toLocaleDateString("pt-BR"),
       }),
     );
-  }, [useMockData, apiMembersData]);
+  }, [apiMembersData]);
 
   const filteredMembers = members.filter((member) =>
     member.nome.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -155,9 +138,13 @@ const Membros = () => {
     setIsDeleteOpen(true);
   };
 
-  const availableMembersForReallocation = mockMembers
-    .filter((m) => m.id !== selectedMember?.id)
-    .map((m) => ({ id: String(m.id), name: m.nome }));
+  // Get available members from API data for reallocation
+  const availableMembersForReallocation = useMemo(() => {
+    if (!apiMembersData) return [];
+    return apiMembersData
+      .filter((m) => m.id !== selectedMember?.id)
+      .map((m) => ({ id: String(m.id), name: m.name }));
+  }, [apiMembersData, selectedMember]);
 
   // Permission checks
   const canCreateMember = hasPermission("member:create");
@@ -285,38 +272,33 @@ const Membros = () => {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
+            <Button variant="secondary" onClick={() => setIsCreateOpen(false)}>
               Cancelar
             </Button>
             <Button
               variant="invite"
               onClick={() => {
-                if (useMockData) {
-                  console.log("Create member:", formData);
-                  setIsCreateOpen(false);
-                } else {
-                  if (formData.password !== formData.confirmPassword) {
-                    alert("As senhas não coincidem");
-                    return;
-                  }
-                  if (!user?.organization_id) {
-                    alert("Erro: organização não encontrada");
-                    return;
-                  }
-                  const role = hierarchyToRoleMap[formData.hierarchy];
-                  if (!role) {
-                    alert("Erro: hierarquia inválida");
-                    return;
-                  }
-                  const payload = {
-                    name: formData.name,
-                    email: formData.email,
-                    role: role,
-                    organization_id: user.organization_id,
-                  };
-                  console.log("Sending payload:", payload);
-                  createMemberMutation(payload);
+                if (formData.password !== formData.confirmPassword) {
+                  alert("As senhas não coincidem");
+                  return;
                 }
+                if (!user?.organization_id) {
+                  alert("Erro: organização não encontrada");
+                  return;
+                }
+                const role = hierarchyToRoleMap[formData.hierarchy];
+                if (!role) {
+                  alert("Erro: hierarquia inválida");
+                  return;
+                }
+                const payload = {
+                  name: formData.name,
+                  email: formData.email,
+                  role: role,
+                  organization_id: user.organization_id,
+                };
+                console.log("Sending payload:", payload);
+                createMemberMutation(payload);
               }}
             >
               <Send className="h-4 w-4" />
@@ -386,61 +368,54 @@ const Membros = () => {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+            <Button variant="secondary" onClick={() => setIsEditOpen(false)}>
               Cancelar
             </Button>
             <Button
               onClick={() => {
-                if (useMockData) {
-                  console.log("Edit member:", editFormData);
-                  setIsEditOpen(false);
-                } else {
-                  if (!selectedMember) return;
+                if (!selectedMember) return;
 
-                  // Validate passwords if user is trying to change password
-                  if (editFormData.password || editFormData.confirmPassword) {
-                    if (
-                      editFormData.password !== editFormData.confirmPassword
-                    ) {
-                      alert("As senhas não coincidem");
-                      return;
-                    }
-                    if (editFormData.password.length < 8) {
-                      alert("A senha deve ter pelo menos 8 caracteres");
-                      return;
-                    }
-                    if (!/[A-Z]/.test(editFormData.password)) {
-                      alert("A senha deve conter letras maiúsculas");
-                      return;
-                    }
-                    if (!/[a-z]/.test(editFormData.password)) {
-                      alert("A senha deve conter letras minúsculas");
-                      return;
-                    }
-                    if (!/\d/.test(editFormData.password)) {
-                      alert("A senha deve conter números");
-                      return;
-                    }
-                    if (!/[!@#$%^&*(),.?":{}|<>]/.test(editFormData.password)) {
-                      alert("A senha deve conter símbolos");
-                      return;
-                    }
+                // Validate passwords if user is trying to change password
+                if (editFormData.password || editFormData.confirmPassword) {
+                  if (editFormData.password !== editFormData.confirmPassword) {
+                    alert("As senhas não coincidem");
+                    return;
                   }
-
-                  const payload: { name: string; password?: string } = {
-                    name: editFormData.name,
-                  };
-
-                  // Only include password if it's being changed
-                  if (editFormData.password) {
-                    payload.password = editFormData.password;
+                  if (editFormData.password.length < 8) {
+                    alert("A senha deve ter pelo menos 8 caracteres");
+                    return;
                   }
-
-                  updateMemberMutation({
-                    id: selectedMember.id,
-                    payload,
-                  });
+                  if (!/[A-Z]/.test(editFormData.password)) {
+                    alert("A senha deve conter letras maiúsculas");
+                    return;
+                  }
+                  if (!/[a-z]/.test(editFormData.password)) {
+                    alert("A senha deve conter letras minúsculas");
+                    return;
+                  }
+                  if (!/\d/.test(editFormData.password)) {
+                    alert("A senha deve conter números");
+                    return;
+                  }
+                  if (!/[!@#$%^&*(),.?":{}|<>]/.test(editFormData.password)) {
+                    alert("A senha deve conter símbolos");
+                    return;
+                  }
                 }
+
+                const payload: { name: string; password?: string } = {
+                  name: editFormData.name,
+                };
+
+                // Only include password if it's being changed
+                if (editFormData.password) {
+                  payload.password = editFormData.password;
+                }
+
+                updateMemberMutation({
+                  id: selectedMember.id,
+                  payload,
+                });
               }}
             >
               Salvar
@@ -456,11 +431,7 @@ const Membros = () => {
         memberName={selectedMember?.nome || ""}
         availableMembers={availableMembersForReallocation}
         onConfirm={(action: string, targetId?: string) => {
-          if (useMockData) {
-            console.log("Delete confirmed:", action, targetId);
-            setIsDeleteOpen(false);
-            setSelectedMember(null);
-          } else if (selectedMember) {
+          if (selectedMember) {
             deleteMemberMutation({
               id: selectedMember.id,
               payload: {

@@ -56,7 +56,7 @@ export function DeleteLeadDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isPending}>
+          <Button variant="secondary" onClick={onClose}>
             Cancelar
           </Button>
 

@@ -56,7 +56,7 @@ export function EditTeamModal({
   const filteredAvailable = available.filter(
     (m) =>
       m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.role.toLowerCase().includes(searchTerm.toLowerCase())
+      m.role.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleRemoveMember = (member: Member) => {
@@ -78,7 +78,9 @@ export function EditTeamModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl max-h-[85vh]">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">Editar Time</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">
+            Editar Time
+          </DialogTitle>
           <p className="text-sm text-muted-foreground">
             Altere o nome e a composição de membros do time de vendas.
           </p>
@@ -99,7 +101,9 @@ export function EditTeamModal({
           <div className="grid grid-cols-2 gap-6">
             {/* Current Members */}
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Membros Atuais do Time</Label>
+              <Label className="text-sm font-medium">
+                Membros Atuais do Time
+              </Label>
               <ScrollArea className="h-[280px] rounded-lg border border-border p-2">
                 <div className="space-y-2">
                   {members.length === 0 ? (
@@ -146,7 +150,9 @@ export function EditTeamModal({
 
             {/* Available Members */}
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Adicionar Novos Membros</Label>
+              <Label className="text-sm font-medium">
+                Adicionar Novos Membros
+              </Label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -202,7 +208,7 @@ export function EditTeamModal({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <Button onClick={handleSave}>Salvar Alterações</Button>

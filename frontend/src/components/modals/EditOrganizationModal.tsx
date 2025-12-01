@@ -53,7 +53,7 @@ export function EditOrganizationModal({
   open,
   onOpenChange,
   organization,
-  
+
   onSave,
 }: EditOrganizationModalProps) {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -144,7 +144,11 @@ export function EditOrganizationModal({
                     </AvatarFallback>
                   </Avatar>
                   <label htmlFor="logo-upload">
-                    <Button variant="outline" asChild className="cursor-pointer">
+                    <Button
+                      variant="outline"
+                      asChild
+                      className="cursor-pointer"
+                    >
                       <span>
                         <Upload className="h-4 w-4 mr-2" />
                         Alterar Logo
@@ -244,9 +248,7 @@ export function EditOrganizationModal({
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
-                            <p className="text-sm font-medium">
-                              {member.name}
-                            </p>
+                            <p className="text-sm font-medium">{member.name}</p>
                             <p className="text-xs text-muted-foreground">
                               {member.email} • {member.role}
                             </p>
@@ -257,7 +259,8 @@ export function EditOrganizationModal({
                   </div>
                 </ScrollArea>
                 <p className="text-xs text-muted-foreground">
-                  Para adicionar ou remover membros, use a página de Gestão de Membros
+                  Para adicionar ou remover membros, use a página de Gestão de
+                  Membros
                 </p>
               </div>
             </div>
@@ -265,7 +268,7 @@ export function EditOrganizationModal({
         </ScrollArea>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <Button onClick={handleSave}>

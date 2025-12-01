@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { } from "lucide-react";
+import {} from "lucide-react";
 import DeleteButton from "@/components/DeleteButton";
 
 interface DeleteOrganizationModalProps {
@@ -64,7 +64,7 @@ export function DeleteOrganizationModal({
         </div>
 
         <DialogFooter className="justify-center gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <DeleteButton

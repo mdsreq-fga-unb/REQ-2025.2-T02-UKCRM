@@ -22,7 +22,7 @@ interface GainLossDialogProps {
     leadId: number | string,
     status: "Gained" | "Lost",
     value: number,
-    reason: string
+    reason: string,
   ) => void;
 }
 
@@ -132,7 +132,7 @@ export function GainLossDialog({
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button variant="secondary" onClick={onClose}>
               Cancelar
             </Button>
             <Button

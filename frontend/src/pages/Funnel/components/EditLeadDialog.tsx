@@ -465,7 +465,7 @@ export function EditLeadDialog({
                 <>
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                     onClick={() => onOpenChange(false)}
                     disabled={isPending}
                   >

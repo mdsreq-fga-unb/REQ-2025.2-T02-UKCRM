@@ -55,7 +55,7 @@ export function DeleteTeamModal({
         </div>
 
         <DialogFooter className="justify-center gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <DeleteButton label="Sim, Excluir" onClick={handleConfirm} />

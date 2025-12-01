@@ -137,7 +137,10 @@ export function LeadFormDialog({
   }, [lead, isOpen]);
 
   const handleAddInterest = () => {
-    if (interestInput.trim() && !formData.interests.includes(interestInput.trim())) {
+    if (
+      interestInput.trim() &&
+      !formData.interests.includes(interestInput.trim())
+    ) {
       setFormData({
         ...formData,
         interests: [...formData.interests, interestInput.trim()],
@@ -274,10 +277,7 @@ export function LeadFormDialog({
           <section className="space-y-4">
             <h3 className="text-sm font-semibold">Interesses</h3>
             <div className="flex gap-2">
-              <Select
-                value={interestInput}
-                onValueChange={setInterestInput}
-              >
+              <Select value={interestInput} onValueChange={setInterestInput}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione um interesse" />
                 </SelectTrigger>
@@ -370,7 +370,8 @@ export function LeadFormDialog({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="earning">
-                  Valor Potencial (R$) <span className="text-destructive">*</span>
+                  Valor Potencial (R$){" "}
+                  <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="earning"
@@ -422,7 +423,7 @@ export function LeadFormDialog({
           </section>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button variant="secondary" type="button" onClick={onClose}>
               Cancelar
             </Button>
             <Button type="submit">
