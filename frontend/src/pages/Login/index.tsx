@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { AlertBanner } from "@/components/ui/alert-banner";
 import { useAuthContext } from "@/auth/context/AuthContext";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,18 +40,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-primary/5 via-background to-secondary/10">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <img src="/uk.webp" alt="UK Logo" className="h-10 w-10" />
-            <h1 className="text-2xl font-bold text-primary">UK-CRM</h1>
-          </div>
-          <Button onClick={() => navigate("/")} variant="ghost">
-            Voltar
-          </Button>
-        </div>
-      </header>
+      <PublicHeader showBackButton />
 
       {/* Login Form */}
       <main className="container mx-auto flex min-h-[calc(100vh-5rem)] items-center justify-center px-6 py-12">
@@ -61,7 +52,7 @@ const Login = () => {
                 <img
                   src="/uk.webp"
                   alt="UK Marketing Digital"
-                  className="h-20 w-20 drop-shadow-md"
+                  className="h-20 w-[138px] drop-shadow-md"
                 />
               </div>
               <h2 className="mb-2 text-2xl font-bold text-foreground">
@@ -143,24 +134,11 @@ const Login = () => {
                 )}
               </Button>
             </form>
-
-            {/* Footer */}
-            <div className="mt-6 text-center text-sm text-muted-foreground">
-              <p>
-                Desenvolvido por{" "}
-                <a
-                  href="https://ukmarketingdigital.com.br"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold text-primary hover:underline"
-                >
-                  UK Marketing Digital
-                </a>
-              </p>
-            </div>
           </div>
         </div>
       </main>
+      {/* Footer */}
+      <PublicFooter/>
     </div>
   );
 };

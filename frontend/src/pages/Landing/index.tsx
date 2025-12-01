@@ -1,29 +1,15 @@
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Mail, Phone, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 
 const Landing = () => {
   const navigate = useNavigate();
 
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/10">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <img src="/uk.webp" alt="UK Logo" className="h-10 w-10" />
-            <h1 className="text-2xl font-bold text-primary">UK-CRM</h1>
-          </div>
-          <Button onClick={handleLoginClick} variant="outline">
-            Login
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      </header>
+      <PublicHeader showLoginButton />
 
       {/* Hero Section */}
       <main className="container mx-auto px-6 py-16">
@@ -34,7 +20,7 @@ const Landing = () => {
               <img
                 src="/uk.webp"
                 alt="UK Marketing Digital"
-                className="h-32 w-32 drop-shadow-lg"
+                className="h-32 w-[221px] drop-shadow-lg"
               />
             </div>
 
@@ -56,7 +42,7 @@ const Landing = () => {
             </p>
 
             <div className="flex flex-wrap justify-center gap-4">
-              <Button onClick={handleLoginClick} size="lg" className="gap-2">
+              <Button onClick={() => navigate("/login")} size="lg" className="gap-2">
                 Começar Agora
                 <ArrowRight className="h-5 w-5" />
               </Button>
@@ -148,38 +134,7 @@ const Landing = () => {
             </div>
           </div>
 
-          {/* Footer */}
-          <footer className="border-t pt-8 text-center">
-            <div className="mb-6 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-              <a
-                href="https://ukmarketingdigital.com.br"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:text-primary"
-              >
-                <MapPin className="h-4 w-4" />
-                UK Marketing Digital
-              </a>
-              <a
-                href="mailto:contato@ukmarketingdigital.com.br"
-                className="flex items-center gap-2 hover:text-primary"
-              >
-                <Mail className="h-4 w-4" />
-                contato@ukmarketingdigital.com.br
-              </a>
-              <a
-                href="tel:+5511999999999"
-                className="flex items-center gap-2 hover:text-primary"
-              >
-                <Phone className="h-4 w-4" />
-                (11) 99999-9999
-              </a>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} UK Marketing Digital. Todos os
-              direitos reservados.
-            </p>
-          </footer>
+          <PublicFooter />
         </div>
       </main>
     </div>

@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import FilterButton from "@/components/FilterButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -23,16 +22,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { formSchema } from "../schemas/funnel.schema";
 import { useSalesTeams } from "../hooks/useTeams";
@@ -251,89 +243,80 @@ export function EditFunnelDialog({
                   )}
                 />
 
-                <div className="flex flex-col items-center gap-4">
+                <div className="space-y-4">
                   <span className="text-left w-full text-muted-foreground">
                     Time de Vendas
                   </span>
-                  <FilterButton
-                    className="mr-auto"
-                    value={filterTerm}
-                    onChange={(e) => setFilterTerm(e.target.value)}
-                  />
+
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      placeholder="Buscar time..."
+                      value={filterTerm}
+                      onChange={(e) => setFilterTerm(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
 
                   <FormField
                     control={form.control}
                     name="teamIds"
                     render={({ field }) => (
-                      <FormItem className="w-full rounded-md border gap-0">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead className="w-[50px]"></TableHead>
-                              <TableHead className="w-auto">Nome do Time</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                        </Table>
-                        <ScrollArea className="h-[150px]">
-                          <Table>
-                            <TableBody>
-                              {isLoadingTeams ? (
-                                <TableRow>
-                                  <TableCell
-                                    colSpan={2}
-                                    className="text-center py-4"
+                      <FormItem>
+                        <ScrollArea className="h-[300px] rounded-md border border-border">
+                          {isLoadingTeams ? (
+                            <div className="text-center py-4 text-muted-foreground">
+                              Carregando...
+                            </div>
+                          ) : filteredTeams.length === 0 ? (
+                            <div className="text-center py-4 text-muted-foreground">
+                              Nenhum time encontrado
+                            </div>
+                          ) : (
+                            <div className="p-2 space-y-1">
+                              {filteredTeams.map((team) => {
+                                const teamIdStr = team.id.toString();
+                                const isChecked = field.value?.includes(teamIdStr);
+
+                                const handleToggle = () => {
+                                  const currentSelection = field.value || [];
+                                  if (isChecked) {
+                                    field.onChange(
+                                      currentSelection.filter(
+                                        (value: string) => value !== teamIdStr,
+                                      ),
+                                    );
+                                  } else {
+                                    field.onChange([
+                                      ...currentSelection,
+                                      teamIdStr,
+                                    ]);
+                                  }
+                                };
+
+                                return (
+                                  <div
+                                    key={team.id}
+                                    className="flex items-center justify-between rounded-md p-3 hover:bg-muted/50 cursor-pointer"
+                                    onClick={handleToggle}
                                   >
-                                    Carregando times...
-                                  </TableCell>
-                                </TableRow>
-                              ) : filteredTeams.length === 0 ? (
-                                <TableRow>
-                                  <TableCell
-                                    colSpan={2}
-                                    className="text-center py-4"
-                                  >
-                                    Nenhum time encontrado.
-                                  </TableCell>
-                                </TableRow>
-                              ) : (
-                                filteredTeams.map((team) => {
-                                  const teamIdStr = team.id.toString();
-                                  return (
-                                    <TableRow key={team.id}>
-                                      <TableCell className="w-[50px]">
-                                        <FormControl>
-                                          <Checkbox
-                                            checked={field.value?.includes(
-                                              teamIdStr,
-                                            )}
-                                            onCheckedChange={(isChecked) => {
-                                              const currentSelection =
-                                                field.value || [];
-                                              if (isChecked) {
-                                                field.onChange([
-                                                  ...currentSelection,
-                                                  teamIdStr,
-                                                ]);
-                                              } else {
-                                                field.onChange(
-                                                  currentSelection.filter(
-                                                    (value) => value !== teamIdStr,
-                                                  ),
-                                                );
-                                              }
-                                            }}
-                                          />
-                                        </FormControl>
-                                      </TableCell>
-                                      <TableCell className="w-auto">
-                                        {team.name}
-                                      </TableCell>
-                                    </TableRow>
-                                  );
-                                })
-                              )}
-                            </TableBody>
-                          </Table>
+                                    <div>
+                                      <p className="text-sm font-medium">{team.name}</p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {team.members.length} {team.members.length === 1 ? 'membro' : 'membros'}
+                                      </p>
+                                    </div>
+                                    <div onClick={(e) => e.stopPropagation()}>
+                                      <Checkbox
+                                        checked={isChecked}
+                                        onCheckedChange={handleToggle}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </ScrollArea>
                         <FormMessage />
                       </FormItem>

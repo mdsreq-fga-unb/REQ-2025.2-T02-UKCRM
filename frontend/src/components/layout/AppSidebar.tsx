@@ -102,10 +102,7 @@ export function AppSidebar() {
         </div>
 
         <div className="flex items-center justify-center py-4">
-          <div className="text-4xl font-bold tracking-tight">
-            <span className="text-primary">U</span>
-            <span className="text-warning">K</span>
-          </div>
+          <img src="/uk.webp" alt="UK Logo" className="h-12 w-[83px]" />
         </div>
       </div>
     </aside>
