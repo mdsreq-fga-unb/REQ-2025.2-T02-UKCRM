@@ -151,6 +151,7 @@ def profile_view(request):
             'organization': None,
             'teams': [],
             'joined_at': request.user.date_joined.isoformat(),
+            'photo': None,
         }, status=status.HTTP_200_OK)
 
     try:
@@ -165,9 +166,11 @@ def profile_view(request):
             'email': request.user.email,
             'nome': request.user.first_name,
             'role': employee.role,
+            'photo': request.build_absolute_uri(employee.photo.url) if employee.photo else None,
             'organization': {
                 'id': employee.organization.id,
                 'name': employee.organization.name,
+                'logo': request.build_absolute_uri(employee.organization.logo.url) if employee.organization.logo else None,
             },
             'teams': teams_data,
             'joined_at': request.user.date_joined.isoformat(),
@@ -204,6 +207,12 @@ def update_profile_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+    # Update photo if provided (for employees)
+    if 'photo' in request.FILES and hasattr(user, 'employee_profile'):
+        employee = user.employee_profile
+        employee.photo = request.FILES['photo']
+        employee.save()
+
     # Return updated profile - build response directly instead of calling profile_view
     if user.is_staff:
         return Response({
@@ -214,6 +223,7 @@ def update_profile_view(request):
             'organization': None,
             'teams': [],
             'joined_at': user.date_joined.isoformat(),
+            'photo': None,
         }, status=status.HTTP_200_OK)
 
     try:
@@ -228,9 +238,11 @@ def update_profile_view(request):
             'email': user.email,
             'nome': user.first_name,
             'role': employee.role,
+            'photo': request.build_absolute_uri(employee.photo.url) if employee.photo else None,
             'organization': {
                 'id': employee.organization.id,
                 'name': employee.organization.name,
+                'logo': request.build_absolute_uri(employee.organization.logo.url) if employee.organization.logo else None,
             },
             'teams': teams_data,
             'joined_at': user.date_joined.isoformat(),

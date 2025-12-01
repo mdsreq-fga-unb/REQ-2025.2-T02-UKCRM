@@ -160,7 +160,7 @@ const Organizacoes = () => {
       setEditOrgData({
         id: orgDetails.id,
         name: orgDetails.name,
-        logo: undefined,
+        logo: orgDetails.logo,
         ownerName: orgDetails.owner_name,
         ownerEmail: orgDetails.owner_email,
         members: organizationMembers,
@@ -214,6 +214,7 @@ const Organizacoes = () => {
         name: string;
         owner_name_input: string;
         owner_password?: string;
+        logo?: File;
       } = {
         name: formData.name,
         owner_name_input: formData.ownerName,
@@ -221,6 +222,10 @@ const Organizacoes = () => {
 
       if (formData.ownerPassword) {
         updatePayload.owner_password = formData.ownerPassword;
+      }
+
+      if (formData.logo) {
+        updatePayload.logo = formData.logo;
       }
 
       // Update organization details

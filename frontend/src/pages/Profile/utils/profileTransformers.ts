@@ -1,4 +1,4 @@
-import type { ApiProfile, ApiUpdateProfilePayload } from "../api/profile.api";
+import type { ApiProfile } from "../api/profile.api";
 import type { Profile, UpdateProfilePayload } from "../types/profile.types";
 
 export function transformApiProfile(apiProfile: ApiProfile): Profile {
@@ -7,6 +7,7 @@ export function transformApiProfile(apiProfile: ApiProfile): Profile {
     email: apiProfile.email,
     nome: apiProfile.nome,
     role: apiProfile.role,
+    photo: apiProfile.photo,
     organization: apiProfile.organization,
     teams: apiProfile.teams,
     joinedAt: new Date(apiProfile.joined_at),
@@ -15,9 +16,20 @@ export function transformApiProfile(apiProfile: ApiProfile): Profile {
 
 export function transformUpdateProfilePayload(
   payload: UpdateProfilePayload
-): ApiUpdateProfilePayload {
-  return {
-    nome: payload.nome,
-    password: payload.password,
-  };
+): FormData {
+  const formData = new FormData();
+
+  if (payload.nome) {
+    formData.append('nome', payload.nome);
+  }
+
+  if (payload.password) {
+    formData.append('password', payload.password);
+  }
+
+  if (payload.photo) {
+    formData.append('photo', payload.photo);
+  }
+
+  return formData;
 }

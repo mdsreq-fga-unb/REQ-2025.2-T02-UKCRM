@@ -24,6 +24,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "email",
             "hierarchy",
             "role",
+            "photo",
             "organization",
             "organization_name",
             "joined_at",
@@ -78,9 +79,10 @@ class InviteUserSerializer(serializers.Serializer):
 class UpdateEmployeeSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255, required=False)
     password = serializers.CharField(write_only=True, required=False, min_length=8)
+    photo = serializers.ImageField(required=False)
 
     def update(self, instance, validated_data):
-        """Update employee name and/or password"""
+        """Update employee name, password and/or photo"""
         user = instance.user
 
         # Update name if provided
@@ -92,6 +94,11 @@ class UpdateEmployeeSerializer(serializers.Serializer):
             user.set_password(validated_data["password"])
 
         user.save()
+
+        # Update photo if provided
+        if "photo" in validated_data:
+            instance.photo = validated_data["photo"]
+            instance.save()
 
         # Update organization if provided
         if "organization_id" in validated_data:

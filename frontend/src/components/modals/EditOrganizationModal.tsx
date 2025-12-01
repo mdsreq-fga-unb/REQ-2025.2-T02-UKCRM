@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Upload, Save } from "lucide-react";
 import {
   editOrganizationSchema,
@@ -41,6 +40,7 @@ interface OrganizationDetails {
 
 export interface EditOrganizationFormData extends EditOrganizationFormValues {
   id: number;
+  logo?: File;
 }
 
 interface EditOrganizationModalProps {
@@ -114,7 +114,7 @@ export function EditOrganizationModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh]">
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             Editar Organização
@@ -124,8 +124,8 @@ export function EditOrganizationModal({
           </p>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ScrollArea className="max-h-[calc(90vh-180px)] pr-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col overflow-hidden">
+          <div className="overflow-y-auto pr-4 flex-1">
             <div className="space-y-6 py-4">
               {/* Seção de Dados da Organização */}
               <div className="space-y-4">
@@ -237,7 +237,7 @@ export function EditOrganizationModal({
 
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Membros Atuais</Label>
-                  <ScrollArea className="h-[280px] rounded-lg border border-border p-2">
+                  <div className="h-[280px] rounded-lg border border-border p-2 overflow-y-auto">
                     <div className="space-y-2">
                       {members.length === 0 ? (
                         <p className="text-center text-sm text-muted-foreground py-4">
@@ -269,7 +269,7 @@ export function EditOrganizationModal({
                         ))
                       )}
                     </div>
-                  </ScrollArea>
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Para adicionar ou remover membros, use a página de Gestão de
                     Membros
@@ -277,9 +277,9 @@ export function EditOrganizationModal({
                 </div>
               </div>
             </div>
-          </ScrollArea>
+          </div>
 
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <Button
               type="button"
               variant="secondary"

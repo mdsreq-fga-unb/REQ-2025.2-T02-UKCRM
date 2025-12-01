@@ -6,6 +6,7 @@ export type Team = {
 export type Organization = {
   id: number;
   name: string;
+  logo?: string | null;
 };
 
 export type Profile = {
@@ -13,6 +14,7 @@ export type Profile = {
   email: string;
   nome: string;
   role: string;
+  photo?: string | null;
   organization: Organization | null;
   teams: Team[];
   joinedAt: Date;
@@ -21,4 +23,5 @@ export type Profile = {
 export type UpdateProfilePayload = {
   nome?: string;
   password?: string;
+  photo?: File;
 };

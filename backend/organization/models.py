@@ -4,6 +4,7 @@ from django.db import models
 class Organization(models.Model):
 
     name = models.CharField(max_length=255, verbose_name="Nome da Organização")
+    logo = models.ImageField(upload_to='organization_logos/', null=True, blank=True, verbose_name="Logo da Organização")
 
     active = models.BooleanField(default=True, verbose_name="Ativo")
 

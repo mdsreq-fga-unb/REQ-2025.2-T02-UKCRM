@@ -16,14 +16,16 @@ export async function apiClient<T>(
   const config: RequestInit = {
     method,
     headers: {
-      "Content-Type": "application/json",
+      ...(!(body instanceof FormData) && { "Content-Type": "application/json" }),
       ...(token && { Authorization: `Bearer ${token}` }),
       ...headers,
     },
     ...customConfig,
   };
 
-  if (body) config.body = JSON.stringify(body);
+  if (body) {
+    config.body = body instanceof FormData ? body : JSON.stringify(body);
+  }
   const fullUrl = `${API_BASE_URL}${endpoint}`;
   const response = await fetch(fullUrl, config);
   if (!response.ok) {

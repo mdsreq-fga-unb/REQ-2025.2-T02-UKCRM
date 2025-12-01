@@ -7,6 +7,7 @@ export type ApiMember = {
   name: string;
   email: string;
   hierarchy: string;
+  photo?: string | null;
   organization: number;
   organization_name: string;
   joined_at: string;

@@ -18,7 +18,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'owner', 'owner_name_input', 'owner_email_input', 'owner_password', 'owner_name', 'owner_email', 'active', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'logo', 'owner', 'owner_name_input', 'owner_email_input', 'owner_password', 'owner_name', 'owner_email', 'active', 'created_at', 'updated_at']
         read_only_fields = ['id', 'active', 'created_at', 'updated_at']
 
     def get_owner_name(self, obj):

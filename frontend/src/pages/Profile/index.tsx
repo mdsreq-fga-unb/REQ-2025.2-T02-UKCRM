@@ -28,6 +28,8 @@ const Profile = () => {
   const { data: profile, isLoading: isLoadingProfile } = useProfile();
   const updateProfileMutation = useUpdateProfile();
   const [showPasswordField, setShowPasswordField] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
 
   const {
     register,
@@ -49,15 +51,36 @@ const Profile = () => {
         nome: profile.nome,
         password: "",
       });
+      setPhotoPreview(profile.photo || null);
     }
   }, [profile, reset]);
 
-  const handlePhotoChange = () => {
-    alert("Funcionalidade de alteração de foto será implementada em breve!");
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecione apenas arquivos de imagem');
+        return;
+      }
+
+      // Validate file size (2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('A imagem deve ter no máximo 2MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setSelectedPhoto(file);
+    }
   };
 
   const onSubmit = (data: ProfileFormValues) => {
-    const payload: { nome?: string; password?: string } = {};
+    const payload: { nome?: string; password?: string; photo?: File } = {};
 
     if (data.nome !== profile?.nome) {
       payload.nome = data.nome;
@@ -65,6 +88,10 @@ const Profile = () => {
 
     if (data.password && data.password.length > 0) {
       payload.password = data.password;
+    }
+
+    if (selectedPhoto) {
+      payload.photo = selectedPhoto;
     }
 
     if (Object.keys(payload).length > 0) {
@@ -75,6 +102,7 @@ const Profile = () => {
             password: "",
           });
           setShowPasswordField(false);
+          setSelectedPhoto(null);
 
           // Mostrar mensagem de sucesso
           if (payload.password) {
@@ -171,23 +199,34 @@ const Profile = () => {
                     <div className="flex flex-col items-center space-y-4">
                       <div className="relative">
                         <Avatar className="h-32 w-32 border-4 border-muted">
-                          <AvatarImage src="" alt={profile.nome} />
+                          <AvatarImage src={photoPreview || ""} alt={profile.nome} />
                           <AvatarFallback className="text-4xl bg-primary text-primary-foreground">
                             {getInitials(profile.nome)}
                           </AvatarFallback>
                         </Avatar>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="absolute bottom-0 right-0 h-10 w-10 rounded-full p-0 shadow-lg"
-                          onClick={handlePhotoChange}
-                          type="button"
-                        >
-                          <Camera className="h-4 w-4" />
-                        </Button>
+                        <label htmlFor="photo-upload">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="absolute bottom-0 right-0 h-10 w-10 rounded-full p-0 shadow-lg"
+                            type="button"
+                            asChild
+                          >
+                            <span className="cursor-pointer flex items-center justify-center">
+                              <Camera className="h-4 w-4" />
+                            </span>
+                          </Button>
+                          <input
+                            id="photo-upload"
+                            type="file"
+                            accept="image/jpeg,image/png,image/jpg"
+                            className="hidden"
+                            onChange={handlePhotoChange}
+                          />
+                        </label>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Clique no ícone para alterar foto
+                        Clique no ícone para alterar foto (JPG/PNG, máx. 2MB)
                       </p>
                     </div>
 
@@ -284,7 +323,17 @@ const Profile = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="font-medium">{profile.organization.name}</p>
+                    <div className="flex items-center gap-3">
+                      {profile.organization.logo && (
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={profile.organization.logo} alt={profile.organization.name} />
+                          <AvatarFallback>
+                            {profile.organization.name.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      <p className="font-medium">{profile.organization.name}</p>
+                    </div>
                   </CardContent>
                 </Card>
               )}
