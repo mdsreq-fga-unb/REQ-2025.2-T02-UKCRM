@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -39,6 +39,14 @@ export function CreateTeamModal({
   const [teamName, setTeamName] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
+  // Limpar formulário quando o modal fechar
+  useEffect(() => {
+    if (!open) {
+      setTeamName("");
+      setSelectedIds([]);
+    }
+  }, [open]);
+
   const toggleMember = (memberId: string) => {
     setSelectedIds((prev) =>
       prev.includes(memberId)
@@ -51,8 +59,6 @@ export function CreateTeamModal({
     const selected = availableMembers.filter((m) => selectedIds.includes(m.id));
     onSave?.(teamName, selected);
     onOpenChange(false);
-    setTeamName("");
-    setSelectedIds([]);
   };
 
   return (

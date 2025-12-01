@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +41,17 @@ export function CreateOrganizationModal({
     proprietario: { nome: "", email: "", senha: "" },
   });
 
+  // Limpar formulário quando o modal fechar
+  useEffect(() => {
+    if (!open) {
+      setFormData({
+        nome: "",
+        proprietario: { nome: "", email: "", senha: "" },
+      });
+      setLogoPreview(null);
+    }
+  }, [open]);
+
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -56,8 +67,6 @@ export function CreateOrganizationModal({
   const handleSave = () => {
     onSave?.(formData);
     onOpenChange(false);
-    setFormData({ nome: "", proprietario: { nome: "", email: "", senha: "" } });
-    setLogoPreview(null);
   };
 
   return (

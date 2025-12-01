@@ -18,6 +18,7 @@ export type ApiMemberCreatePayload = {
   email: string;
   role: string;
   organization_id: number;
+  password?: string;
 };
 
 export type ApiMemberUpdatePayload = {
@@ -44,7 +45,10 @@ export const createMember = (payload: ApiMemberCreatePayload) =>
   apiClient<ApiMember>("/api/members/", { method: "POST", body: payload });
 
 export const updateMember = (id: number, payload: ApiMemberUpdatePayload) =>
-  apiClient<ApiMember>(`/api/members/${id}/`, { method: "PATCH", body: payload });
+  apiClient<ApiMember>(`/api/members/${id}/`, {
+    method: "PATCH",
+    body: payload,
+  });
 
 export const deleteMember = (id: number, payload?: ApiMemberDeletePayload) =>
   apiClient(`/api/members/${id}/`, { method: "DELETE", body: payload });

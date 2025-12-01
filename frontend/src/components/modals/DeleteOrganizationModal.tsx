@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,13 +26,19 @@ export function DeleteOrganizationModal({
 }: DeleteOrganizationModalProps) {
   const [confirmText, setConfirmText] = useState("");
 
+  // Limpar texto de confirmação quando o modal fechar
+  useEffect(() => {
+    if (!open) {
+      setConfirmText("");
+    }
+  }, [open]);
+
   const isConfirmEnabled = confirmText === organizationName;
 
   const handleConfirm = () => {
     if (isConfirmEnabled) {
       onConfirm?.();
       onOpenChange(false);
-      setConfirmText("");
     }
   };
 

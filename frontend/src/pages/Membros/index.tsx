@@ -77,20 +77,6 @@ const Membros = () => {
   const { hasPermission } = usePermissions();
   const { user } = useAuthContext();
 
-  // Backend integration
-  const { data: apiMembersData } = useMembers();
-  const { mutate: createMemberMutation } = useCreateMember(() =>
-    setIsCreateOpen(false),
-  );
-  const { mutate: updateMemberMutation } = useUpdateMember(() => {
-    setIsEditOpen(false);
-    setSelectedMember(null);
-  });
-  const { mutate: deleteMemberMutation } = useDeleteMember(() => {
-    setIsDeleteOpen(false);
-    setSelectedMember(null);
-  });
-
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("nome-asc");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -108,6 +94,32 @@ const Membros = () => {
     name: "",
     password: "",
     confirmPassword: "",
+  });
+
+  // Backend integration
+  const { data: apiMembersData } = useMembers();
+  const { mutate: createMemberMutation } = useCreateMember(() => {
+    setIsCreateOpen(false);
+    setFormData({
+      name: "",
+      email: "",
+      hierarchy: "",
+      password: "",
+      confirmPassword: "",
+    });
+  });
+  const { mutate: updateMemberMutation } = useUpdateMember(() => {
+    setIsEditOpen(false);
+    setSelectedMember(null);
+    setEditFormData({
+      name: "",
+      password: "",
+      confirmPassword: "",
+    });
+  });
+  const { mutate: deleteMemberMutation } = useDeleteMember(() => {
+    setIsDeleteOpen(false);
+    setSelectedMember(null);
   });
 
   // Transform API data to match component interface
@@ -348,6 +360,7 @@ const Membros = () => {
                   email: formData.email,
                   role: role,
                   organization_id: user.organization_id,
+                  password: formData.password,
                 };
                 console.log("Sending payload:", payload);
                 createMemberMutation(payload);
