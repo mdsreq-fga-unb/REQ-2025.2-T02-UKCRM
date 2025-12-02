@@ -222,7 +222,7 @@ const Membros = () => {
   return (
     <AppShell
       breadcrumbs={[
-        { label: "Organizações", href: "/" },
+        { label: "Início", href: "/" },
         { label: "Gerenciamento de Membros" },
       ]}
       className="p-0"

@@ -272,7 +272,7 @@ const Organizacoes = () => {
   return (
     <AppShell
       breadcrumbs={[
-        { label: "Organizações", href: "/organizacoes" },
+        { label: "Início", href: "/" },
         { label: "Gestão de Organizações" },
       ]}
       className="p-0"

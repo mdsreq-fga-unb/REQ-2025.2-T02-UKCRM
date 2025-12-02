@@ -30,8 +30,8 @@ function Funnel() {
   return (
     <AppShell
       breadcrumbs={[
-        { label: "Organizações", href: "/" },
-        { label: "Gerenciamento de Funils" },
+        { label: "Início", href: "/" },
+        { label: "Gerenciamento de Funis" },
       ]}
       className="p-0"
     >

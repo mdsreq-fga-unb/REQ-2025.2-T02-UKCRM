@@ -187,7 +187,7 @@ const Times = () => {
   return (
     <AppShell
       breadcrumbs={[
-        { label: "Organizações", href: "/" },
+        { label: "Início", href: "/" },
         { label: "Gerenciamento de Times" },
       ]}
       className="p-0"
