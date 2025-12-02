@@ -9,6 +9,10 @@ Somos estudantes da **Universidade de Brasília (UnB) | Faculdade do Gama (FGA)*
 
 O UKCRM foi projetado para otimizar a gestão de relacionamento com o cliente, oferecendo funcionalidades como funil de vendas, gerenciamento de leads, equipes e organizações. A plataforma visa centralizar as informações, melhorar a comunicação entre as equipes de vendas e fornecer insights valiosos para a tomada de decisões estratégicas.
 
+<a href="http://ukcrm.cloud/" target="_blank">
+  <img src="https://img.shields.io/badge/TESTAR_O_SITE-ukcrm.cloud-2ea44f?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Testar Site UKCRM" />
+</a>
+
 ## Tech Stack
 
 <table>
