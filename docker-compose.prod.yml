@@ -11,6 +11,8 @@ services:
   backend:
     image: marcosviniciusg/backend_django:latest
     container_name: backend_django
+    volumes:
+      - media_files:/app/media
     env_file:
       - .env.prod
     depends_on:
@@ -30,3 +32,4 @@ services:
 
 volumes:
   postgres_data:
+  media_files:
