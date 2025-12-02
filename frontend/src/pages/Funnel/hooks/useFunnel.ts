@@ -1,0 +1,569 @@
+import { useQueryClient } from "@tanstack/react-query";
+import type { UniqueIdentifier } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  type ApiFunnel,
+  createStage as apiCreateStage,
+} from "../api/funnels.api";
+
+import { queryKeys } from "./queryKeys";
+import { createLead as apiCreateLead } from "../api/leads.api";
+import type { EditLeadFormValues } from "../components/EditLeadDialog";
+import { type FunnelFormValues } from "../schemas/funnel.schema";
+import type {
+  Column,
+  ColumnId,
+  Lead,
+  LeadDropEvent,
+} from "../types/kanban.types";
+
+import {
+  useCreateFunnel,
+  useCreateStage,
+  useDeleteFunnel,
+  useDeleteStage,
+  useFunnelDetails,
+  useFunnelsList,
+  useMoveStage,
+  useUpdateFunnel,
+  useUpdateStageName,
+  useUpdateStageVisibility,
+} from "./useFunnels";
+
+import {
+  useCreateLead,
+  useDeleteLead,
+  useEditLeadDetails,
+  useMarkLeadGainLoss,
+  useMoveLead,
+} from "./useLeads";
+import { useMembers } from "../../Membros/hooks/useMembers";
+import type { ApiMember } from "../../Membros/api/members.api";
+
+import {
+  extractId,
+  getColumnsWithSubtitles,
+  getFilteredAndSortedLeads,
+  mapApiDetailsToKanban,
+} from "../utils/funnelTransformers";
+
+export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
+  const queryClient = useQueryClient();
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [editingLead, setEditingLead] = useState<Lead | null>(null);
+  const [viewingLead, setViewingLead] = useState<Lead | null>(null);
+  const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
+  const [deletingLead, setDeletingLead] = useState<Lead | null>(null);
+  const [markingGainLossLead, setMarkingGainLossLead] = useState<Lead | null>(
+    null,
+  );
+  const [funnelToDelete, setFunnelToDelete] = useState<string | null>(null);
+  const [filterTerm, setFilterTerm] = useState("");
+  const [sortCriteria, setSortCriteria] = useState<string | null>(null);
+  const [selectedFunnelId, setSelectedFunnelId] = useState<string | null>(null);
+  const [stageSettingsId, setStageSettingsId] = useState<UniqueIdentifier | null>(null);
+
+  // LEITURA
+
+  const { data: funnelsData, isLoading: isLoadingFunnels } = useFunnelsList();
+  const { data: membersData } = useMembers();
+
+  const { data: funnelDetailsData, isLoading: isLoadingFunnelDetails } =
+    useFunnelDetails(selectedFunnelId);
+
+  // ESCRITA - FUNIS
+
+  const { mutate: createFunnel, isPending: isCreatingFunnel } = useCreateFunnel(
+    async (newFunnel) => {
+      try {
+        // 1. Criar etapas padrão
+        const stagePromises = initialCols.map((col, index) =>
+          apiCreateStage({
+            name: col.title,
+            funnel: newFunnel.id,
+            order: index,
+          }),
+        );
+
+        const createdStages = await Promise.all(stagePromises);
+
+        // Mapa de ID temporário para ID real
+        const colIdMap: Record<string, number> = {};
+        initialCols.forEach((col, index) => {
+          if (createdStages[index]) {
+            colIdMap[col.id] = createdStages[index].id;
+          }
+        });
+
+        // 2. Criar leads padrão
+        const leadsPerColumn: Record<number, number> = {};
+        const leadPromises = initialLeads.map((lead) => {
+          const stageId = colIdMap[lead.columnId];
+          if (!stageId) return Promise.resolve(null);
+
+          const currentOrder = leadsPerColumn[stageId] || 0;
+          leadsPerColumn[stageId] = currentOrder + 1;
+
+          const [emailPart, phonePart] = lead.content.split("|");
+
+          return apiCreateLead({
+            name: lead.name,
+            stage: stageId,
+            order: currentOrder,
+            email: emailPart?.trim() || null,
+            phone: phonePart?.trim() || "",
+            earning: lead.earning,
+            temperature: lead.temperature,
+            content: lead.content,
+          });
+        });
+
+        await Promise.all(leadPromises);
+
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.funnels.detail(newFunnel.id.toString()),
+        });
+      } catch (error) {
+        console.error("Erro ao popular dados iniciais:", error);
+      }
+
+      setIsCreateOpen(false);
+      setSelectedFunnelId(newFunnel.id.toString());
+    },
+  );
+
+  const { mutate: updateFunnel, isPending: isUpdatingFunnel } = useUpdateFunnel(
+    () => {
+      setIsEditOpen(false);
+    },
+  );
+
+  const { mutate: deleteFunnel, isPending: isDeletingFunnel } = useDeleteFunnel(
+    () => {
+      setIsDeleteOpen(false);
+      setFunnelToDelete(null);
+      setSelectedFunnelId(null);
+    },
+  );
+
+  // ESCRITA - LEADS E ETAPAS
+
+  const { mutate: moveLead } = useMoveLead(selectedFunnelId, setLeads);
+  const { mutate: moveStage } = useMoveStage(selectedFunnelId);
+  const { mutate: createLead, isPending: isCreatingLead } = useCreateLead(
+    selectedFunnelId,
+    setLeads,
+  );
+
+  const { mutate: editLead, isPending: isEditingLead } = useEditLeadDetails(
+    selectedFunnelId,
+    setLeads,
+  );
+
+  const { mutate: deleteLead, isPending: isDeletingLead } = useDeleteLead(
+    selectedFunnelId,
+    setLeads,
+  );
+
+  const { mutate: markGainLoss, isPending: isMarkingGainLoss } =
+    useMarkLeadGainLoss(selectedFunnelId, setLeads);
+
+  const { mutate: createStage, isPending: isCreatingStage } =
+    useCreateStage(selectedFunnelId);
+
+  const { mutate: deleteStage, isPending: isDeletingStage } =
+    useDeleteStage(selectedFunnelId);
+
+  const { mutate: updateStageName } = useUpdateStageName(selectedFunnelId);
+
+  const { mutate: updateStageVisibility, isPending: isUpdatingStageVisibility } =
+    useUpdateStageVisibility(selectedFunnelId);
+
+  // DADOS
+
+  const funnelsList = useMemo(() => {
+    const data = funnelsData as ApiFunnel[] | undefined;
+    return (
+      data?.map((f) => ({
+        value: f.id.toString(),
+        label: f.name,
+      })) || []
+    );
+  }, [funnelsData]);
+
+  const selectedFunnelName = useMemo(() => {
+    return funnelsList.find((f) => f.value === selectedFunnelId)?.label || "";
+  }, [funnelsList, selectedFunnelId]);
+
+  const filteredLeads = useMemo(
+    () => getFilteredAndSortedLeads(leads, filterTerm, sortCriteria),
+    [leads, filterTerm, sortCriteria],
+  );
+
+  const columnsWithSubtitles = useMemo(
+    () => getColumnsWithSubtitles(columns, leads),
+    [columns, leads],
+  );
+
+  const allowedMemberIds = useMemo(() => {
+    if (!selectedFunnelId || !funnelsData) return undefined;
+
+    const funnel = (funnelsData as ApiFunnel[]).find(
+      (f) => f.id.toString() === selectedFunnelId,
+    );
+    if (!funnel) return undefined;
+
+    const memberIds = new Set<number>();
+    funnel.teams.forEach((team) => {
+      team.members.forEach((m) => memberIds.add(m));
+    });
+
+    return Array.from(memberIds);
+  }, [selectedFunnelId, funnelsData]);
+
+  // EFEITOS
+
+  useEffect(() => {
+    if (funnelsList.length > 0) {
+      const currentExists = funnelsList.some(
+        (f) => f.value === selectedFunnelId,
+      );
+      if (!selectedFunnelId || !currentExists) {
+        setSelectedFunnelId(funnelsList[0].value);
+      }
+    } else if (funnelsList.length === 0 && selectedFunnelId) {
+      setSelectedFunnelId(null);
+    }
+  }, [funnelsList, selectedFunnelId]);
+
+  useEffect(() => {
+    if (!funnelDetailsData) {
+      setColumns([]);
+      setLeads([]);
+      return;
+    }
+    const mapped = mapApiDetailsToKanban(funnelDetailsData);
+    setColumns(mapped.columns);
+    setLeads(mapped.leads);
+  }, [funnelDetailsData, initialCols, initialLeads]);
+
+  useEffect(() => {
+    setFilterTerm("");
+    setSortCriteria(null);
+  }, [selectedFunnelId]);
+
+  // HANDLERS
+
+  const getLeadsForColumn = useCallback(
+    (columnId: ColumnId) =>
+      filteredLeads.filter((l) => l.columnId === columnId),
+    [filteredLeads],
+  );
+
+  const handleLeadDrop = useCallback(
+    (event: LeadDropEvent) => {
+      const { leadId, newColumnId, newOrder } = event;
+      moveLead({
+        id: extractId(leadId),
+        stage: extractId(newColumnId),
+        order: newOrder,
+      });
+    },
+    [moveLead],
+  );
+
+  const handleColumnDrop = useCallback(
+    (columnId: UniqueIdentifier, newOrder: number) => {
+      setColumns((prev) => {
+        const oldIndex = prev.findIndex((c) => c.id === columnId);
+        if (oldIndex === -1) return prev;
+        return arrayMove(prev, oldIndex, newOrder);
+      });
+
+      moveStage({
+        id: extractId(columnId),
+        order: newOrder,
+      });
+    },
+    [moveStage],
+  );
+
+  const handleColumnsChange = useCallback<Dispatch<SetStateAction<Column[]>>>(
+    (updater) => {
+      setColumns((prev) => {
+        return typeof updater === "function" ? updater(prev) : updater;
+      });
+    },
+    [],
+  );
+
+  const handleAddLead = useCallback(
+    (columnId: ColumnId) => {
+      createLead({
+        name: "Novo Lead",
+        stage: extractId(columnId),
+        order: 0,
+      });
+    },
+    [createLead],
+  );
+
+  const handleAddColumn = useCallback(() => {
+    if (selectedFunnelId) {
+      createStage({
+        name: "Nova Etapa",
+        funnel: Number(selectedFunnelId),
+        order: columns.length,
+      });
+    }
+  }, [selectedFunnelId, createStage, columns.length]);
+
+  const handleDeleteLead = useCallback(
+    (leadId: number) => {
+      deleteLead(leadId);
+      setDeletingLead(null);
+    },
+    [deleteLead],
+  );
+
+  const handleMarkGainLoss = useCallback(
+    (status: "Gained" | "Lost" | "Active", value: number, reason?: string) => {
+      if (markingGainLossLead) {
+        markGainLoss({
+          id: extractId(markingGainLossLead.id),
+          status,
+          value,
+          reason,
+        });
+        setMarkingGainLossLead(null);
+      }
+    },
+    [markingGainLossLead, markGainLoss],
+  );
+
+  const handleEditColumnName = useCallback(
+    (columnId: UniqueIdentifier, newName: string) => {
+      updateStageName({ id: extractId(columnId), name: newName });
+    },
+    [updateStageName],
+  );
+
+  const handleStageSettings = useCallback(
+    (columnId: UniqueIdentifier) => {
+      setStageSettingsId(columnId);
+    },
+    [],
+  );
+
+  const handleSaveStageVisibility = useCallback(
+    (stageId: number, visibility: { visible_to_sdr: boolean; visible_to_closer: boolean }) => {
+      updateStageVisibility({ id: stageId, visibility });
+    },
+    [updateStageVisibility],
+  );
+
+  const handleDeleteStage = useCallback(
+    (stageId: number) => {
+      deleteStage(stageId);
+    },
+    [deleteStage],
+  );
+
+  const currentStageSettings = useMemo(() => {
+    if (!stageSettingsId) return null;
+    return columns.find((col: Column) => col.id === stageSettingsId);
+  }, [stageSettingsId, columns]);
+
+  // RETORNO
+  return useMemo(
+    () => ({
+      createDialog: {
+        open: isCreateOpen,
+        onOpenChange: setIsCreateOpen,
+        onSubmit: (vals: FunnelFormValues) => createFunnel(vals),
+        isPending: isCreatingFunnel,
+      },
+      editDialog: {
+        open: isEditOpen,
+        funnelId: selectedFunnelId,
+        onOpenChange: setIsEditOpen,
+        onSubmit: (vals: FunnelFormValues) => {
+          if (selectedFunnelId) {
+            updateFunnel({ id: Number(selectedFunnelId), formData: vals });
+          }
+        },
+        isPending: isUpdatingFunnel,
+      },
+      deleteDialog: {
+        open: isDeleteOpen,
+        onOpenChange: setIsDeleteOpen,
+        onSubmit: () => {
+          if (selectedFunnelId) deleteFunnel(Number(selectedFunnelId));
+        },
+        funnelName: funnelToDelete || "",
+        isPending: isDeletingFunnel,
+      },
+      editLeadDialog: {
+        open: !!editingLead,
+        lead: editingLead,
+        onOpenChange: (isOpen: boolean) => !isOpen && setEditingLead(null),
+        onSubmit: (values: EditLeadFormValues) => {
+          if (editingLead) {
+            editLead({
+              id: extractId(editingLead.id),
+              ...values,
+            });
+            setEditingLead(null);
+          }
+        },
+        isPending: isEditingLead,
+      },
+      viewLeadDialog: {
+        open: !!viewingLead,
+        lead: viewingLead,
+        onOpenChange: (isOpen: boolean) => !isOpen && setViewingLead(null),
+        onSubmit: () => setViewingLead(null),
+        isPending: false,
+        readOnly: true,
+      },
+      assignLeadDialog: {
+        open: !!assigningLead,
+        lead: assigningLead,
+        allowedMemberIds,
+        onOpenChange: (isOpen: boolean) => !isOpen && setAssigningLead(null),
+        onSubmit: (memberId: number) => {
+          if (assigningLead) {
+            editLead({
+              id: extractId(assigningLead.id),
+              account: memberId,
+            });
+            setAssigningLead(null);
+          }
+        },
+        isPending: isEditingLead,
+      },
+      deleteLeadDialog: {
+        open: !!deletingLead,
+        lead: deletingLead,
+        onClose: () => setDeletingLead(null),
+        onDelete: handleDeleteLead,
+        isPending: isDeletingLead,
+      },
+      markGainLossDialog: {
+        open: !!markingGainLossLead,
+        lead: markingGainLossLead,
+        onOpenChange: (isOpen: boolean) =>
+          !isOpen && setMarkingGainLossLead(null),
+        onSubmit: handleMarkGainLoss,
+        isPending: isMarkingGainLoss,
+      },
+      actionBar: {
+        onCreateFunnelClick: () => setIsCreateOpen(true),
+        onEditFunnelClick: () => setIsEditOpen(true),
+        onDeleteFunnelClick: () => {
+          if (selectedFunnelId) {
+            setFunnelToDelete(selectedFunnelName);
+            setIsDeleteOpen(true);
+          }
+        },
+        onFilterChange: setFilterTerm,
+        onSortChange: setSortCriteria,
+        funnels: funnelsList,
+        filterTerm,
+        isLoading: isLoadingFunnels,
+        selectedFunnelId: selectedFunnelId || "",
+        onFunnelSelect: setSelectedFunnelId,
+      },
+      kanban: {
+        columns: columnsWithSubtitles,
+        leads,
+        getFilteredAndSortedLeads: getLeadsForColumn,
+        onColumnsChange: handleColumnsChange,
+        onColumnDrop: handleColumnDrop,
+        onLeadDrop: handleLeadDrop,
+        onAddLead: handleAddLead,
+        onAddColumn: handleAddColumn,
+        onLeadEdit: setEditingLead,
+        onLeadView: setViewingLead,
+        onLeadAssign: setAssigningLead,
+        onLeadDelete: setDeletingLead,
+        onMarkGainLoss: setMarkingGainLossLead,
+        onEditColumnName: handleEditColumnName,
+        onStageSettings: handleStageSettings,
+        members: (membersData as ApiMember[]) || [],
+        isLoading: isLoadingFunnelDetails || isCreatingLead || isCreatingStage,
+      },
+      stageSettingsDialog: {
+        open: !!currentStageSettings,
+        stageName: currentStageSettings?.title || "",
+        stageId: currentStageSettings ? extractId(currentStageSettings.id) : 0,
+        visibleToSdr: currentStageSettings?.visible_to_sdr ?? true,
+        visibleToCloser: currentStageSettings?.visible_to_closer ?? true,
+        onOpenChange: (isOpen: boolean) => !isOpen && setStageSettingsId(null),
+        onSaveVisibility: handleSaveStageVisibility,
+        onDelete: handleDeleteStage,
+        isPending: isUpdatingStageVisibility || isDeletingStage,
+      },
+    }),
+    [
+      isCreateOpen,
+      isCreatingFunnel,
+      isEditOpen,
+      isUpdatingFunnel,
+      isDeleteOpen,
+      isDeletingFunnel,
+      funnelToDelete,
+      editingLead,
+      viewingLead,
+      assigningLead,
+      deletingLead,
+      markingGainLossLead,
+      allowedMemberIds,
+      isEditingLead,
+      isDeletingLead,
+      isMarkingGainLoss,
+      selectedFunnelId,
+      selectedFunnelName,
+      filterTerm,
+      funnelsList,
+      isLoadingFunnels,
+      isLoadingFunnelDetails,
+      isCreatingLead,
+      isCreatingStage,
+      columnsWithSubtitles,
+      leads,
+      membersData,
+      createFunnel,
+      updateFunnel,
+      deleteFunnel,
+      editLead,
+      handleDeleteLead,
+      handleMarkGainLoss,
+      getLeadsForColumn,
+      handleColumnsChange,
+      handleColumnDrop,
+      handleLeadDrop,
+      handleAddLead,
+      handleAddColumn,
+      handleEditColumnName,
+      handleStageSettings,
+      currentStageSettings,
+      handleSaveStageVisibility,
+      handleDeleteStage,
+      isUpdatingStageVisibility,
+      isDeletingStage,
+    ],
+  );
+}

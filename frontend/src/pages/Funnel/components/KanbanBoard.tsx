@@ -1,0 +1,133 @@
+import { Button } from "@/components/ui/button";
+import { usePermissions } from "@/auth/hooks/usePermissions";
+import { DndContext, DragOverlay, type UniqueIdentifier } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
+import { PlusIcon } from "lucide-react";
+import { type Dispatch, type SetStateAction, useMemo } from "react";
+import { createPortal } from "react-dom";
+import type {
+  Column,
+  ColumnId,
+  Lead,
+  LeadDropEvent,
+} from "../types/kanban.types";
+import type { ApiMember } from "../../Membros/api/members.api";
+import { useKanbanDrag } from "./../hooks/useKanbanDrag";
+import { BoardColumn, BoardContainer } from "./BoardColumn";
+import { LeadCard } from "./LeadCard";
+
+export type KanbanBoardProps = {
+  columns: Column[];
+  leads: Lead[];
+  members: ApiMember[];
+  getFilteredAndSortedLeads: (columnId: ColumnId) => Lead[];
+  onColumnsChange: Dispatch<SetStateAction<Column[]>>;
+  onColumnDrop: (columnId: UniqueIdentifier, newOrder: number) => void;
+  onLeadDrop: (event: LeadDropEvent) => void;
+  onAddLead: (columnId: ColumnId) => void;
+  onAddColumn: () => void;
+  onLeadEdit: (lead: Lead) => void;
+  onLeadView: (lead: Lead) => void;
+  onLeadAssign: (lead: Lead) => void;
+  onLeadDelete: (lead: Lead) => void;
+  onMarkGainLoss: (lead: Lead) => void;
+  onEditColumnName?: (columnId: UniqueIdentifier, newName: string) => void;
+  onStageSettings?: (columnId: UniqueIdentifier) => void;
+};
+
+export function KanbanBoard({
+  columns,
+  leads,
+  members,
+  getFilteredAndSortedLeads,
+  onColumnsChange,
+  onColumnDrop,
+  onLeadDrop,
+  onAddLead,
+  onAddColumn,
+  onLeadEdit,
+  onLeadView,
+  onLeadAssign,
+  onLeadDelete,
+  onMarkGainLoss,
+  onEditColumnName,
+  onStageSettings,
+}: KanbanBoardProps) {
+  const { hasPermission } = usePermissions();
+  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
+
+  const { activeColumn, activeLead, sensors, onDragStart, onDragEnd } =
+    useKanbanDrag({
+      columns,
+      leads,
+      onColumnsChange,
+      onColumnDrop,
+      onLeadDrop,
+    });
+
+  // Permission checks
+  const canCreateStep = hasPermission("funnel-step:create");
+
+  return (
+    <DndContext
+      sensors={sensors}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
+      <BoardContainer>
+        <SortableContext items={columnsId}>
+          {columns.map((col) => (
+            <BoardColumn
+              key={col.id}
+              column={col}
+              leads={getFilteredAndSortedLeads(col.id)}
+              members={members}
+              onAddLead={onAddLead}
+              onLeadEdit={onLeadEdit}
+              onLeadView={onLeadView}
+              onLeadAssign={onLeadAssign}
+              onLeadDelete={onLeadDelete}
+              onMarkGainLoss={onMarkGainLoss}
+              onEditColumnName={onEditColumnName}
+              onStageSettings={onStageSettings}
+            />
+          ))}
+        </SortableContext>
+        {canCreateStep && (
+          <Button
+            variant="outline"
+            className="h-full w-[350px] max-w-full shrink-0 snap-center flex items-center justify-center"
+            onClick={onAddColumn}
+          >
+            <PlusIcon /> Adicionar Etapa
+          </Button>
+        )}
+      </BoardContainer>
+
+      {"document" in window &&
+        createPortal(
+          <DragOverlay dropAnimation={null}>
+            {activeColumn && (
+              <BoardColumn
+                isOverlay
+                column={activeColumn}
+                leads={getFilteredAndSortedLeads(activeColumn.id)}
+                members={members}
+                onAddLead={onAddLead}
+                onLeadEdit={onLeadEdit}
+                onLeadView={onLeadView}
+                onLeadAssign={onLeadAssign}
+                onLeadDelete={onLeadDelete}
+                onMarkGainLoss={onMarkGainLoss}
+                onEditColumnName={onEditColumnName}
+              />
+            )}
+            {activeLead && (
+              <LeadCard lead={activeLead} members={members} isOverlay />
+            )}
+          </DragOverlay>,
+          document.body,
+        )}
+    </DndContext>
+  );
+}
