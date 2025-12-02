@@ -14,7 +14,7 @@ ARG VITE_API_BASE_URL
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 # Build de produção
-RUN npm run build
+RUN vite run build
 
 FROM nginx:alpine
 
