@@ -140,8 +140,6 @@ export function CreateFunnelDialog({
                         <TableRow>
                           <TableHead className="w-[50px]"></TableHead>
                           <TableHead className="w-auto">Nome do Time</TableHead>
-                          {/* Backend atual não manda contagem de membros, removido por enquanto */}
-                          {/* <TableHead className="w-[100px] text-right pr-3">Membros</TableHead> */}
                         </TableRow>
                       </TableHeader>
                     </Table>

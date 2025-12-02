@@ -19,7 +19,7 @@ export default function FilterButton({
   return (
     <ButtonGroup className={cn(className)}>
       <Input placeholder="Filtrar..." value={value} onChange={onChange} />
-      <Button variant="outline">
+      <Button type="button" variant="outline">
         <FilterIcon />
       </Button>
     </ButtonGroup>
