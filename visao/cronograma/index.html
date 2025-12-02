@@ -1191,51 +1191,52 @@
 <h1 id="5-cronograma-de-entregas">5. Cronograma de Entregas</h1>
 <div class="centered-text"><b>Tabela 4 - </b> Cronograma de Sprints com período, meta, itens do backlog e validação.</div>
 
+<h1 id="planejamento-de-sprints">Planejamento de Sprints</h1>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Sprint</th>
-<th style="text-align: left;">Período</th>
-<th style="text-align: left;">Meta da Sprint (Sprint Goal)</th>
-<th style="text-align: left;">Exemplos de Atividades e Itens do Backlog</th>
-<th style="text-align: left;">Validação</th>
+<th><strong>Sprint</strong></th>
+<th><strong>Período</strong></th>
+<th><strong>Meta da Sprint (Sprint Goal)</strong></th>
+<th><strong>Backlog da Sprint (User Stories Planejadas)</strong></th>
+<th><strong>Validação (Sprint Review)</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Sprint 0: Preparação</strong></td>
-<td style="text-align: left;">17/09/2025 – 01/10/2025</td>
-<td style="text-align: left;">Estabelecer a fundação técnica e de produto para que o desenvolvimento possa começar de forma eficiente e focada em valor.</td>
-<td style="text-align: left;">* Definição da visão do produto e backlog inicial.<br><em> Configuração do ambiente (Docker, CI/CD).<br></em> Desenvolvimento de Wireframes no Figma.</td>
-<td style="text-align: left;">* Backlog priorizado para a Sprint 1.<br><em> Ambiente de desenvolvimento funcional.<br></em> Wireframes iniciais aprovados.</td>
+<td><strong>Sprint 0: Setup e Fundação</strong></td>
+<td>17/09/2025 – 01/10/2025</td>
+<td>Preparar a infraestrutura técnica e o design system para suportar o desenvolvimento das funcionalidades de negócio.</td>
+<td>- Configuração de ambiente Docker e CI/CD.<br>- Definição da arquitetura de banco de dados.<br>- Criação do Design System e Wireframes de alta fidelidade no Figma.</td>
+<td>- Ambiente de homologação acessível.<br>- Pipeline de deploy automatizado rodando "Hello World".<br>- Protótipos navegáveis aprovados.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Sprint 1: Geração e Visualização de Leads</strong></td>
-<td style="text-align: left;">02/10/2025 – 16/10/2025</td>
-<td style="text-align: left;">Permitir que um vendedor possa registrar um novo lead manualmente e visualizá-lo em um quadro simples, representando o primeiro passo do funil de vendas.</td>
-<td style="text-align: left;">* US: Criar formulário para registrar informações do lead.<br><em> US: Visualizar leads em um quadro com colunas "Novo Lead" e "Em Contato".<br></em> Task: Criar modelo de dados para 'Leads'.</td>
-<td style="text-align: left;">* Demonstração da criação e visualização de um lead funcionando.<br>* Coleta de feedback sobre a usabilidade do formulário e clareza do quadro.</td>
+<td><strong>Sprint 1: Gestão Corporativa e Acesso</strong></td>
+<td>02/10/2025 – 16/10/2025</td>
+<td>Garantir estrutura administrativa funcional para cadastro da organização e usuários.</td>
+<td>- Gerenciar Organização (RF-1.1, RF-1.2, RF-1.3).<br>- Gerenciar Usuários (RF-2.1, RF-2.2, RF-2.3).</td>
+<td>Demonstração do onboarding: criar empresa, criar usuários administradores e vendedores, login/logout com sucesso.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Sprint 2: Movimentação de Leads e Detalhamento</strong></td>
-<td style="text-align: left;">17/10/2025 – 31/10/2025</td>
-<td style="text-align: left;">Evoluir o quadro Kanban, permitindo que o vendedor mova um lead entre as etapas do funil e adicione detalhes importantes sobre a negociação.</td>
-<td style="text-align: left;">* US: Arrastar e soltar um lead entre colunas.<br><em> US: Clicar em um lead para ver e editar detalhes.<br></em> US: Adicionar notas a um lead para registrar o histórico.</td>
-<td style="text-align: left;">* Funcionalidade de mover cards e editar detalhes validados com stakeholders.<br>* Verificação se o fluxo do quadro reflete o processo de vendas real.</td>
+<td><strong>Sprint 2: Estrutura Comercial</strong></td>
+<td>17/10/2025 – 31/10/2025</td>
+<td>Configurar o ecossistema comercial com funis e equipes de vendas.</td>
+<td>- Gerenciar Funil de Vendas (RF-3.1).<br>- Gerenciar Times de Vendas (RF-3.2, RF-3.3, RF-3.4).</td>
+<td>Configuração de Funil personalizado e alocação de usuários em Times de Vendas.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Sprint 3: Automação e Integração Inicial</strong></td>
-<td style="text-align: left;">01/11/2025 – 15/11/2025</td>
-<td style="text-align: left;">Automatizar a entrada de leads através da integração com uma API de formulário de contato do site, testando a eficácia do fluxo com clientes piloto.</td>
-<td style="text-align: left;">* US: Leads do formulário do site devem aparecer automaticamente no quadro.<br><em> Task: Desenvolver o serviço de integração para a API.<br></em> Convidar usuários-chave para testar o fluxo.</td>
-<td style="text-align: left;">* Demonstração ao vivo da integração funcionando.<br>* Apresentação do feedback inicial coletado dos testes com clientes piloto.</td>
+<td><strong>Sprint 3: Entrada e Gestão de Leads</strong></td>
+<td>01/11/2025 – 15/11/2025</td>
+<td>Permitir cadastro, distribuição e visualização completa de leads.</td>
+<td>- Manter Leads (RF-5.1, RF-5.2, RF-5.3).<br>- Detalhes e Atribuição (RF-3.5, RF-7.2).</td>
+<td>Criação de lead, atribuição a vendedor e visualização completa da ficha do cliente.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Sprint 4: Qualidade, Refinamento e Correções</strong></td>
-<td style="text-align: left;">16/11/2025 – 30/11/2025</td>
-<td style="text-align: left;">Aumentar a confiabilidade e a usabilidade do sistema com base no feedback dos testes, corrigindo os bugs mais críticos e garantindo que a solução esteja estável.</td>
-<td style="text-align: left;">* Correção de bugs críticos reportados.<br><em> Melhorar a performance de carregamento do quadro Kanban.<br></em> Refinar a interface (UI) com base no feedback de usabilidade.</td>
-<td style="text-align: left;">* Demonstração das correções e melhorias implementadas.<br><em> Análise das métricas de performance.<br></em> Validação final com os stakeholders para o lançamento.</td>
+<td><strong>Sprint 4: Fluxo de Negociação e Fechamento</strong></td>
+<td>16/11/2025 – 30/11/2025</td>
+<td>Operacionalizar ciclo de vida da venda: movimentação, qualificação e conclusão (Ganho/Perda).</td>
+<td>- Movimentação no Kanban (RF-4.1).<br>- Qualificação e Desfecho (RF-5.5, RF-6.2).</td>
+<td>Demonstração completa: mover lead, qualificar (quente/frio), marcar como Ganho ou Perdido.</td>
 </tr>
 </tbody>
 </table>
