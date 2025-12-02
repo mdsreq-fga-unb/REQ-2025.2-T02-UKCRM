@@ -12,9 +12,10 @@ class EmployeeSerializer(serializers.ModelSerializer):
     hierarchy = serializers.CharField(source="role", read_only=True)
     joined_at = serializers.DateTimeField(source="user.date_joined", read_only=True)
     updated_at = serializers.DateTimeField(source="user.date_joined", read_only=True)
-    organization_name = serializers.CharField(
-        source="organization.name", read_only=True
-    )
+    organization_name = serializers.SerializerMethodField()
+
+    def get_organization_name(self, obj):
+        return obj.organization.name if obj.organization else None
 
     class Meta:
         model = Employee

@@ -12,7 +12,7 @@ class Employee(models.Model):
     )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee_profile')
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='employees')
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='employees', null=True, blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, verbose_name="Nível de Hierarquia")
     photo = models.ImageField(upload_to='employee_photos/', null=True, blank=True, verbose_name="Foto do Perfil")
 

@@ -88,7 +88,7 @@ def login_view(request):
             'email': user.email,
             'nome': user.first_name,
             'role': employee.role,
-            'organization_id': employee.organization.id,
+            'organization_id': employee.organization.id if employee.organization else None,
             'photo': request.build_absolute_uri(employee.photo.url) if employee.photo else None,
         }
     }, status=status.HTTP_200_OK)
@@ -139,7 +139,7 @@ def me_view(request):
             'email': request.user.email,
             'nome': request.user.first_name,
             'role': employee.role,
-            'organization_id': employee.organization.id,
+            'organization_id': employee.organization.id if employee.organization else None,
             'photo': request.build_absolute_uri(employee.photo.url) if employee.photo else None,
         }, status=status.HTTP_200_OK)
     except:
@@ -190,7 +190,7 @@ def profile_view(request):
                 'id': employee.organization.id,
                 'name': employee.organization.name,
                 'logo': request.build_absolute_uri(employee.organization.logo.url) if employee.organization.logo else None,
-            },
+            } if employee.organization else None,
             'teams': teams_data,
             'joined_at': request.user.date_joined.isoformat(),
         }, status=status.HTTP_200_OK)
@@ -227,10 +227,22 @@ def update_profile_view(request):
             )
 
     # Update photo if provided (for employees and admins with employee profile)
-    if 'photo' in request.FILES and hasattr(user, 'employee_profile'):
-        employee = user.employee_profile
-        employee.photo = request.FILES['photo']
-        employee.save()
+    if 'photo' in request.FILES:
+        if hasattr(user, 'employee_profile'):
+            employee = user.employee_profile
+            employee.photo = request.FILES['photo']
+            employee.save()
+        elif user.is_staff:
+            # Create an Employee profile for admin if they don't have one
+            # This allows admins to have photos without belonging to an organization
+            from .models import Employee
+            employee = Employee.objects.create(
+                user=user,
+                organization=None,
+                role='owner'  # Default role for admin
+            )
+            employee.photo = request.FILES['photo']
+            employee.save()
 
     # Return updated profile - build response directly instead of calling profile_view
     if user.is_staff:
@@ -267,7 +279,7 @@ def update_profile_view(request):
                 'id': employee.organization.id,
                 'name': employee.organization.name,
                 'logo': request.build_absolute_uri(employee.organization.logo.url) if employee.organization.logo else None,
-            },
+            } if employee.organization else None,
             'teams': teams_data,
             'joined_at': user.date_joined.isoformat(),
         }, status=status.HTTP_200_OK)
