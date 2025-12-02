@@ -160,6 +160,11 @@ const Membros = () => {
   };
 
   const handleDelete = (member: Member) => {
+    // Prevent users from deleting themselves
+    if (user && member.email === user.email) {
+      alert("Você não pode excluir a si mesmo.");
+      return;
+    }
     setSelectedMember(member);
     setIsDeleteOpen(true);
   };
@@ -262,6 +267,7 @@ const Membros = () => {
             data={filteredMembers}
             onEdit={canEditMember ? handleEdit : undefined}
             onDelete={canDeleteMember ? handleDelete : undefined}
+            canDelete={(member: Member) => user?.email !== member.email}
           />
         </div>
       </div>

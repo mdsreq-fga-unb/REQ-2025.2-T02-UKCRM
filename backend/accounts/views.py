@@ -100,6 +100,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         if not self._is_organization_owner(employee_to_delete.organization):
             raise PermissionDenied("Apenas o proprietário da organização pode remover membros.")
 
+        # Prevent owner from deleting themselves
+        if employee_to_delete.user == request.user:
+            raise PermissionDenied("Você não pode excluir a si mesmo.")
+
         transfer_to_id = request.query_params.get('transfer_to')
 
         # Transfer leads to another employee if specified

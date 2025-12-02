@@ -23,6 +23,7 @@ interface DataTableProps<T> {
   data: T[];
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
+  canDelete?: (item: T) => boolean;
   className?: string;
   striped?: boolean;
 }
@@ -32,6 +33,7 @@ export function DataTable<T extends { id: string | number }>({
   data,
   onEdit,
   onDelete,
+  canDelete,
   className,
   striped = true,
 }: DataTableProps<T>) {
@@ -98,7 +100,7 @@ export function DataTable<T extends { id: string | number }>({
                           Editar
                         </Button>
                       )}
-                      {onDelete && (
+                      {onDelete && (canDelete ? canDelete(item) : true) && (
                         <Button
                           variant="ghost"
                           size="sm"
