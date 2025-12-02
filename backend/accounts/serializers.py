@@ -13,9 +13,18 @@ class EmployeeSerializer(serializers.ModelSerializer):
     joined_at = serializers.DateTimeField(source="user.date_joined", read_only=True)
     updated_at = serializers.DateTimeField(source="user.date_joined", read_only=True)
     organization_name = serializers.SerializerMethodField()
+    photo = serializers.SerializerMethodField()
 
     def get_organization_name(self, obj):
         return obj.organization.name if obj.organization else None
+
+    def get_photo(self, obj):
+        if obj.photo:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.photo.url)
+            return obj.photo.url
+        return None
 
     class Meta:
         model = Employee

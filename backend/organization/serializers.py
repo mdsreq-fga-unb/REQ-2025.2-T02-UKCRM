@@ -9,6 +9,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
     # Read fields for GET requests
     owner_name = serializers.SerializerMethodField()
     owner_email = serializers.SerializerMethodField()
+    logo = serializers.SerializerMethodField()
 
     # Write fields for POST/PATCH requests
     owner = serializers.CharField(write_only=True, required=False, help_text="Owner's full name (for create)")
@@ -31,6 +32,14 @@ class OrganizationSerializer(serializers.ModelSerializer):
         owner = obj.owner
         if owner:
             return owner.user.email
+        return None
+
+    def get_logo(self, obj):
+        if obj.logo:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.logo.url)
+            return obj.logo.url
         return None
 
     def validate_owner_email_temp(self, value):
