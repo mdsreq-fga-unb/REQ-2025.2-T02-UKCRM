@@ -9,9 +9,15 @@ Somos estudantes da **Universidade de Brasília (UnB) | Faculdade do Gama (FGA)*
 
 O UKCRM foi projetado para otimizar a gestão de relacionamento com o cliente, oferecendo funcionalidades como funil de vendas, gerenciamento de leads, equipes e organizações. A plataforma visa centralizar as informações, melhorar a comunicação entre as equipes de vendas e fornecer insights valiosos para a tomada de decisões estratégicas.
 
-<a href="http://ukcrm.cloud/" target="_blank">
-  <img src="https://img.shields.io/badge/TESTAR_O_SITE-ukcrm.cloud-2ea44f?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Testar Site UKCRM" />
-</a>
+<div align="center">
+  <a href="http://ukcrm.cloud/" target="_blank">
+    <img src="https://img.shields.io/badge/TESTAR_O_SITE-ukcrm.cloud-2ea44f?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Testar Site UKCRM" />
+  </a>
+  &nbsp;
+  <a href="https://mdsreq-fga-unb.github.io/REQ-2025.2-T02-UKCRM/" target="_blank">
+    <img src="https://img.shields.io/badge/DOCUMENTAÇÃO-Ler_Docs-007EC6?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Documentação do Projeto" />
+  </a>
+</div>
 
 ## Tech Stack
 
@@ -226,3 +232,9 @@ Este erro geralmente ocorre quando um novo campo é adicionado a um modelo Djang
     ```
 
 Isso sincronizará o banco de dados com os modelos Django, criando as tabelas ou colunas ausentes.
+
+## 🤝 Créditos e Agradecimentos
+
+Este projeto utiliza código e componentes adaptados do repositório [react-dnd-kit-tailwind-shadcn-ui](https://github.com/Georgegriff/react-dnd-kit-tailwind-shadcn-ui), desenvolvido por [George Griffith](https://github.com/Georgegriff).
+
+Agradecemos disponibilização da implementação base de Kanban/Drag-and-Drop utilizando `dnd-kit` e `shadcn/ui`, que acelerou o desenvolvimento das nossas funcionalidades de gestão de tarefas.
