@@ -337,6 +337,45 @@ class LeadViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def update(self, request, *args, **kwargs):
+        """Update a lead - prevent editing if marked as Gained/Lost"""
+        lead = self.get_object()
+
+        # Check if lead is locked (marked as Gained/Lost)
+        if lead.status in ['Gained', 'Lost']:
+            return Response(
+                {'error': 'Leads marcados como Ganho/Perda não podem ser editados. Desmarque primeiro.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        """Partial update a lead - prevent editing if marked as Gained/Lost"""
+        lead = self.get_object()
+
+        # Check if lead is locked (marked as Gained/Lost)
+        if lead.status in ['Gained', 'Lost']:
+            return Response(
+                {'error': 'Leads marcados como Ganho/Perda não podem ser editados. Desmarque primeiro.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Delete a lead - prevent deletion if marked as Gained/Lost"""
+        lead = self.get_object()
+
+        # Check if lead is locked (marked as Gained/Lost)
+        if lead.status in ['Gained', 'Lost']:
+            return Response(
+                {'error': 'Leads marcados como Ganho/Perda não podem ser excluídos. Desmarque primeiro.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().destroy(request, *args, **kwargs)
+
     @action(detail=True, methods=['post'], url_path='mark_gain_loss')
     def mark_gain_loss(self, request, pk=None):
         """Mark a lead as gained, lost, or unmark (set to active)"""

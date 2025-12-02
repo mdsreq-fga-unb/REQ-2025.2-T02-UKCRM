@@ -27,6 +27,7 @@ import {
   Mail,
   Phone,
   MessageCircle,
+  Lock,
 } from "lucide-react";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import type { ApiMember } from "@/pages/Membros/api/members.api";
@@ -60,6 +61,9 @@ export function LeadCard({
 
   const assignedMember = members?.find((m) => m.id === lead.assignedTo);
 
+  // Check if lead is locked (marked as Gained/Lost)
+  const isLocked = lead.status === "Gained" || lead.status === "Lost";
+
   const {
     setNodeRef,
     attributes,
@@ -76,6 +80,7 @@ export function LeadCard({
     attributes: {
       roleDescription: "Lead",
     },
+    disabled: isLocked, // Disable drag for locked leads
   });
 
   const style = {
@@ -103,10 +108,10 @@ export function LeadCard({
     return "";
   };
 
-  // Permission checks
-  const canEdit = hasPermission("lead:edit");
-  const canDelete = hasPermission("lead:delete");
-  const canAssign = hasPermission("lead:assign");
+  // Permission checks - locked leads can't be edited, deleted, or assigned
+  const canEdit = hasPermission("lead:edit") && !isLocked;
+  const canDelete = hasPermission("lead:delete") && !isLocked;
+  const canAssign = hasPermission("lead:assign") && !isLocked;
   const canMarkGainLoss = hasPermission("lead:status:change");
 
   const openWhatsApp = (e: React.MouseEvent, phone: string) => {
@@ -130,9 +135,10 @@ export function LeadCard({
             variant={"ghost"}
             {...attributes}
             {...listeners}
-            className="p-0 w-6 h-auto text-muted-foreground -ml-2 cursor-grab"
+            className={`p-0 w-6 h-auto text-muted-foreground -ml-2 ${isLocked ? 'cursor-not-allowed opacity-50' : 'cursor-grab'}`}
+            disabled={isLocked}
           >
-            <span className="sr-only">Move lead</span>
+            <span className="sr-only">{isLocked ? "Lead locked" : "Move lead"}</span>
             <GripVertical className="w-4 h-4" />
           </Button>
           <span
@@ -141,6 +147,9 @@ export function LeadCard({
           >
             {lead.name}
           </span>
+          {isLocked && (
+            <Lock className="h-3 w-3 text-muted-foreground ml-1" title="Lead finalizado" />
+          )}
           <InactivityBadge days={daysSince(lead.updatedAt)} />
           <TemperatureBadge variant={lead.temperature} className="ml-auto">
             {lead.temperature}
@@ -231,12 +240,15 @@ export function LeadCard({
             size="icon"
             variant="ghost"
             title={
-              assignedMember
+              isLocked
+                ? "Lead finalizado - desmarque para atribuir"
+                : assignedMember
                 ? `Atribuído a: ${assignedMember.name}`
                 : "Atribuir membro"
             }
             className="h-6 w-6"
-            onClick={() => onAssign?.(lead)}
+            onClick={() => !isLocked && onAssign?.(lead)}
+            disabled={isLocked}
           >
             <Avatar className="size-5">
               <AvatarImage src={assignedMember?.photo || ""} alt={assignedMember?.name} />
