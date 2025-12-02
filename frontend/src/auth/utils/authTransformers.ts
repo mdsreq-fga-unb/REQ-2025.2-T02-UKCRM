@@ -24,5 +24,6 @@ export function apiToUser(apiUser: ApiUser): User {
     nome: apiUser.nome,
     role: mapBackendRoleToFrontend(apiUser.role),
     organization_id: apiUser.organization_id,
+    photo: apiUser.photo,
   };
 }

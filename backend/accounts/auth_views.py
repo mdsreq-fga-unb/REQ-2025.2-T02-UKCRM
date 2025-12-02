@@ -52,6 +52,11 @@ def login_view(request):
 
     # Check if user is admin (staff/superuser)
     if user.is_staff:
+        # Check if admin has an employee profile with photo
+        admin_photo = None
+        if hasattr(user, 'employee_profile') and user.employee_profile.photo:
+            admin_photo = request.build_absolute_uri(user.employee_profile.photo.url)
+
         return Response({
             'token': str(refresh.access_token),
             'refresh': str(refresh),
@@ -61,6 +66,7 @@ def login_view(request):
                 'nome': user.first_name or user.username,
                 'role': 'Admin',
                 'organization_id': None,
+                'photo': admin_photo,
             }
         }, status=status.HTTP_200_OK)
 
@@ -83,6 +89,7 @@ def login_view(request):
             'nome': user.first_name,
             'role': employee.role,
             'organization_id': employee.organization.id,
+            'photo': request.build_absolute_uri(employee.photo.url) if employee.photo else None,
         }
     }, status=status.HTTP_200_OK)
 
@@ -111,12 +118,18 @@ def me_view(request):
     """
     # Check if user is admin (staff/superuser)
     if request.user.is_staff:
+        # Check if admin has an employee profile with photo
+        admin_photo = None
+        if hasattr(request.user, 'employee_profile') and request.user.employee_profile.photo:
+            admin_photo = request.build_absolute_uri(request.user.employee_profile.photo.url)
+
         return Response({
             'id': request.user.id,
             'email': request.user.email,
             'nome': request.user.first_name or request.user.username,
             'role': 'Admin',
             'organization_id': None,
+            'photo': admin_photo,
         }, status=status.HTTP_200_OK)
 
     try:
@@ -127,6 +140,7 @@ def me_view(request):
             'nome': request.user.first_name,
             'role': employee.role,
             'organization_id': employee.organization.id,
+            'photo': request.build_absolute_uri(employee.photo.url) if employee.photo else None,
         }, status=status.HTTP_200_OK)
     except:
         return Response(
@@ -143,6 +157,11 @@ def profile_view(request):
     """
     # Check if user is admin (staff/superuser)
     if request.user.is_staff:
+        # Check if admin has an employee profile with photo
+        admin_photo = None
+        if hasattr(request.user, 'employee_profile') and request.user.employee_profile.photo:
+            admin_photo = request.build_absolute_uri(request.user.employee_profile.photo.url)
+
         return Response({
             'id': request.user.id,
             'email': request.user.email,
@@ -151,7 +170,7 @@ def profile_view(request):
             'organization': None,
             'teams': [],
             'joined_at': request.user.date_joined.isoformat(),
-            'photo': None,
+            'photo': admin_photo,
         }, status=status.HTTP_200_OK)
 
     try:
@@ -207,7 +226,7 @@ def update_profile_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-    # Update photo if provided (for employees)
+    # Update photo if provided (for employees and admins with employee profile)
     if 'photo' in request.FILES and hasattr(user, 'employee_profile'):
         employee = user.employee_profile
         employee.photo = request.FILES['photo']
@@ -215,6 +234,11 @@ def update_profile_view(request):
 
     # Return updated profile - build response directly instead of calling profile_view
     if user.is_staff:
+        # Check if admin has an employee profile with photo
+        admin_photo = None
+        if hasattr(user, 'employee_profile') and user.employee_profile.photo:
+            admin_photo = request.build_absolute_uri(user.employee_profile.photo.url)
+
         return Response({
             'id': user.id,
             'email': user.email,
@@ -223,7 +247,7 @@ def update_profile_view(request):
             'organization': None,
             'teams': [],
             'joined_at': user.date_joined.isoformat(),
-            'photo': None,
+            'photo': admin_photo,
         }, status=status.HTTP_200_OK)
 
     try:

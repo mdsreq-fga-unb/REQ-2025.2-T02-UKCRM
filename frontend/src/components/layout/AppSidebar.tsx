@@ -41,6 +41,7 @@ export function AppSidebar() {
           <UserProfileCard
             nome={user.nome}
             cargo={getRoleLabel(user.role)}
+            avatar={user.photo || ""}
           />
         )}
       </div>

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Search } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -124,6 +124,7 @@ export function AssignLeadDialog({
                   >
                     <div className="flex items-center gap-3">
                       <Avatar className="h-9 w-9">
+                        <AvatarImage src={member.photo || ""} alt={member.name} />
                         <AvatarFallback
                           style={{ backgroundColor: getColor(member.name) }}
                           className="text-xs font-medium text-white"

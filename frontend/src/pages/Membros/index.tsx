@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { DataTable, type Column } from "@/components/ui/data-table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import { useAuthContext } from "@/auth/context/AuthContext";
 import { Search, ChartNoAxesCombinedIcon } from "lucide-react";
@@ -26,12 +27,36 @@ interface Member {
   id: number;
   nome: string;
   email?: string;
+  photo?: string | null;
   hierarquia: string;
   dataEntrada: string;
 }
 
+const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+
 const columns: Column<Member>[] = [
-  { key: "nome", header: "Nome do Membro" },
+  {
+    key: "nome",
+    header: "Nome do Membro",
+    render: (member: Member) => (
+      <div className="flex items-center gap-3">
+        <Avatar className="h-9 w-9">
+          <AvatarImage src={member.photo || ""} alt={member.nome} />
+          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+            {getInitials(member.nome)}
+          </AvatarFallback>
+        </Avatar>
+        <span>{member.nome}</span>
+      </div>
+    ),
+  },
   { key: "hierarquia", header: "Nível de Hierarquia" },
   { key: "dataEntrada", header: "Data de Entrada" },
 ];
@@ -79,11 +104,13 @@ const Membros = () => {
         name: string;
         email: string;
         hierarchy: string;
+        photo?: string | null;
         joined_at: string;
       }) => ({
         id: member.id,
         nome: member.name,
         email: member.email,
+        photo: member.photo,
         hierarquia: getHierarchyFromRole(member.hierarchy),
         dataEntrada: new Date(member.joined_at).toLocaleDateString("pt-BR"),
       }),

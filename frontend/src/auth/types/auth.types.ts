@@ -6,6 +6,7 @@ export interface User {
   nome: string;
   role: UserRole;
   organization_id: number;
+  photo?: string | null;
 }
 
 export interface LoginCredentials {

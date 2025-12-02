@@ -95,7 +95,7 @@ const Times = () => {
     if (!apiMembersData) return [];
 
     return apiMembersData.map(
-      (member: { id: number; name: string; hierarchy: string }) => {
+      (member: { id: number; name: string; hierarchy: string; photo?: string | null }) => {
         const initials = member.name
           .split(" ")
           .map((n) => n[0])
@@ -117,6 +117,7 @@ const Times = () => {
           id: String(member.id),
           name: member.name,
           role: getHierarchyFromRole(member.hierarchy),
+          photo: member.photo,
           initials,
           color,
         };

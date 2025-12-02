@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { DataTable, type Column } from "@/components/ui/data-table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AlertBanner } from "@/components/ui/alert-banner";
 import { usePermissions } from "@/auth/hooks/usePermissions";
 import { RefreshCw, Search, ChartNoAxesCombinedIcon } from "lucide-react";
@@ -40,9 +41,32 @@ interface OrganizationDetails {
   members: OrganizationMember[];
 }
 
+const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+
 const columns: Column<Organization>[] = [
   { key: "id", header: "ID" },
-  { key: "nome", header: "Nome" },
+  {
+    key: "nome",
+    header: "Nome",
+    render: (org: Organization) => (
+      <div className="flex items-center gap-3">
+        <Avatar className="h-9 w-9">
+          <AvatarImage src={org.logo || ""} alt={org.nome} />
+          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+            {getInitials(org.nome)}
+          </AvatarFallback>
+        </Avatar>
+        <span>{org.nome}</span>
+      </div>
+    ),
+  },
   { key: "dataCriacao", header: "Data de Criação" },
   { key: "dataAtualizacao", header: "Data de Atualização" },
   { key: "proprietario", header: "Proprietário" },

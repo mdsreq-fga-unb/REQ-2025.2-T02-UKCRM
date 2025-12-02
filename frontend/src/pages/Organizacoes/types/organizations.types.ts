@@ -5,6 +5,7 @@
 export interface Organization {
   id: number;
   nome: string;
+  logo?: string | null;
   dataCriacao: string;
   dataAtualizacao: string;
   proprietario: string;

@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Plus, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { editTeamSchema, type EditTeamFormValues } from "./schemas/team.schema";
@@ -20,6 +20,7 @@ interface Member {
   id: string;
   name: string;
   role: string;
+  photo?: string | null;
   initials: string;
   color: string;
 }
@@ -154,6 +155,7 @@ export function EditTeamModal({
                         >
                           <div className="flex items-center gap-3">
                             <Avatar className="h-9 w-9">
+                              <AvatarImage src={member.photo || ""} alt={member.name} />
                               <AvatarFallback
                                 style={{ backgroundColor: member.color }}
                                 className="text-xs font-medium text-white"
@@ -215,6 +217,7 @@ export function EditTeamModal({
                         >
                           <div className="flex items-center gap-3">
                             <Avatar className="h-9 w-9">
+                              <AvatarImage src={member.photo || ""} alt={member.name} />
                               <AvatarFallback
                                 style={{ backgroundColor: member.color }}
                                 className="text-xs font-medium text-white"

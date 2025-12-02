@@ -6,6 +6,7 @@ export type ApiUser = {
   nome: string;
   role: string;
   organization_id: number;
+  photo?: string | null;
 };
 
 export type ApiLoginPayload = {

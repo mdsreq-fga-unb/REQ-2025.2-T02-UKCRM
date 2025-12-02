@@ -7,6 +7,7 @@ export type ApiMember = {
   role: string;
   organization: number;
   organization_name: string;
+  photo?: string | null;
 };
 
 export const fetchMembers = (signal?: AbortSignal) =>

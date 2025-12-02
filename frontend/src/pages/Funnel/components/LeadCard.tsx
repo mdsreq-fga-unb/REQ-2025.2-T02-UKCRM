@@ -239,6 +239,7 @@ export function LeadCard({
             onClick={() => onAssign?.(lead)}
           >
             <Avatar className="size-5">
+              <AvatarImage src={assignedMember?.photo || ""} alt={assignedMember?.name} />
               <AvatarFallback className="text-[9px]">
                 {assignedMember ? (
                   assignedMember.name

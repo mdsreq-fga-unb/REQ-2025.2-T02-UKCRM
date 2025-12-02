@@ -8,6 +8,7 @@ export function apiToOrganization(apiOrg: ApiOrganization): Organization {
   return {
     id: apiOrg.id,
     nome: apiOrg.name,
+    logo: apiOrg.logo,
     proprietario: apiOrg.owner,
     dataCriacao: formatDate(apiOrg.created_at),
     dataAtualizacao: formatDate(apiOrg.updated_at),
