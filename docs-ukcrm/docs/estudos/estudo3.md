@@ -10,7 +10,10 @@ O ambiente da **Vila Esperança** é desafiador: infraestrutura básica limitada
 
 O digrama exibe graficamente a relação entre os atores e os casos de uso e também a relação entre os casos de usos (inclusão ou extensão).
 
-<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJlBc1tk=/?embedMode=view_only_without_ui&moveToViewport=-4009,-184,1565,1412&embedId=50812771111" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
+
+<img src="../../imgs/casosdeuso.jpg" alt="image" class="centered-img"> 
+
+
 
 ## Identificação dos Atores
 - **Paciente:** Usuário principal que busca serviços, agenda consultas e gerencia seu histórico.
@@ -56,3 +59,7 @@ Os casos de uso estão separados por Atores nas seções abaixo. Alguns casos de
 * Visualização de Mapas (Extend)  
     * Relação: Visualizar Mapa uses <<\\extend>> Localizar Serviços de Saúde.
     * Relação: Visualizar uses <<\\extend>> Visualizar Campanhas de Saúde.
+
+
+
+<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJlBc1tk=/?embedMode=view_only_without_ui&moveToViewport=-4009,-184,1565,1412&embedId=50812771111" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>

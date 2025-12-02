@@ -8,7 +8,14 @@ aos estudantes uma compreensão profunda dos desafios e oportunidades de um ecos
 saúde distribuído, com foco na construção de um User Story Mapping (USM) robusto e orientado
 ao valor entregue a pacientes, profissionais e gestores.
 
-<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJu-SXzQ=/?embedMode=view_only_without_ui&moveToViewport=-1199,-1167,3440,2110&embedId=505444342395" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
+
+
+
+<img src="../../imgs/usmframe1.webp" alt="image" class="centered-img"> 
+
+<img src="../../imgs/usmfram2.webp" alt="image" class="centered-img"> 
+
+
 
 ## Critérios de validação 
 
@@ -57,3 +64,104 @@ ao valor entregue a pacientes, profissionais e gestores.
 | | **RF39 - Dashboards de qualidade e segurança do paciente** | Como Gestora de Operações, eu quero dashboards de qualidade, para monitorar aderência a protocolos. | - Exibir tempo médio de espera e % de pacientes com alergias registradas.<br>- Dados agregados/anônimos. |
 | | **RF40 - Integração com Operadoras (faturamento)** | Como Diretor de Tecnologia, eu quero integração com operadoras de saúde, para automatizar faturamento. | - Gerar lote XML TISS com CID e procedimentos.<br>- Enviar para operadora. |
 | | **RF41 - Monitoramento proativo de performance e segurança** | Como Diretor de Tecnologia, eu quero monitoramento proativo, para garantir estabilidade e segurança. | - Alertas de tempo de resposta lento (>3s).<br>- Alertas de falhas de login repetidas.<br>- Monitorar CPU e memória. |
+
+
+
+
+# Critérios de Aceitação Principais
+
+###  Persona: Paciente
+
+#### Agendar horário (leva guia física posteriormente)
+* **AC01:** O sistema deve permitir o agendamento de uma consulta selecionando: Especialidade, Médico, Data e Hora.
+* **AC02:** Deve haver um checkbox: "Vou apresentar a guia física no momento do atendimento".
+* **AC03:** Ao selecionar essa opção, o sistema não deve exigir upload de arquivo para confirmar o agendamento.
+* **AC04:** O status do agendamento deve ser salvo como "Confirmado - Pendente de Guia".
+
+#### Baixar PDF de resultados
+* **AC01:** O paciente deve visualizar uma lista de exames com status "Concluído".
+* **AC02:** Ao clicar em "Baixar", o sistema deve gerar um arquivo `.pdf` contendo o laudo assinado digitalmente.
+* **AC03:** O PDF deve conter cabeçalho com logo da clínica, dados do paciente e rodapé com registro do médico responsável.
+* **AC04:** O sistema deve bloquear o download de exame com status "Em análise" ou "Pendente".
+
+---
+
+### Persona: Recepcionista
+
+#### Buscar CPF por informações e consultas passadas
+* **AC01:** O campo de busca deve aceitar apenas input numérico (11 dígitos), com máscara automática de CPF.
+* **AC02:** Ao inserir um CPF válido, o sistema deve retornar: Nome Completo, Data de Nascimento e Convênio.
+* **AC03:** Deve exibir uma aba ou seção "Últimas Consultas" contendo data e especialidade.
+* **AC04:** Caso o CPF não exista na base, deve exibir a mensagem "Paciente não encontrado" e oferecer atalho para "Novo Cadastro".
+
+#### Marcar "Aceite Físico" no sistema
+* **AC01:** Na tela de admissão (check-in), deve haver um checkbox: "Termos assinados fisicamente".
+* **AC02:** O sistema deve registrar internamente o `user_id` da recepcionista que marcou a opção e o *timestamp*.
+* **AC03:** O sistema só deve permitir avançar o status do paciente para "Em Espera" se este campo estiver marcado (ou se houver assinatura digital prévia).
+
+---
+
+### Persona: Coordenador de Agendamento
+
+#### Criar grade manual
+* **AC01:** O usuário deve selecionar: Médico, Unidade, Data de Início/Fim e Dias da Semana.
+* **AC02:** Deve permitir definir o tempo de duração de cada slot (ex: 15min, 30min).
+* **AC03:** O sistema deve impedir a criação de grades sobrepostas para o mesmo médico no mesmo horário (conflito de agenda).
+* **AC04:** Ao salvar, os slots devem ficar imediatamente visíveis para busca na recepção.
+
+#### Inserir encaixes manuais (dinâmicos)
+* **AC01:** O sistema deve permitir agendar um paciente em um horário onde não existe slot configurado ou onde o slot já está ocupado.
+* **AC02:** Deve exibir um alerta visual "Atenção: Sobrelotação de agenda" antes de confirmar.
+* **AC03:** O agendamento de encaixe deve ter uma identificação visual diferenciada (ex: cor ou ícone) na visualização da agenda do dia.
+
+---
+
+### Persona: Médico Clínico
+
+#### Ler dados dos pacientes e alertas de alergias
+* **AC01:** Ao abrir o prontuário, o "Header" do paciente deve ser fixo e visível em todas as abas.
+* **AC02:** Se o paciente tiver alergias cadastradas, deve haver uma tag vermelha/destacada: "ALÉRGICO A: [Substância]".
+* **AC03:** Deve exibir os últimos 3 sinais vitais registrados (se houver) na tela inicial do atendimento.
+
+#### Prescrever em campo estruturado
+* **AC01:** A prescrição deve ser composta por campos obrigatórios separados: Medicamento, Dosagem, Via de Administração, Frequência e Duração.
+* **AC02:** O campo de "Observações" deve ser livre (texto), mas limitado a 500 caracteres.
+* **AC03:** O sistema deve impedir o salvamento da prescrição se algum campo estruturado obrigatório estiver vazio.
+
+#### Selecionar em lista padrão
+* **AC01:** O campo "Medicamento" deve ser um *type-ahead* (autocompletar) conectado à base de medicamentos ativos da clínica.
+* **AC02:** Ao selecionar o medicamento, o sistema deve sugerir automaticamente a unidade padrão (ex: mg, ml, cp) se configurada.
+* **AC03:** Não deve ser permitido digitar um nome de medicamento que não exista na base (para garantir integridade de dados para analytics e estoque).
+
+---
+
+### Persona: Farmacêutica
+
+#### Ler alerta visual de alergia
+* **AC01:** Na tela de dispensação, se o medicamento prescrito pertencer a uma classe que o paciente é alérgico, o sistema deve exibir um Modal de bloqueio ou aviso crítico.
+* **AC02:** O alerta deve exigir uma justificativa ou confirmação de "Ciente do Risco" para prosseguir (caso seja um aviso de nível médio).
+* **AC03:** O alerta deve ser exibido antes da confirmação da baixa do estoque.
+
+#### Receber prescrição padronizada
+* **AC01:** A tela de farmácia deve listar as prescrições com status "Pendente de Dispensação".
+* **AC02:** A visualização deve ser somente leitura (*read-only*), impedindo alteração da dose prescrita pelo médico.
+* **AC03:** Deve agrupar os itens por paciente e exibir a data/hora da prescrição.
+
+#### Localizar itens
+* **AC01:** Ao lado de cada item da prescrição, o sistema deve exibir o código de localização (ex: Prateleira A, Gaveta 2).
+* **AC02:** Se o saldo do item for zero, deve exibir indicador visual "Sem Estoque" em vermelho.
+
+---
+
+### Persona: Gestora de Operações
+
+#### Ver total atendimentos/dia
+* **AC01:** O dashboard deve exibir um card com o número inteiro de atendimentos com status "Finalizado" na data corrente.
+* **AC02:** O dado deve ser atualizado em tempo real (ou com delay máximo de 5 minutos).
+* **AC03:** Deve permitir clicar no card para ver a lista detalhada dos pacientes atendidos.
+
+#### Ver taxa de ocupação médica
+* **AC01:** O cálculo deve ser: $$(Total Slots Agendados / Total Slots Disponíveis) * 100$$.
+... (16 linhas)
+
+<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJu-SXzQ=/?embedMode=view_only_without_ui&moveToViewport=-1199,-1167,3440,2110&embedId=505444342395" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>

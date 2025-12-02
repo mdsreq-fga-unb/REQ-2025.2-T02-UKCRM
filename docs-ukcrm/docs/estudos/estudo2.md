@@ -8,6 +8,20 @@ de impacto, a rede enfrenta sérios desafios de gestão e integração tecnológ
 ferramentas diferentes para administrar programações, bilheterias, inscrições, artistas e
 divulgação, o que gera fragmentação e ineficiência.
 
+
+<img src="../../imgs/problemaexpectativa.png" alt="image" class="centered-img"> 
+
+<img src="../../imgs/personas1.png" alt="image" class="centered-img"> 
+<img src="../../imgs/funcionalidades1.png" alt="image" class="centered-img"> 
+<img src="../../imgs/pbi1.png" alt="image" class="centered-img"> 
+<img src="../../imgs/us1.jpg" alt="image" class="centered-img"> 
+
+<img src="../../imgs/prfun.jpg" alt="image" class="centered-img"> 
+<img src="../../imgs/pbi2.jpg" alt="image" class="centered-img"> 
+<img src="../../imgs/us2.jpg" alt="image" class="centered-img"> 
+
+
+
 <iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJsvalhk=/?embedMode=view_only_without_ui&moveToViewport=-11215,-11472,17848,9771&embedId=460956883846" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
 
 ## Critérios de validação 
@@ -53,3 +67,230 @@ divulgação, o que gera fragmentação e ineficiência.
 | **Criar um painel de métricas consolidado (alcance, curtidas, compartilhamentos, comentários).** | Como Analista de Comunicação, eu quero visualizar métricas agregadas de redes, para analisar desempenho geral. | - Acesse "Dashboard de Métricas".<br>- Visualize Engajamento e Alcance Totais.<br>- Filtre por rede social (ex: Instagram). |
 | **Gerar relatórios periódicos com indicadores e recomendações.** | Como Analista de Comunicação, eu quero gerar relatórios periódicos, para apresentar resultados e otimizar estratégias. | - Gere relatório mensal.<br>- Verifique métricas e "Top Posts".<br>- Exporte em PDF. |
 | **Implementar um sistema de recomendação com base em desempenho anterior.** | Como Analista de Comunicação, eu quero recomendações automáticas de horários, conteúdos e hashtags, para otimizar engajamento. | - Ao criar postagem, veja sugestão de "Melhor horário".<br>- Veja painel de "Insights".<br>- Verifique quais tipos e hashtags geram mais engajamento. |
+
+# Critérios de aceitação 
+
+## Funcionalidade 1: Administrar Eventos
+
+**CENÁRIO:** Visualização da agenda com eventos<br>
+**Dado que** existem 3 eventos cadastrados para a semana atual<br>
+**Quando** Mariana acessa a tela "Agenda Cultural"<br>
+**E** ela seleciona a visualização "Semanal"<br>
+**Então** ela deve ver os 3 eventos representados visualmente nos seus respectivos dias e horários.
+
+**CENÁRIO:** Identificação de conflito de horário<br>
+**Dado que** Mariana está cadastrando um "Novo Evento" no "Auditório Principal" para "15/11/2025 às 20h"<br>
+**E** já existe um evento agendado para o "Auditório Principal" no mesmo dia e horário<br>
+**Quando** ela tenta salvar o novo evento<br>
+**Então** o sistema deve exibir um alerta: "Conflito de agenda. Já existe um evento neste local e horário."<br>
+
+
+**CENÁRIO:** Edição de horário de um evento publicado<br>
+**Dado que** o "Concerto de Primavera" está publicado<br>
+**Quando** Mariana edita o evento e altera o horário de "20:00" para "21:00"<br>
+**E** clica em "Salvar Alterações"<br>
+**Então** as informações do evento na agenda pública devem ser atualizadas para "21:00".
+
+**CENÁRIO** (Exceção): Edição de evento publicado que causa novo conflito de agenda<br>
+**Dado que** o evento "Concerto A" está publicado para o "Auditório Principal" às 20h<br>
+**E** o evento "Peça B" está publicado para a "Sala Anexa" às 20h<br>
+E Mariana já sabe que o "Auditório Principal" está ocupado às 20h<br>
+**Quando** ela tenta editar a "Peça B" e alterar o local para "Auditório Principal" (mantendo as 20h)
+E clica em "Salvar Alterações"<br>
+**Então** o sistema deve exibir o alerta: "Conflito de agenda. O 'Auditório Principal' já está em uso neste horário pelo 'Concerto A'."
+E a alteração não deve ser salva.
+
+
+**CENÁRIO:** Publicar um evento em rascunho<br>
+**Dado que** Mariana está no painel de gerenciamento do evento "Concerto de Primavera" (status "Rascunho")<br>
+**Quando** ela clica no botão "Publicar Evento"<br>
+**Então** o status do evento deve mudar para "Publicado"<br>
+**E** o evento deve se tornar visível na agenda pública para a Beatriz (Espectadora).<br>
+
+**CENÁRIO (Exceção):** Tentativa de publicar evento com informações essenciais faltando<br>
+**Dado que** Mariana está a gerir um evento em "Rascunho"<br>
+**E** o evento tem Título e Data, mas o campo "Local" está vazio<br>
+**Quando** ela clica no botão "Publicar Evento"<br>
+**Então** o sistema deve exibir uma mensagem de erro: "Não é possível publicar. Preencha os campos obrigatórios: Local e Categoria."<br>
+**E** o status do evento deve permanecer "Rascunho".<br>
+
+## Funcionalidade 2: Comercializar Ingressos
+
+**CENÁRIO:** Configuração de venda de ingressos com lotes<br>
+**Dado que** Rafael (Produtor) está na página de gerenciamento do seu evento<br>
+**Quando** ele acessa a aba "Ingressos"<br>
+**E** ele cria um ingresso "Lote 1" com preço "R$ 50,00" e quantidade "100"<br>
+**E** ele cria um ingresso "Lote 2" com preço "R$ 70,00" e quantidade "50"<br>
+**E** ele ativa a venda de ingressos<br>
+**Então** a página pública do evento deve exibir "Ingressos Lote 1 - R$ 50,00".<br>
+
+**CENÁRIO (Exceção):** Tentativa de criar ingresso com preço negativo ou inválido<br>
+**Dado que** Rafael (Produtor) está na tela de configuração de ingressos<br>
+**Quando** ele tenta criar um "Lote 1" com o preço "-R$ 50,00"<br>
+**E** clica em "Salvar Ingresso"<br>
+**Então** o sistema deve exibir uma mensagem de erro: "O preço deve ser um valor positivo."<br>
+**E** o ingresso não deve ser criado.<br>
+
+**CENÁRIO (Exceção):** Tentativa de ativar vendas sem ter criado ingressos<br>
+**Dado que** Rafael está na página do seu evento, que ainda não tem ingressos configurados<br>
+**Quando** ele tenta mudar o toggle de "Vendas Inativas" para "Vendas Ativas"<br>
+**Então** o sistema deve impedi-lo e exibir a mensagem: "Crie pelo menos um tipo de ingresso antes de ativar as vendas."<br>
+**E** o toggle deve permanecer como "Vendas Inativas".<br>
+
+
+**CENÁRIO:** Compartilhamento do link de venda<br>
+**Dado que** Rafael configurou os ingressos do seu evento<br>
+**Quando** ele clica no botão "Compartilhar" no painel do evento<br>
+**Então** o sistema deve exibir uma URL única<br>
+**E** ele pode copiar essa URL para divulgar.<br>
+
+
+**CENÁRIO:** Verificação de vendas no dashboard<br>
+**Dado que** o evento de Rafael já vendeu 30 ingressos do "Lote 1"<br>
+**Quando** Rafael acessa o painel do seu evento<br>
+**Então** ele deve ver um widget "Relatório de Vendas"<br>
+**E** o widget deve exibir "30/100 ingressos vendidos (Lote 1)" e "Receita Bruta: R$ 1.500,00".<br>
+
+**CENÁRIO (Alternativo):** Visualização de vendas de um lote esgotado<br>
+**Dado que** o "Lote 1" (100 ingressos) do evento de Rafael está esgotado<br>
+**E** o "Lote 2" (50 ingressos) já vendeu 10<br>
+**Quando** Rafael acede ao painel do seu evento<br>
+**Então** o widget "Relatório de Vendas" deve exibir:
+"Lote 1: 100/100 (Esgotado)"
+"Lote 2: 10/50"
+"Total Arrecadado: (Soma do valor dos 110 ingressos)"<br>
+
+## Funcionalide 3: Centralizar inscrições e portfólios
+
+**CENÁRIO:** Inscrição em edital usando o portfólio salvo<br>
+**Dado que** Lígia está logada e possui seu portfólio completo<br>
+**E** ela acessa a página do "Edital de Artes Visuais"<br>
+**Quando** ela clica em "Inscrever-me"<br>
+**E** o sistema pergunta "Deseja importar dados do seu perfil?" e ela clica "Sim"<br>
+**Então** os campos "Nome", "Biografia" e "Anexos de Portfólio" do formulário devem ser preenchidos automaticamente.<br>
+
+**CENÁRIO (Alternativo):** Inscrição em edital sem ter um portfólio salvo<br>
+**Dado que** Lígia (uma nova artista) ainda não preencheu o seu portfólio<br>
+**E** ela acede à página do "Edital de Artes Visuais"<br>
+**Quando** ela clica em "Inscrever-me"<br>
+**Então** o sistema não deve exibir o pop-up "Deseja importar dados?"<br>
+**E** o formulário de inscrição deve ser exibido com todos os campos em branco, pronto para preenchimento manual.<br>
+
+
+**CENÁRIO:** Criação de perfil de portfólio<br>
+**Dado que** Lígia (Artista) está logada e acessa "Meu Perfil"<br>
+**Quando** ela preenche sua "Biografia"<br>
+**E** faz upload de 3 arquivos (PDF, JPG, PNG) na seção "Galeria de Trabalhos"<br>
+**E** adiciona um link do YouTube na seção "Vídeos"<br>
+**E** clica em "Salvar Perfil"<br>
+**Então** seu perfil público deve exibir a biografia, as 3 imagens da galeria e o vídeo incorporado.<br>
+
+**CENÁRIO (Exceção):** Tentativa de upload de tipo de arquivo não suportado<br>
+**Dado que** Lígia está a editar o seu portfólio na seção "Galeria de Trabalhos"<br>
+**E** o sistema só aceita JPG, PNG e PDF<br>
+**Quando** ela tenta fazer o upload de um arquivo chamado "meu_trabalho.zip"<br>
+**Então** o sistema deve exibir uma mensagem de erro: "Tipo de arquivo inválido. Apenas JPG, PNG e PDF são permitidos."<br>
+**E** o arquivo "meu_trabalho.zip" não deve ser adicionado à galeria.<br>
+
+**CENÁRIO:** Recebimento de notificação de aprovação<br>
+**Dado que** Lígia se inscreveu no "Edital de Artes Visuais"<br>
+**E** uma Gestora (Mariana) alterou o status da inscrição de Lígia para "Aprovada"<br>
+**Quando** Lígia acessar a plataforma<br>
+**Então** ela deve ver um ícone de notificação "!" no sino<br>
+**E** ao clicar, deve ver a mensagem: "Sua inscrição no 'Edital de Artes Visuais' foi Aprovada.<br>
+
+**CENÁRIO (Alternativo):** Artista com notificações por e-mail desativadas<br>
+**Dado que** Lígia se inscreveu no "Edital de Artes Visuais"<br>
+**E** nas suas configurações de perfil, ela desmarcou a opção "Receber notificações por e-mail"<br>
+**E** uma Gestora (Mariana) alterou o status da inscrição de Lígia para "Reprovada"<br>
+**Quando** Lígia aceder à plataforma<br>
+**Então** ela deve ver a notificação "!" no sino (notificação in-app)
+Mas o sistema não deve enviar nenhuma mensagem para o e-mail de Lígia.<br>
+
+
+## Funcionalidade 5: Pescar ingressos
+
+**CENÁRIO:** Primeiro acesso com seleção de preferências<br>
+**Dado que** Beatriz acabou de criar sua conta e está fazendo o primeiro login<br>
+**Quando** o sistema apresenta a tela de Onboarding<br>
+**E** ela seleciona as categorias "Teatro" e "Música"<br>
+**E** ela clica em "Concluir"<br>
+**Então** ela deve ser levada para a Home<br>
+**E** os eventos exibidos na Home devem ser primariamente de "Teatro" e "Música".  CENÁRIO (Alternativo): Pular a etapa de onboarding<br>
+**Dado que** Beatriz está na tela de Onboarding (seleção de categorias)<br>
+**Quando** ela clica no botão "Pular" ou "Fazer depois"<br>
+**E** ela é levada para a Home<br>
+**Então** a Home deve exibir os eventos mais populares ou próximos, sem personalização por categoria.<br>
+
+
+**CENÁRIO:** Busca de eventos gratuitos para o fim de semana<br>
+**Dado que** Beatriz está na tela "Agenda Cultural"<br>
+**Quando** ela aplica o filtro "Preço: Gratuito"<br>
+**E** ela aplica o filtro "Data: Este Fim de Semana"<br>
+**Então** a lista de eventos deve ser atualizada para mostrar apenas eventos que satisfaçam ambos os critérios.<br>
+
+**CENÁRIO (Alternativo):** Busca de eventos com filtros que não retornam resultados<br>
+**Dado que** Beatriz está na tela "Agenda Cultural"<br>
+**Quando** ela aplica o filtro "Categoria: Ópera"<br>
+**E** ela aplica o filtro "Local: Meu Bairro"<br>
+**E** não existem eventos que satisfaçam ambos os critérios<br>
+**Então** a lista de eventos deve ficar vazia<br>
+**E** o sistema deve exibir uma mensagem amigável: "Nenhum evento encontrado. Tente ampliar sua busca ou remover alguns filtros."<br>
+
+
+**CENÁRIO:** Compra de ingresso com sucesso (PIX)<br>
+**Dado que** Beatriz está logada e na página do "Concerto de Primavera"<br>
+**E** o preço do ingresso é "R$ 50,00"<br>
+**Quando** ela seleciona "1" ingresso e clica em "Comprar"<br>
+**E** ela escolhe "PIX" como forma de pagamento<br>
+**E** ela confirma o pagamento<br>
+**Então** ela deve ser redirecionada para a tela "Meus Ingressos"<br>
+**E** um QR Code de ingresso válido deve estar disponível para o "Concerto de Primavera".<br>
+
+**CENÁRIO (Exceção):** Tentativa de compra com cartão de crédito recusado (Sem Saldo)<br>
+**Dado que** Beatriz está na tela de checkout para o "Concerto de Primavera"<br>
+**Quando** ela preenche os dados de um cartão de crédito válido, mas que está sem saldo<br>
+**E** ela clica em "Pagar"<br>
+**Então** o sistema (via gateway de pagamento) deve exibir a mensagem: "Pagamento não autorizado. Verifique seu saldo ou tente outro cartão."<br>
+**E** o ingresso não deve ser emitido e seu carrinho deve permanecer ativo.<br>
+
+**CENÁRIO** (Exceção): Tentativa de compra de ingresso esgotado (Disputa de Estoque)<br>
+**Dado que** Beatriz está na página do evento "Show de Jazz", que tem apenas "1" ingresso restante<br>
+**E** outro usuário compra esse último ingresso<br>
+**Quando** Beatriz (que ainda via "1" ingresso) clica em "Comprar"<br>
+**Então**  o sistema deve exibir uma mensagem: "Ingresso indisponível. O último ingresso acabou de ser vendido."<br>
+**E**  ela deve ser impedida de prosseguir para <br>
+
+**CENÁRIO:**  Acessar ingresso comprado<br>
+**Dado que** Beatriz comprou um ingresso para o "Concerto de Primavera" que ocorre hoje
+**E o evento começa às "21:00"<br>
+**E** a hora atual do sistema é "20:00" (1 hora antes)<br>
+**Quando** Beatriz verificar seu celular<br>
+**Então** ela deve ter recebido uma notificação push com o texto "Lembrete: Seu evento 'Concerto de Primavera' começa em 1 hora!"<br>
+
+
+**CENÁRIO:** Acessar ingresso comprado<br>
+**Dado que** Beatriz comprou um ingresso para o "Concerto de Primavera"<br>
+**Quando** ela acessa seu perfil e clica na aba "Meus Ingressos"<br>
+**Então** ela deve ver uma seção "Próximos Eventos"<br>
+**E** o ingresso do "Concerto de Primavera" deve estar listado ali.<br>
+
+
+## Funcionalidade 6: Centralizar a automação de postagens
+
+**CENÁRIO:** Agendamento de ou as contas do Instagram e Facebook<br>
+**Quando** ela seleciona o evento "Show de Jazz"<br>
+**E** ela escreve o texto "Últimos ingressos!" e anexa uma imagem<br>
+**E** ela seleciona as redes "Instagram" e "Facebook"<br>
+**E** ela define a data de publicação para "15/11/2025" às "18:00"<br>
+**E** ela clica em "Agendar"<br>
+**Então** o sistema deve exibir a mensagem "Postagem agendada com sucesso"<br>
+**E** a postagem deve aparecer no calendário de agendamento na data e hora corretas.<br>
+
+**CENÁRIO:** Tentativa de agendamento sem selecionar rede social<br>
+**Dado que** Renata está na tela "Agendador de Mídia Social"<br>
+**Quando** ela escreve o texto e anexa a imagem<br>
+**E** ela não seleciona nenhuma rede social<br>
+**E** ela clica em "Agendar"<br>
+**Então** o sistema deve exibir uma mensagem de erro "Selecione pelo menos uma rede social para publicar."<br>
+**E** a postagem não deve ser agendada.<br>
