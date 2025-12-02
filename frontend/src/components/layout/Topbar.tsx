@@ -49,15 +49,6 @@ export function Topbar({ breadcrumbs = [] }: TopbarProps) {
 
       {/* Right Side Actions */}
       <div className="flex items-center gap-3">
-        {/* Search Input */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Pesquisar pelo website..."
-            className="w-64 pl-9 bg-background"
-          />
-        </div>
 
         {/* Theme Toggle */}
         <Button
@@ -67,18 +58,6 @@ export function Topbar({ breadcrumbs = [] }: TopbarProps) {
           className="text-muted-foreground hover:text-foreground"
         >
           {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </Button>
-
-        {/* Notifications */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative text-muted-foreground hover:text-foreground"
-        >
-          <Bell className="h-5 w-5" />
-          <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-info p-0 text-[10px] text-info-foreground">
-            12
-          </Badge>
         </Button>
       </div>
     </header>

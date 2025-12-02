@@ -88,7 +88,7 @@ export function AppSidebar() {
                 href="#"
                 className="text-xs text-muted-foreground hover:text-primary hover:underline"
               >
-                Ir para chrome web store →
+                Em Breve
               </a>
             </div>
           </div>
