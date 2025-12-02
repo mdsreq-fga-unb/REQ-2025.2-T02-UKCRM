@@ -1286,8 +1286,8 @@ em uma rede ampla de clínicas e hospitais. Este estudo de caso foi elaborado pa
 aos estudantes uma compreensão profunda dos desafios e oportunidades de um ecossistema de
 saúde distribuído, com foco na construção de um User Story Mapping (USM) robusto e orientado
 ao valor entregue a pacientes, profissionais e gestores.</p>
-<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJu-SXzQ=/?embedMode=view_only_without_ui&moveToViewport=-1199,-1167,3440,2110&embedId=505444342395" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
-
+<p><img src="../../imgs/usmframe1.webp" alt="image" class="centered-img"> </p>
+<p><img src="../../imgs/usmfram2.webp" alt="image" class="centered-img"> </p>
 <h2 id="criterios-de-validacao">Critérios de validação</h2>
 <h1 id="usm-requisitos-funcionais">USM - Requisitos Funcionais</h1>
 <table>
@@ -1548,6 +1548,105 @@ ao valor entregue a pacientes, profissionais e gestores.</p>
 </tr>
 </tbody>
 </table>
+<h1 id="criterios-de-aceitacao-principais">Critérios de Aceitação Principais</h1>
+<h3 id="persona-paciente">Persona: Paciente</h3>
+<h4 id="agendar-horario-leva-guia-fisica-posteriormente">Agendar horário (leva guia física posteriormente)</h4>
+<ul>
+<li><strong>AC01:</strong> O sistema deve permitir o agendamento de uma consulta selecionando: Especialidade, Médico, Data e Hora.</li>
+<li><strong>AC02:</strong> Deve haver um checkbox: "Vou apresentar a guia física no momento do atendimento".</li>
+<li><strong>AC03:</strong> Ao selecionar essa opção, o sistema não deve exigir upload de arquivo para confirmar o agendamento.</li>
+<li><strong>AC04:</strong> O status do agendamento deve ser salvo como "Confirmado - Pendente de Guia".</li>
+</ul>
+<h4 id="baixar-pdf-de-resultados">Baixar PDF de resultados</h4>
+<ul>
+<li><strong>AC01:</strong> O paciente deve visualizar uma lista de exames com status "Concluído".</li>
+<li><strong>AC02:</strong> Ao clicar em "Baixar", o sistema deve gerar um arquivo <code>.pdf</code> contendo o laudo assinado digitalmente.</li>
+<li><strong>AC03:</strong> O PDF deve conter cabeçalho com logo da clínica, dados do paciente e rodapé com registro do médico responsável.</li>
+<li><strong>AC04:</strong> O sistema deve bloquear o download de exame com status "Em análise" ou "Pendente".</li>
+</ul>
+<hr />
+<h3 id="persona-recepcionista">Persona: Recepcionista</h3>
+<h4 id="buscar-cpf-por-informacoes-e-consultas-passadas">Buscar CPF por informações e consultas passadas</h4>
+<ul>
+<li><strong>AC01:</strong> O campo de busca deve aceitar apenas input numérico (11 dígitos), com máscara automática de CPF.</li>
+<li><strong>AC02:</strong> Ao inserir um CPF válido, o sistema deve retornar: Nome Completo, Data de Nascimento e Convênio.</li>
+<li><strong>AC03:</strong> Deve exibir uma aba ou seção "Últimas Consultas" contendo data e especialidade.</li>
+<li><strong>AC04:</strong> Caso o CPF não exista na base, deve exibir a mensagem "Paciente não encontrado" e oferecer atalho para "Novo Cadastro".</li>
+</ul>
+<h4 id="marcar-aceite-fisico-no-sistema">Marcar "Aceite Físico" no sistema</h4>
+<ul>
+<li><strong>AC01:</strong> Na tela de admissão (check-in), deve haver um checkbox: "Termos assinados fisicamente".</li>
+<li><strong>AC02:</strong> O sistema deve registrar internamente o <code>user_id</code> da recepcionista que marcou a opção e o <em>timestamp</em>.</li>
+<li><strong>AC03:</strong> O sistema só deve permitir avançar o status do paciente para "Em Espera" se este campo estiver marcado (ou se houver assinatura digital prévia).</li>
+</ul>
+<hr />
+<h3 id="persona-coordenador-de-agendamento">Persona: Coordenador de Agendamento</h3>
+<h4 id="criar-grade-manual">Criar grade manual</h4>
+<ul>
+<li><strong>AC01:</strong> O usuário deve selecionar: Médico, Unidade, Data de Início/Fim e Dias da Semana.</li>
+<li><strong>AC02:</strong> Deve permitir definir o tempo de duração de cada slot (ex: 15min, 30min).</li>
+<li><strong>AC03:</strong> O sistema deve impedir a criação de grades sobrepostas para o mesmo médico no mesmo horário (conflito de agenda).</li>
+<li><strong>AC04:</strong> Ao salvar, os slots devem ficar imediatamente visíveis para busca na recepção.</li>
+</ul>
+<h4 id="inserir-encaixes-manuais-dinamicos">Inserir encaixes manuais (dinâmicos)</h4>
+<ul>
+<li><strong>AC01:</strong> O sistema deve permitir agendar um paciente em um horário onde não existe slot configurado ou onde o slot já está ocupado.</li>
+<li><strong>AC02:</strong> Deve exibir um alerta visual "Atenção: Sobrelotação de agenda" antes de confirmar.</li>
+<li><strong>AC03:</strong> O agendamento de encaixe deve ter uma identificação visual diferenciada (ex: cor ou ícone) na visualização da agenda do dia.</li>
+</ul>
+<hr />
+<h3 id="persona-medico-clinico">Persona: Médico Clínico</h3>
+<h4 id="ler-dados-dos-pacientes-e-alertas-de-alergias">Ler dados dos pacientes e alertas de alergias</h4>
+<ul>
+<li><strong>AC01:</strong> Ao abrir o prontuário, o "Header" do paciente deve ser fixo e visível em todas as abas.</li>
+<li><strong>AC02:</strong> Se o paciente tiver alergias cadastradas, deve haver uma tag vermelha/destacada: "ALÉRGICO A: [Substância]".</li>
+<li><strong>AC03:</strong> Deve exibir os últimos 3 sinais vitais registrados (se houver) na tela inicial do atendimento.</li>
+</ul>
+<h4 id="prescrever-em-campo-estruturado">Prescrever em campo estruturado</h4>
+<ul>
+<li><strong>AC01:</strong> A prescrição deve ser composta por campos obrigatórios separados: Medicamento, Dosagem, Via de Administração, Frequência e Duração.</li>
+<li><strong>AC02:</strong> O campo de "Observações" deve ser livre (texto), mas limitado a 500 caracteres.</li>
+<li><strong>AC03:</strong> O sistema deve impedir o salvamento da prescrição se algum campo estruturado obrigatório estiver vazio.</li>
+</ul>
+<h4 id="selecionar-em-lista-padrao">Selecionar em lista padrão</h4>
+<ul>
+<li><strong>AC01:</strong> O campo "Medicamento" deve ser um <em>type-ahead</em> (autocompletar) conectado à base de medicamentos ativos da clínica.</li>
+<li><strong>AC02:</strong> Ao selecionar o medicamento, o sistema deve sugerir automaticamente a unidade padrão (ex: mg, ml, cp) se configurada.</li>
+<li><strong>AC03:</strong> Não deve ser permitido digitar um nome de medicamento que não exista na base (para garantir integridade de dados para analytics e estoque).</li>
+</ul>
+<hr />
+<h3 id="persona-farmaceutica">Persona: Farmacêutica</h3>
+<h4 id="ler-alerta-visual-de-alergia">Ler alerta visual de alergia</h4>
+<ul>
+<li><strong>AC01:</strong> Na tela de dispensação, se o medicamento prescrito pertencer a uma classe que o paciente é alérgico, o sistema deve exibir um Modal de bloqueio ou aviso crítico.</li>
+<li><strong>AC02:</strong> O alerta deve exigir uma justificativa ou confirmação de "Ciente do Risco" para prosseguir (caso seja um aviso de nível médio).</li>
+<li><strong>AC03:</strong> O alerta deve ser exibido antes da confirmação da baixa do estoque.</li>
+</ul>
+<h4 id="receber-prescricao-padronizada">Receber prescrição padronizada</h4>
+<ul>
+<li><strong>AC01:</strong> A tela de farmácia deve listar as prescrições com status "Pendente de Dispensação".</li>
+<li><strong>AC02:</strong> A visualização deve ser somente leitura (<em>read-only</em>), impedindo alteração da dose prescrita pelo médico.</li>
+<li><strong>AC03:</strong> Deve agrupar os itens por paciente e exibir a data/hora da prescrição.</li>
+</ul>
+<h4 id="localizar-itens">Localizar itens</h4>
+<ul>
+<li><strong>AC01:</strong> Ao lado de cada item da prescrição, o sistema deve exibir o código de localização (ex: Prateleira A, Gaveta 2).</li>
+<li><strong>AC02:</strong> Se o saldo do item for zero, deve exibir indicador visual "Sem Estoque" em vermelho.</li>
+</ul>
+<hr />
+<h3 id="persona-gestora-de-operacoes">Persona: Gestora de Operações</h3>
+<h4 id="ver-total-atendimentosdia">Ver total atendimentos/dia</h4>
+<ul>
+<li><strong>AC01:</strong> O dashboard deve exibir um card com o número inteiro de atendimentos com status "Finalizado" na data corrente.</li>
+<li><strong>AC02:</strong> O dado deve ser atualizado em tempo real (ou com delay máximo de 5 minutos).</li>
+<li><strong>AC03:</strong> Deve permitir clicar no card para ver a lista detalhada dos pacientes atendidos.</li>
+</ul>
+<h4 id="ver-taxa-de-ocupacao-medica">Ver taxa de ocupação médica</h4>
+<ul>
+<li><strong>AC01:</strong> O cálculo deve ser: $$(Total Slots Agendados / Total Slots Disponíveis) * 100$$.
+... (16 linhas)</li>
+</ul>
+<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVJu-SXzQ=/?embedMode=view_only_without_ui&moveToViewport=-1199,-1167,3440,2110&embedId=505444342395" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
 
 
 
