@@ -60,12 +60,27 @@ export const getRoleLabel = (role: string): string => {
 };
 
 /**
+ * Maps frontend role values to backend role values
+ * Reverse of the mapping in authTransformers.ts
+ */
+export const FRONTEND_TO_BACKEND_ROLE_MAP: Record<string, string> = {
+  'Owner': 'owner',
+  'Sales Manager': 'manager',
+  'Sales Coordinator': 'coordinator',
+  'SDR': 'sdr',
+  'Closer': 'closer',
+  'Admin': 'admin',
+};
+
+/**
  * Get hierarchy label from role value
- * @param role - The role value from backend (e.g., "closer", "sdr")
+ * @param role - The role value from backend (e.g., "closer", "sdr") OR frontend (e.g., "Owner", "Sales Manager")
  * @returns The hierarchy display label (e.g., "Closer", "SDR")
  */
 export const getHierarchyFromRole = (role: string): string => {
-  return ROLE_TO_HIERARCHY_MAP[role] || role;
+  // First check if it's a frontend role and convert to backend
+  const backendRole = FRONTEND_TO_BACKEND_ROLE_MAP[role] || role;
+  return ROLE_TO_HIERARCHY_MAP[backendRole] || role;
 };
 
 /**

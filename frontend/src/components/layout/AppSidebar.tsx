@@ -2,11 +2,11 @@ import { Building, Users, Filter, Chrome, UserCircle, LogOut } from "lucide-reac
 import { NavLink } from "@/components/NavLink";
 import { cn } from "@/lib/utils";
 import { UserProfileCard } from "@/components/ui/UserProfileCard";
-import { useAuth } from "@/auth/hooks/useAuth";
+import { useAuthContext } from "@/auth/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { hasPageAccess, type PageKey } from "@/auth/config/permissions";
-import { getRoleLabel } from "@/constants/roles";
+import { getHierarchyFromRole } from "@/constants/roles";
 
 const navItems: Array<{ title: string; href: string; icon: typeof Building; pageKey: PageKey }> = [
   { title: "Organizações", href: "/organizacoes", icon: Building, pageKey: "organizacoes" },
@@ -16,7 +16,7 @@ const navItems: Array<{ title: string; href: string; icon: typeof Building; page
 ];
 
 export function AppSidebar() {
-  const { logout, user } = useAuth();
+  const { logout, user } = useAuthContext();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -40,7 +40,7 @@ export function AppSidebar() {
         {user && (
           <UserProfileCard
             nome={user.nome}
-            cargo={getRoleLabel(user.role)}
+            cargo={getHierarchyFromRole(user.role)}
             avatar={user.photo || ""}
           />
         )}
