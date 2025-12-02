@@ -1,0 +1,67 @@
+import { AppShell } from "@/components/layout/AppShell";
+import ActionBar from "./components/ActionBar";
+import { AssignLeadDialog } from "./components/AssignLeadDialog";
+import { CreateFunnelDialog } from "./components/CreateFunnelDialog";
+import { EditFunnelDialog } from "./components/EditFunnelDialog";
+import { DeleteFunnelDialog } from "./components/DeleteFunnelDialog";
+import { DeleteLeadDialog } from "./components/DeleteLeadDialog";
+import { EditLeadDialog } from "./components/EditLeadDialog";
+import { MarkGainLossDialog } from "./components/MarkGainLossDialog";
+import { StageSettingsDialog } from "./components/StageSettingsDialog";
+import { KanbanBoard } from "./components/KanbanBoard";
+import { defaultCols, initialLeads } from "./data/defaultKanbanData";
+import { useFunnel } from "./hooks/useFunnel";
+
+function Funnel() {
+  const {
+    actionBar,
+    kanban,
+    createDialog,
+    editDialog,
+    deleteDialog,
+    editLeadDialog,
+    viewLeadDialog,
+    assignLeadDialog,
+    deleteLeadDialog,
+    markGainLossDialog,
+    stageSettingsDialog,
+  } = useFunnel(defaultCols, initialLeads);
+
+  return (
+    <AppShell
+      breadcrumbs={[
+        { label: "Início", href: "/" },
+        { label: "Gerenciamento de Funis" },
+      ]}
+      className="p-0"
+    >
+      <div className="h-full flex flex-col divide-y">
+        <ActionBar {...actionBar} />
+        {actionBar.isLoading ? (
+          <div className="flex h-full items-center justify-center text-muted-foreground">
+            Carregando funis...
+          </div>
+        ) : actionBar.selectedFunnelId ? (
+          <KanbanBoard {...kanban} />
+        ) : (
+          <div className="flex h-full items-center justify-center text-muted-foreground text-lg">
+            Crie seu primeiro funil
+          </div>
+        )}
+      </div>
+
+      {/* Modals */}
+      <CreateFunnelDialog {...createDialog} />
+      <EditFunnelDialog {...editDialog} />
+      <DeleteFunnelDialog {...deleteDialog} />
+      <EditLeadDialog {...editLeadDialog} />
+      <EditLeadDialog {...viewLeadDialog} />
+      <AssignLeadDialog {...assignLeadDialog} />
+      <DeleteLeadDialog {...deleteLeadDialog} />
+      <MarkGainLossDialog {...markGainLossDialog} />
+      <StageSettingsDialog {...stageSettingsDialog} />
+    </AppShell>
+  );
+}
+
+export default Funnel;

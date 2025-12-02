@@ -1,0 +1,94 @@
+# --- General -----------------------------------------------------------------
+
+# Environment variables
+# Never commit secrets, API keys, or credentials
+.env
+.env.*
+!.env.example
+
+# Operating System and IDE files
+.DS_Store
+Thumbs.db
+*.swo
+*~
+*.swp
+
+# IDE configuration files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+
+# --- Python & Django ---------------------------------------------------------
+
+# Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+virtualenv/
+
+# Package management
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+pip-log.txt
+
+# Django-specific
+# Default SQLite database (even if using Postgres, good to ignore)
+db.sqlite3
+db.sqlite3-journal
+
+# User-uploaded media and collected static files
+# These should be handled by your storage solution (e.g., S3) in production
+media/
+staticfiles/
+
+# Testing and coverage reports
+.coverage
+htmlcov/
+
+# Log files
+*.log
+
+
+# --- Node.js & React ---------------------------------------------------------
+
+# Dependencies
+# This directory contains all of your project's npm packages
+node_modules/
+
+# Build artifacts
+# These are the bundled files for production
+build/
+dist/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# NOTE: Do NOT ignore package-lock.json or yarn.lock.
+# These files are important for ensuring consistent, reproducible builds.
+
+
+# --- Docker ------------------------------------------------------------------
+
+# Local Docker Compose overrides
+# This file often contains configurations specific to your local machine
+docker-compose.override.yml
+docker-compose.override.yaml
+
+
+# --- PostgreSQL --------------------------------------------------------------
+
+# Database dumps or backups
+# Avoid committing large data files to your repository
+*.sql
+*.dump
