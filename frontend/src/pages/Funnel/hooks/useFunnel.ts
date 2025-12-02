@@ -339,7 +339,7 @@ export function useFunnel(initialCols: Column[], initialLeads: Lead[]) {
   );
 
   const handleMarkGainLoss = useCallback(
-    (status: "Gained" | "Lost", value: number, reason?: string) => {
+    (status: "Gained" | "Lost" | "Active", value: number, reason?: string) => {
       if (markingGainLossLead) {
         markGainLoss({
           id: extractId(markingGainLossLead.id),

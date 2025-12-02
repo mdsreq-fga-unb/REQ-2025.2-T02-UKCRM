@@ -90,7 +90,7 @@ export const deleteLead = (id: number) =>
 
 export type ApiLeadGainLossPayload = {
   id: number;
-  status: "Gained" | "Lost";
+  status: "Gained" | "Lost" | "Active";
   value: number;
   reason?: string;
 };

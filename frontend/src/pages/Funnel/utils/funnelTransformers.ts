@@ -89,7 +89,13 @@ export function getColumnsWithSubtitles(
       }
 
       acc[colId].count += 1;
-      acc[colId].total += lead.earning;
+
+      // Use gainLossValue if the lead is marked as Gained/Lost, otherwise use earning (potential value)
+      const valueToUse = (lead.status === "Gained" || lead.status === "Lost") && lead.gainLossValue !== null
+        ? lead.gainLossValue
+        : lead.earning;
+
+      acc[colId].total += valueToUse;
 
       return acc;
     },

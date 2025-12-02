@@ -174,17 +174,17 @@ export function LeadCard({
                 </DropdownMenuItem>
               )}
 
-              {canMarkGainLoss &&
-                lead.status !== "Gained" &&
-                lead.status !== "Lost" && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => onMarkGainLoss?.(lead)}>
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
-                      Marcar Ganho/Perda
-                    </DropdownMenuItem>
-                  </>
-                )}
+              {canMarkGainLoss && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onMarkGainLoss?.(lead)}>
+                    <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                    {lead.status === "Gained" || lead.status === "Lost"
+                      ? "Editar Ganho/Perda"
+                      : "Marcar Ganho/Perda"}
+                  </DropdownMenuItem>
+                </>
+              )}
 
               {canDelete && (
                 <>
@@ -255,10 +255,16 @@ export function LeadCard({
             </Avatar>
           </Button>
           <span className="text-sm font-semibold">
-            {new Intl.NumberFormat("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            }).format(lead.earning)}
+            {(() => {
+              const displayValue =
+                (lead.status === "Gained" || lead.status === "Lost") && lead.gainLossValue !== null && lead.gainLossValue !== undefined
+                  ? lead.gainLossValue
+                  : lead.earning ?? 0;
+              return new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(displayValue);
+            })()}
           </span>
           <div className="flex gap-1">
             {lead.phone && (

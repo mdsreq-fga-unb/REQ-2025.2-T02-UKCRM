@@ -18,7 +18,7 @@ interface MarkGainLossDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   lead: Lead | null;
-  onSubmit: (status: "Gained" | "Lost", value: number, reason?: string) => void;
+  onSubmit: (status: "Gained" | "Lost" | "Active", value: number, reason?: string) => void;
   isPending?: boolean;
 }
 
@@ -35,9 +35,16 @@ export function MarkGainLossDialog({
 
   useEffect(() => {
     if (open && lead) {
-      setStatus("Gained");
-      setValue(lead.earning.toString());
-      setReason("");
+      // If already marked, show current values; otherwise default to potential value
+      if (lead.status === "Gained" || lead.status === "Lost") {
+        setStatus(lead.status);
+        setValue(lead.gainLossValue?.toString() || lead.earning.toString());
+        setReason(lead.gainLossReason || "");
+      } else {
+        setStatus("Gained");
+        setValue(lead.earning.toString());
+        setReason("");
+      }
     }
   }, [open, lead]);
 
@@ -48,15 +55,24 @@ export function MarkGainLossDialog({
     }
   };
 
+  const handleUnmark = () => {
+    onSubmit("Active", 0, "");
+  };
+
   const isValid = value && !isNaN(parseFloat(value)) && parseFloat(value) >= 0;
+  const isAlreadyMarked = lead?.status === "Gained" || lead?.status === "Lost";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Marcar Ganho/Perda</DialogTitle>
+          <DialogTitle>
+            {isAlreadyMarked ? "Editar" : "Marcar"} Ganho/Perda
+          </DialogTitle>
           <DialogDescription>
-            Registre o resultado da negociação com {lead?.name}
+            {isAlreadyMarked
+              ? `Edite o resultado da negociação com ${lead?.name}`
+              : `Registre o resultado da negociação com ${lead?.name}`}
           </DialogDescription>
         </DialogHeader>
 
@@ -107,13 +123,27 @@ export function MarkGainLossDialog({
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>
-            Cancelar
-          </Button>
-          <Button onClick={handleSubmit} disabled={!isValid || isPending}>
-            {isPending ? "Salvando..." : "Confirmar"}
-          </Button>
+        <DialogFooter className="flex-col sm:flex-row gap-2">
+          <div className="flex gap-2 flex-1">
+            {isAlreadyMarked && (
+              <Button
+                variant="outline"
+                onClick={handleUnmark}
+                disabled={isPending}
+                className="flex-1 sm:flex-none"
+              >
+                Desmarcar
+              </Button>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => onOpenChange(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSubmit} disabled={!isValid || isPending}>
+              {isPending ? "Salvando..." : "Confirmar"}
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

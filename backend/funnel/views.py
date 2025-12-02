@@ -339,7 +339,7 @@ class LeadViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], url_path='mark_gain_loss')
     def mark_gain_loss(self, request, pk=None):
-        """Mark a lead as gained or lost"""
+        """Mark a lead as gained, lost, or unmark (set to active)"""
         lead = self.get_object()
 
         # Validate required fields
@@ -353,22 +353,29 @@ class LeadViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if lead_status not in ['Gained', 'Lost']:
+        if lead_status not in ['Gained', 'Lost', 'Active']:
             return Response(
-                {'error': 'Status must be either "Gained" or "Lost"'},
+                {'error': 'Status must be either "Gained", "Lost", or "Active"'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if gain_loss_value is None:
-            return Response(
-                {'error': 'gain_loss_value is required'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # If setting to Active, clear gain/loss data
+        if lead_status == 'Active':
+            lead.status = 'Active'
+            lead.gain_loss_value = None
+            lead.gain_loss_reason = ''
+        else:
+            # For Gained/Lost, value is required
+            if gain_loss_value is None:
+                return Response(
+                    {'error': 'gain_loss_value is required for Gained/Lost status'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-        # Update the lead
-        lead.status = lead_status
-        lead.gain_loss_value = gain_loss_value
-        lead.gain_loss_reason = gain_loss_reason
+            lead.status = lead_status
+            lead.gain_loss_value = gain_loss_value
+            lead.gain_loss_reason = gain_loss_reason
+
         lead.save()
 
         serializer = self.get_serializer(lead)
