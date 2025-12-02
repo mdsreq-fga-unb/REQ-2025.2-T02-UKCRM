@@ -19,7 +19,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copia os arquivos estáticos gerados no estágio anterior para o diretório padrão do Nginx
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copia uma configuração customizada do Nginx
 # Este arquivo garante que a navegação (roteamento) do React funcione corretamente.
